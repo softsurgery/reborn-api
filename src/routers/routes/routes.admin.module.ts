@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { DeviceInfoController } from 'src/modules/system-reports/controllers/device-info.controller';
+import { SystemReportsModule } from 'src/modules/system-reports/system-reports.module';
 import { PermissionController } from 'src/modules/user-management/controllers/permission.controller';
 import { RoleController } from 'src/modules/user-management/controllers/role.controller';
 import { UserController } from 'src/modules/user-management/controllers/user.controller';
@@ -12,9 +14,10 @@ import { LoggerModule } from 'src/shared/logger/logger.module';
     RoleController,
     PermissionController,
     LoggerController,
+    DeviceInfoController,
   ],
   providers: [],
   exports: [],
-  imports: [UserManagementModule, LoggerModule],
+  imports: [UserManagementModule, LoggerModule, SystemReportsModule],
 })
 export class RoutesAdminModule {}

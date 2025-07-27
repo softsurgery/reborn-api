@@ -80,7 +80,9 @@ CREATE TABLE
             'ROLE_CREATE',
             'ROLE_UPDATE',
             'ROLE_DELETE',
-            'ROLE_DUPLICATE'
+            'ROLE_DUPLICATE',
+            'DEVICE_INFO_CREATE',
+            'DEVICE_INFO_DELETE'
         ) DEFAULT NULL,
         `api` varchar(255) DEFAULT NULL,
         `method` varchar(255) DEFAULT NULL,
@@ -123,3 +125,17 @@ CREATE TABLE
         `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE
+    `device-infos` (
+        `id` int NOT NULL AUTO_INCREMENT,
+        `model` varchar(255) DEFAULT NULL,
+        `platform` varchar(255) DEFAULT NULL,
+        `version` varchar(255) DEFAULT NULL,
+        `manufacturer` varchar(255) DEFAULT NULL,
+        `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+        `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+        `deletedAt` datetime (6) DEFAULT NULL,
+        `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci
