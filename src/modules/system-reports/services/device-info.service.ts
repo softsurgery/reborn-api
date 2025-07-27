@@ -87,6 +87,19 @@ export class DeviceInfoService {
     return this.deviceInfoRepository.save(createDeviceInfoDto);
   }
 
+  async upsert(createDeviceInfoDto: CreateDeviceInfoDto) {
+    const existingDeviceInfo = await this.deviceInfoRepository.findOne({
+      where: {
+        model: createDeviceInfoDto.model,
+        platform: createDeviceInfoDto.platform,
+        version: createDeviceInfoDto.version,
+        manufacturer: createDeviceInfoDto.manufacturer,
+      },
+    });
+    if (existingDeviceInfo) return existingDeviceInfo;
+    return this.deviceInfoRepository.save(createDeviceInfoDto);
+  }
+
   async saveMany(createDeviceInfoDto: CreateDeviceInfoDto[]) {
     return this.deviceInfoRepository.saveMany(createDeviceInfoDto);
   }

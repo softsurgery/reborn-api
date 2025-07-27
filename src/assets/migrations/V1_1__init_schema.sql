@@ -82,7 +82,11 @@ CREATE TABLE
             'ROLE_DELETE',
             'ROLE_DUPLICATE',
             'DEVICE_INFO_CREATE',
-            'DEVICE_INFO_DELETE'
+            'DEVICE_INFO_DELETE',
+            'BUG_CREATE',
+            'BUG_DELETE',
+            'FEEDBACK_CREATE',
+            'FEEDBACK_DELETE'
         ) DEFAULT NULL,
         `api` varchar(255) DEFAULT NULL,
         `method` varchar(255) DEFAULT NULL,
@@ -138,4 +142,42 @@ CREATE TABLE
         `deletedAt` datetime (6) DEFAULT NULL,
         `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE
+    `bugs` (
+        `id` int NOT NULL AUTO_INCREMENT,
+        `event` enum (
+            'Crash',
+            'UI Issue',
+            'Performance Issue',
+            'Feature Not Working',
+            'Other'
+        ) NOT NULL,
+        `title` varchar(255) NOT NULL,
+        `description` text NOT NULL,
+        `deviceId` int DEFAULT NULL,
+        `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+        `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+        `deletedAt` datetime (6) DEFAULT NULL,
+        `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        KEY `FK_4d27d4b86accd8af3f35daad8fd` (`deviceId`),
+        CONSTRAINT `FK_4d27d4b86accd8af3f35daad8fd` FOREIGN KEY (`deviceId`) REFERENCES `device-infos` (`id`) ON DELETE CASCADE
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE
+    `feedback` (
+        `id` int NOT NULL AUTO_INCREMENT,
+        `message` text,
+        `category` enum ('General Feedback', 'Feature Request', 'Other') NOT NULL,
+        `rating` int DEFAULT NULL,
+        `deviceId` int NOT NULL,
+        `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+        `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+        `deletedAt` datetime (6) DEFAULT NULL,
+        `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        KEY `FK_1927d990407e091b1b45add4c13` (`deviceId`),
+        CONSTRAINT `FK_1927d990407e091b1b45add4c13` FOREIGN KEY (`deviceId`) REFERENCES `device-infos` (`id`) ON DELETE CASCADE
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;

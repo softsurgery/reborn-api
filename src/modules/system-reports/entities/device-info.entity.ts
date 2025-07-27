@@ -1,5 +1,7 @@
 import { EntityHelper } from 'src/shared/database/interfaces/database.entity.interface';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BugEntity } from './bug.entity';
+import { FeedbackEntity } from './feedback.entity';
 
 @Entity('device-infos')
 export class DeviceInfoEntity extends EntityHelper {
@@ -17,4 +19,10 @@ export class DeviceInfoEntity extends EntityHelper {
 
   @Column({ nullable: true })
   manufacturer?: string;
+
+  @OneToMany(() => BugEntity, (bug) => bug.device)
+  bugs?: BugEntity[];
+
+  @OneToMany(() => FeedbackEntity, (feedback) => feedback.device)
+  feedbacks?: FeedbackEntity[];
 }
