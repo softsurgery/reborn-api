@@ -12,14 +12,18 @@ import { Public } from '../utils/public-strategy';
 import { AuthService } from '../services/auth.service';
 import { RefreshTokenDto } from '../dtos/response-refresh-token';
 import { ResponseSigninDto } from '../dtos/response-signin.dto';
-import { SignInDto } from '../dtos/signin.dto';
-import { SignUpDto } from '../dtos/signup.dto';
+import { RequestSignInDto } from '../dtos/request-signin.dto';
+import { RequestSignUpDto } from '../dtos/request-signup.dto';
 import { ResponseSignupDto } from '../dtos/response-signup.dto';
 import { OAuthRequestDto } from '../dtos/response-oauth.dto';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
 import { RequestWithLogInfo } from 'src/types';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
+import { RequestResetTokenDto } from '../dtos/request-reset-token.dto';
+import { ResponseResetTokenDto } from '../dtos/response-reset-token.dto';
+import { RequestCheckResetTokenDto } from '../dtos/request-check-reset-token.dto';
+import { ResponseCheckResetTokenDto } from '../dtos/response-check-reset-token.dto';
 
 @ApiTags('auth')
 @Controller({ version: '1', path: '/auth' })
@@ -42,7 +46,7 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Invalid credentials.' })
   @LogEvent(EventType.SIGNIN)
   async signIn(
-    @Body() signInDto: SignInDto,
+    @Body() signInDto: RequestSignInDto,
     @Request() req: RequestWithLogInfo,
   ): Promise<ResponseSigninDto> {
     const result = await this.authService.signin(
@@ -66,7 +70,7 @@ export class AuthController {
     type: ResponseSignupDto,
   })
   @ApiResponse({ status: 400, description: 'Validation failed.' })
-  async register(@Body() registerDto: SignUpDto) {
+  async register(@Body() registerDto: RequestSignUpDto) {
     try {
       return this.authService.signup(registerDto);
     } catch (error) {
@@ -117,5 +121,49 @@ export class AuthController {
     @Body() body: RefreshTokenDto,
   ): Promise<ResponseSigninDto> {
     return this.authService.refreshToken(body.refresh_token);
+  }
+
+  @Public()
+  @Post('forgot-password')
+  @ApiOperation({
+    summary: 'Request password reset',
+    description: 'Send an email with a link to reset the user password.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Password reset email sent.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid email address.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found.',
+  })
+  async requestPasswordReset(
+    @Body() body: RequestResetTokenDto,
+  ): Promise<ResponseResetTokenDto> {
+    return this.authService.requestResetToken(body);
+  }
+
+  @Public()
+  @Post('check-reset-token')
+  @ApiOperation({
+    summary: 'Check reset token validity',
+    description: 'Check if the reset token is valid.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Token is valid.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Token is invalid.',
+  })
+  async checkResetToken(
+    @Body() body: RequestCheckResetTokenDto,
+  ): Promise<ResponseCheckResetTokenDto> {
+    return this.authService.checkRestTokenValidity(body);
   }
 }

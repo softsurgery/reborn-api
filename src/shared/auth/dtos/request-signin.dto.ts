@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { faker } from '@faker-js/faker';
 
-export class SignInDto {
+export class RequestSignInDto {
   @ApiProperty({
     type: String,
     example: faker.internet.email(),

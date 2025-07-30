@@ -115,6 +115,14 @@ export class UserService {
     return this.userRepository.findOne({ where: { email } });
   }
 
+  async findOneByUsernameOrEmail(
+    usernameOrEmail: string,
+  ): Promise<UserEntity | null> {
+    return this.userRepository.findOne({
+      where: [{ email: usernameOrEmail }, { username: usernameOrEmail }],
+    });
+  }
+
   async activate(id: string): Promise<UserEntity | null> {
     const user = await this.findOneById(id);
     return this.userRepository.update(id, { ...user, isActive: true });
@@ -133,5 +141,17 @@ export class UserService {
   async disapprove(id: string): Promise<UserEntity | null> {
     const user = await this.findOneById(id);
     return this.userRepository.update(id, { ...user, isApproved: false });
+  }
+
+  async changePassword(
+    id: string,
+    password: string,
+  ): Promise<UserEntity | null> {
+    const user = await this.findOneById(id);
+    const hashedPassword = await hashPassword(password);
+    return this.userRepository.update(id, {
+      ...user,
+      password: hashedPassword,
+    });
   }
 }

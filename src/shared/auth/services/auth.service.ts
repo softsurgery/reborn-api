@@ -14,6 +14,18 @@ import {
 } from '../interfaces/github.interface';
 import { OAuthProvider } from '../enums/oauth.enum';
 import { UserRepository } from 'src/modules/user-management/repositories/user.repository';
+import { RequestResetTokenDto } from '../dtos/request-reset-token.dto';
+import { MailService } from 'src/shared/mail/services/mail.service';
+import { UserNotFoundException } from 'src/modules/user-management/errors/user/user.notfound.error';
+import { ResponseResetTokenDto } from '../dtos/response-reset-token.dto';
+import { ResponseCheckResetTokenDto } from '../dtos/response-check-reset-token.dto';
+import { RequestCheckResetTokenDto } from '../dtos/request-check-reset-token.dto';
+import { StoreService } from 'src/shared/store/services/store.service';
+import { StoreIDs } from 'src/app/enums/store.enum';
+import { Owner } from 'src/app/interface/owner.interface';
+import { GenericStore } from 'src/shared/store/interfaces/generic-store.interface';
+import { ForgetPasswordTemplateProps } from 'src/assets/templates/forget-password/type';
+import { identifyUser } from 'src/modules/user-management/utils/identify-user';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +34,8 @@ export class AuthService {
     private userService: UserService,
     private jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly mailService: MailService,
+    private readonly storeService: StoreService,
   ) {}
 
   private async generateTokens(id: string, email: string) {
@@ -187,5 +201,75 @@ export class AuthService {
       access_token,
       refresh_token,
     };
+  }
+
+  async requestResetToken(
+    requestResetTokenDto: RequestResetTokenDto,
+  ): Promise<ResponseResetTokenDto> {
+    const user = await this.userService.findOneByUsernameOrEmail(
+      requestResetTokenDto.usernameOrEmail,
+    );
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+    try {
+      const resetToken = await this.jwtService.signAsync(
+        { sub: user.id, email: user.email },
+        {
+          secret: this.configService.get('app.passwordReset.secret'),
+          expiresIn: this.configService.get('app.passwordReset.expiration'),
+        },
+      );
+
+      const webAppUrl = this.configService.get('app.webAppUrl');
+      const resetLink = `${webAppUrl}?token=${resetToken}`;
+
+      //gather informations
+      const owner: GenericStore<Owner> = await this.storeService.findOneById(
+        StoreIDs.OWNER,
+      );
+
+      await this.mailService.sendTemplate<ForgetPasswordTemplateProps>(
+        user.email,
+        'Password Reset Request',
+        'forget-password',
+        {
+          name: owner.value.name,
+          address: owner.value.address,
+          support: owner.value.support,
+          logo: `${this.configService.get<string>('app.webAppUrl')}/logo.png`,
+          client: identifyUser(user),
+          email: user.email,
+          url: resetLink,
+        },
+      );
+      return { email: user.email, success: true };
+    } catch (error) {
+      console.error('Error sending password reset email:', error);
+      return { email: user.email, success: false };
+    }
+  }
+
+  async checkRestTokenValidity(
+    requestCheckResetTokenDto: RequestCheckResetTokenDto,
+  ): Promise<ResponseCheckResetTokenDto> {
+    try {
+      const payload: { sub: string; email: string } =
+        await this.jwtService.verifyAsync(requestCheckResetTokenDto.token, {
+          secret: this.configService.get('app.passwordReset.secret'),
+        });
+
+      const user = await this.userRepository.findOneById(payload.sub);
+      if (!user) {
+        throw new UnauthorizedException('User does not exist');
+      }
+
+      return {
+        token: requestCheckResetTokenDto.token,
+        valid: true,
+      };
+    } catch (error) {
+      throw new UnauthorizedException('Invalid or expired reset token' + error);
+    }
   }
 }
