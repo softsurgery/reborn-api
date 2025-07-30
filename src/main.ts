@@ -90,27 +90,30 @@ async function bootstrap() {
   logger.log(`==========================================================`);
 
   //Migrations ==========================================================
-  const migrationService = app.get(MigrationService);
-  const migrationPath = join(__dirname, 'assets', 'migrations');
-  try {
-    // Create migrations table if it does not exist
-    await migrationService.createMigrationsTableIfNotExists();
+  const synchronize = configService.get<boolean>('database.synchronize');
+  if (!synchronize) {
+    const migrationService = app.get(MigrationService);
+    const migrationPath = join(__dirname, 'assets', 'migrations');
+    try {
+      // Create migrations table if it does not exist
+      await migrationService.createMigrationsTableIfNotExists();
 
-    const migrationFiles = migrationService.loadMigrationFiles(migrationPath);
+      const migrationFiles = migrationService.loadMigrationFiles(migrationPath);
 
-    const existingMigrations = await migrationService.findAll({});
+      const existingMigrations = await migrationService.findAll({});
 
-    // Check if there are any migrations to run
-    const needToRunMigrations = migrationService.runNeeded(
-      migrationFiles,
-      existingMigrations,
-    );
+      // Check if there are any migrations to run
+      const needToRunMigrations = migrationService.runNeeded(
+        migrationFiles,
+        existingMigrations,
+      );
 
-    if (needToRunMigrations) {
-      await migrationService.runMigrations(migrationPath, migrationFiles);
+      if (needToRunMigrations) {
+        await migrationService.runMigrations(migrationPath, migrationFiles);
+      }
+    } catch (error) {
+      logger.error('Migration process failed', error);
     }
-  } catch (error) {
-    logger.error('Migration process failed', error);
   }
 }
 void bootstrap();
