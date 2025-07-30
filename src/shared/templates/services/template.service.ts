@@ -8,7 +8,6 @@ import { PageMetaDto } from 'src/shared/database/dtos/database.page-meta.dto';
 import { TemplateRepository } from '../repositories/template.repository';
 import { TemplateEntity } from '../entities/template.entity';
 import { TemplateNotFoundException } from '../errors/template.notfound.error';
-import { CreateTemplateDto } from '../dtos/create-template.dto';
 
 @Injectable()
 export class TemplateService {
@@ -73,12 +72,22 @@ export class TemplateService {
   }
 
   @Transactional()
-  async save(createTemplateDto: CreateTemplateDto) {
-    return this.templateRepository.save(createTemplateDto);
+  async save(template: Partial<TemplateEntity>): Promise<TemplateEntity> {
+    const existingTemplate = await this.findOneByName(template.name);
+
+    if (existingTemplate) {
+      Object.assign(existingTemplate, template);
+      return this.templateRepository.save(existingTemplate);
+    }
+
+    const templateInstance = this.templateRepository.create(template);
+    return await this.templateRepository.save(templateInstance);
   }
 
-  async saveMany(createTemplateDto: CreateTemplateDto[]) {
-    return this.templateRepository.saveMany(createTemplateDto);
+  async saveMany(
+    templates: Partial<TemplateEntity>[],
+  ): Promise<TemplateEntity[]> {
+    return this.templateRepository.saveMany(templates);
   }
 
   async softDelete(id: string): Promise<TemplateEntity | null> {
@@ -92,7 +101,10 @@ export class TemplateService {
 
   //Extended Methods ===========================================================================
 
-  async findOneByName(name: string): Promise<TemplateEntity | null> {
-    return this.templateRepository.findOne({ where: { name } });
+  async findOneByName(name?: string): Promise<TemplateEntity | null> {
+    return this.templateRepository.findOne({
+      where: { name },
+      relations: ['styles'],
+    });
   }
 }

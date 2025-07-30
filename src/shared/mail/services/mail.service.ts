@@ -2,6 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 import { TemplateService } from 'src/shared/templates/services/template.service';
+import * as juice from 'juice';
+import * as ejs from 'ejs';
 
 @Injectable()
 export class MailService {
@@ -13,39 +15,41 @@ export class MailService {
     private readonly configService: ConfigService,
   ) {}
 
-  /**
-   * Renders a template from the database by replacing {{key}} with actual values.
-   */
   async renderTemplateFromDb(
     templateName: string,
-    variables: Record<string, string>,
+    variables: Record<string, unknown>,
   ): Promise<string> {
     const template = await this.templateService.findOneByName(templateName);
+
     if (!template?.content) {
       throw new Error(
-        `Template "${templateName}" not found or has no markdown content.`,
+        `Template "${templateName}" not found or has no EJS content.`,
       );
     }
 
-    let content = template.content;
-    for (const [key, value] of Object.entries(variables)) {
-      const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
-      content = content.replace(regex, value);
-    }
+    const renderedHtml = ejs.render(template.content, variables);
 
-    return content;
+    const styleContent =
+      template.styles?.map((style) => style.content).join('\n') ?? '';
+    const fullHtml = `<style>${styleContent}</style>\n${renderedHtml}`;
+
+    const inlinedHtml = juice(fullHtml);
+    return inlinedHtml;
   }
 
   /**
    * Sends an email using a rendered template from the database.
    */
-  async sendTemplate(
+  async sendTemplate<T>(
     to: string,
     subject: string,
     templateName: string,
-    variables: Record<string, string>,
+    variables: T,
   ): Promise<void> {
-    const html = await this.renderTemplateFromDb(templateName, variables);
+    const html = await this.renderTemplateFromDb(
+      templateName,
+      variables as Record<string, string>,
+    );
     await this.sendMail(to, subject, html);
   }
 

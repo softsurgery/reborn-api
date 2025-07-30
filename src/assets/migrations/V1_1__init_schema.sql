@@ -105,12 +105,36 @@ CREATE TABLE
     `templates` (
         `id` varchar(36) NOT NULL,
         `name` varchar(255) DEFAULT NULL,
-        `content` text NOT NULL,
+        `content` longtext NOT NULL,
         `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
         `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
         `deletedAt` datetime (6) DEFAULT NULL,
         `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE
+    `template-styles` (
+        `id` varchar(36) NOT NULL,
+        `name` varchar(255) NOT NULL,
+        `content` longtext,
+        `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+        `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+        `deletedAt` datetime (6) DEFAULT NULL,
+        `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `IDX_f89caee9b323abfc0abaeea8b8` (`name`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE
+    `template_template_styles` (
+        `templateId` varchar(36) NOT NULL,
+        `styleId` varchar(36) NOT NULL,
+        PRIMARY KEY (`templateId`, `styleId`),
+        KEY `IDX_17694cf06ef5a0e0dcc8fac049` (`templateId`),
+        KEY `IDX_da6b0f561e3324d22e771e5af4` (`styleId`),
+        CONSTRAINT `FK_17694cf06ef5a0e0dcc8fac0494` FOREIGN KEY (`templateId`) REFERENCES `templates` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT `FK_da6b0f561e3324d22e771e5af41` FOREIGN KEY (`styleId`) REFERENCES `template-styles` (`id`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 CREATE TABLE
