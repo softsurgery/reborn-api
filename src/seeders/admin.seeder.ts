@@ -30,7 +30,8 @@ export class AdminSeedCommand {
       where: { username: 'superadmin' },
     });
     if (!adminUser)
-      adminUser = await this.userService.save({
+      adminUser = await this.userService.saveRaw({
+        id: 'super-admin',
         firstName: 'SUPER$',
         lastName: 'SUPER$',
         username: 'superadmin',

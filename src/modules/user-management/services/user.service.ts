@@ -13,6 +13,7 @@ import { UserAlreadyExistsException } from '../errors/user/user.alreadyexists.er
 import { UpdateUserDto } from '../dtos/user/update-user.dto';
 import { UserEntity } from '../entities/user.entity';
 import { BasicRoles } from '../enums/basic-roles.enum';
+import { UserRequirePasswordException } from '../errors/user/user.requirepassword.error';
 
 @Injectable()
 export class UserService {
@@ -104,6 +105,16 @@ export class UserService {
   //Extended Methods ===========================================================================
 
   @Transactional()
+  async saveRaw(createUserDto: Partial<UserEntity>): Promise<UserEntity> {
+    if (!createUserDto.password) throw new UserRequirePasswordException();
+    const hashedPassword = await hashPassword(createUserDto.password);
+    createUserDto.password = hashedPassword;
+    return this.userRepository.save({
+      ...createUserDto,
+      password: hashedPassword,
+    });
+  }
+
   async saveBasicUser(createUserDto: CreateUserDto): Promise<UserEntity> {
     return this.save({
       ...createUserDto,
