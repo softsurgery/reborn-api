@@ -22,6 +22,7 @@ export interface DatabaseInterfaceRepository<T extends ObjectLiteral> {
   findAll(options?: FindManyOptions<T>): Promise<T[]>;
   findWithRelations(relations: FindManyOptions<T>): Promise<T[]>;
 
+  create(data: DeepPartial<T>): T;
   save(data: DeepPartial<T>): Promise<T>;
   saveMany(data: DeepPartial<T>[]): Promise<T[]>;
   upsert(data: T): Promise<InsertResult>;

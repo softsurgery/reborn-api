@@ -76,6 +76,10 @@ export abstract class DatabaseAbstractRepository<T extends ObjectLiteral>
     return this.getRepository().find(relations);
   }
 
+  public create(data: DeepPartial<T>): T {
+    return this.getRepository().create(data);
+  }
+
   public async save(data: DeepPartial<T>): Promise<T> {
     return this.getRepository().save(data);
   }
