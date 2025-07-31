@@ -15,7 +15,7 @@ export class BugEntity extends EntityHelper {
   id: number;
 
   @Column({ type: 'enum', enum: BugVariant, nullable: false })
-  event: BugVariant;
+  variant: BugVariant;
 
   @Column({ nullable: false })
   title: string;

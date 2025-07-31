@@ -171,7 +171,7 @@ CREATE TABLE
 CREATE TABLE
     `bugs` (
         `id` int NOT NULL AUTO_INCREMENT,
-        `event` enum (
+        `variant` enum (
             'Crash',
             'UI Issue',
             'Performance Issue',
