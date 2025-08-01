@@ -60,7 +60,7 @@ export class BugController {
     @Body() createBugDto: CreateBugDto,
     @Request() req: RequestWithLogInfo,
   ): Promise<ResponseBugDto> {
-    const bug = await this.bugService.save(createBugDto);
+    const bug = await this.bugService.saveWithDeviceInfo(createBugDto);
     req.logInfo = { id: bug.id };
     return toDto(ResponseBugDto, bug);
   }

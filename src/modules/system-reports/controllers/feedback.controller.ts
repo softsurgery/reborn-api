@@ -70,7 +70,8 @@ export class FeedbackController {
     @Body() createFeedbackDto: CreateFeedbackDto,
     @Request() req: RequestWithLogInfo,
   ): Promise<ResponseFeedbackDto> {
-    const feedback = await this.feedbackService.save(createFeedbackDto);
+    const feedback =
+      await this.feedbackService.saveWithDeviceInfo(createFeedbackDto);
     req.logInfo = { id: feedback.id };
     return toDto(ResponseFeedbackDto, feedback);
   }
