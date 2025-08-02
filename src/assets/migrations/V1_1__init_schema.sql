@@ -86,7 +86,10 @@ CREATE TABLE
             'BUG_CREATE',
             'BUG_DELETE',
             'FEEDBACK_CREATE',
-            'FEEDBACK_DELETE'
+            'FEEDBACK_DELETE',
+            'REGION_CREATE',
+            'REGION_UPDATE',
+            'REGION_DELETE'
         ) DEFAULT NULL,
         `api` varchar(255) DEFAULT NULL,
         `method` varchar(255) DEFAULT NULL,
@@ -216,3 +219,15 @@ CREATE TABLE
         `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE
+    `regions` (
+        `id` int NOT NULL AUTO_INCREMENT,
+        `label` varchar(255) NOT NULL,
+        `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+        `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+        `deletedAt` datetime (6) DEFAULT NULL,
+        `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `IDX_6be4cf0c4e65621656f4a7e8a7` (`label`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci
