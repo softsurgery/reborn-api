@@ -8,6 +8,7 @@ import {
   Length,
   MinLength,
 } from 'class-validator';
+import { CreateProfileDto } from 'src/modules/user-management/dtos/profile/create-profile.dto';
 
 export class CreateUserDto {
   @ApiProperty({ type: String })
@@ -51,4 +52,8 @@ export class CreateUserDto {
 
   @ApiProperty({ type: String })
   roleId?: string;
+
+  @ApiProperty({ type: CreateProfileDto })
+  @IsOptional()
+  profile?: CreateProfileDto;
 }

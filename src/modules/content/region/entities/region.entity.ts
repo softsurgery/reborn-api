@@ -1,5 +1,6 @@
+import { ProfileEntity } from 'src/modules/user-management/entities/profile.entity';
 import { EntityHelper } from 'src/shared/database/interfaces/database.entity.interface';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('regions')
 export class RegionEntity extends EntityHelper {
@@ -8,4 +9,7 @@ export class RegionEntity extends EntityHelper {
 
   @Column({ unique: true })
   label: string;
+
+  @OneToMany(() => ProfileEntity, (profile) => profile.region)
+  profiles: ProfileEntity[];
 }

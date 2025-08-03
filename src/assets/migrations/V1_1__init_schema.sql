@@ -230,4 +230,27 @@ CREATE TABLE
         `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`),
         UNIQUE KEY `IDX_6be4cf0c4e65621656f4a7e8a7` (`label`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE
+    `profiles` (
+        `id` int NOT NULL AUTO_INCREMENT,
+        `phone` varchar(255) DEFAULT NULL,
+        `cin` varchar(255) DEFAULT NULL,
+        `bio` text,
+        `gender` enum ('Male', 'Female') DEFAULT NULL,
+        `isPrivate` tinyint NOT NULL DEFAULT '0',
+        `regionId` int DEFAULT NULL,
+        `userId` varchar(255) NOT NULL,
+        `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+        `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+        `deletedAt` datetime (6) DEFAULT NULL,
+        `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `REL_315ecd98bd1a42dcf2ec4e2e98` (`userId`),
+        UNIQUE KEY `IDX_6ca5cd9bacd921599be9d92097` (`phone`),
+        UNIQUE KEY `IDX_81a7ccecddaae7a7ec3f25e52a` (`cin`),
+        KEY `FK_0059e9b53abca28e5d62e1ebc19` (`regionId`),
+        CONSTRAINT `FK_0059e9b53abca28e5d62e1ebc19` FOREIGN KEY (`regionId`) REFERENCES `regions` (`id`) ON DELETE CASCADE,
+        CONSTRAINT `FK_315ecd98bd1a42dcf2ec4e2e985` FOREIGN KEY (`userId`) REFERENCES `users` (`id`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;

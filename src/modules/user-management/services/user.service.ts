@@ -14,10 +14,14 @@ import { UpdateUserDto } from '../dtos/user/update-user.dto';
 import { UserEntity } from '../entities/user.entity';
 import { BasicRoles } from '../enums/basic-roles.enum';
 import { UserRequirePasswordException } from '../errors/user/user.requirepassword.error';
+import { ProfileService } from 'src/modules/user-management/services/profile.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly profileService: ProfileService,
+  ) {}
 
   async findOneById(id: string): Promise<UserEntity> {
     const user = await this.userRepository.findOneById(id);
@@ -115,11 +119,23 @@ export class UserService {
     });
   }
 
-  async saveBasicUser(createUserDto: CreateUserDto): Promise<UserEntity> {
-    return this.save({
-      ...createUserDto,
+  async saveBasicUserWithProfile(
+    createUserDto: CreateUserDto,
+  ): Promise<UserEntity> {
+    const { profile: profileDto, ...dto } = createUserDto;
+    const user = await this.save({
+      ...dto,
       roleId: BasicRoles.User,
+      isApproved: false,
     });
+
+    if (profileDto) {
+      await this.profileService.save({
+        ...profileDto,
+        userId: user.id,
+      });
+    }
+    return user;
   }
 
   async findOneByEmail(email: string): Promise<UserEntity | null> {

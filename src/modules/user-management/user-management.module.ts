@@ -12,6 +12,9 @@ import { PermissionEntity } from './entities/permission.entity';
 import { RolePermissionRepository } from './repositories/role-permission.repository';
 import { RolePermissionService } from './services/role-permission.service';
 import { RolePermissionEntity } from './entities/role-permission.entity';
+import { ProfileEntity } from './entities/profile.entity';
+import { ProfileRepository } from './repositories/profile.repository';
+import { ProfileService } from './services/profile.service';
 
 @Module({
   controllers: [],
@@ -20,21 +23,25 @@ import { RolePermissionEntity } from './entities/role-permission.entity';
     RoleRepository,
     PermissionRepository,
     RolePermissionRepository,
+    ProfileRepository,
 
     UserService,
     RoleService,
     PermissionService,
     RolePermissionService,
+    ProfileService,
   ],
   exports: [
     UserService,
     RoleService,
     PermissionService,
+    ProfileService,
 
     UserRepository,
     RoleRepository,
     PermissionRepository,
     RolePermissionRepository,
+    ProfileRepository,
   ],
   imports: [
     TypeOrmModule.forFeature([
@@ -42,6 +49,7 @@ import { RolePermissionEntity } from './entities/role-permission.entity';
       RoleEntity,
       PermissionEntity,
       RolePermissionEntity,
+      ProfileEntity,
     ]),
   ],
 })

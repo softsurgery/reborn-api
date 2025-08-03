@@ -89,10 +89,7 @@ export class AuthService {
 
   async signup(createUserDto: CreateUserDto): Promise<ResponseSignupDto> {
     return {
-      user: await this.userService.save({
-        ...createUserDto,
-        isApproved: false,
-      }),
+      user: await this.userService.saveBasicUserWithProfile(createUserDto),
     };
   }
 

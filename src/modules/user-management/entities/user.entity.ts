@@ -5,10 +5,12 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { RoleEntity } from './role.entity';
 import { LogEntity } from 'src/shared/logger/entities/log.entity';
+import { ProfileEntity } from 'src/modules/user-management/entities/profile.entity';
 
 @Entity('users')
 export class UserEntity extends EntityHelper {
@@ -57,4 +59,10 @@ export class UserEntity extends EntityHelper {
 
   @OneToMany(() => LogEntity, (log) => log.user)
   logs?: LogEntity[];
+
+  @OneToOne(() => ProfileEntity, (profile) => profile.user, {
+    cascade: true,
+    eager: true,
+  })
+  profile: ProfileEntity;
 }
