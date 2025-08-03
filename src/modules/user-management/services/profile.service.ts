@@ -15,7 +15,7 @@ import { ProfileRepository } from '../repositories/profile.repository';
 export class ProfileService {
   constructor(private readonly profileRepository: ProfileRepository) {}
 
-  async findOneById(id: string): Promise<ProfileEntity> {
+  async findOneById(id: number): Promise<ProfileEntity> {
     const profile = await this.profileRepository.findOneById(id);
     if (!profile) {
       throw new ProfileNotFoundException();
@@ -79,17 +79,17 @@ export class ProfileService {
 
   @Transactional()
   async update(
-    id: string,
+    id: number,
     updateProfileDto: UpdateProfileDto,
   ): Promise<ProfileEntity | null> {
     return this.profileRepository.update(id, updateProfileDto);
   }
 
-  async softDelete(id: string): Promise<ProfileEntity | null> {
+  async softDelete(id: number): Promise<ProfileEntity | null> {
     return this.profileRepository.softDelete(id);
   }
 
-  async delete(id: string): Promise<ProfileEntity | null> {
+  async delete(id: number): Promise<ProfileEntity | null> {
     const profile = await this.profileRepository.findOneById(id);
     if (!profile) {
       throw new ProfileNotFoundException();

@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
 import { ResponseDtoHelper } from 'src/shared/database/dtos/database.response.dto';
 import { ResponseRoleDto } from '../role/response-role.dto';
+import { ResponseProfileDto } from '../profile/response-profile.dto';
 
 export class ResponseUserDto extends ResponseDtoHelper {
   @ApiProperty({ type: String })
@@ -51,4 +52,13 @@ export class ResponseUserDto extends ResponseDtoHelper {
   @ApiProperty({ type: String })
   @Expose()
   roleId: string;
+
+  @ApiProperty({ type: () => ResponseProfileDto })
+  @Expose()
+  @Type(() => ResponseProfileDto)
+  profile?: ResponseProfileDto;
+
+  @ApiProperty({ type: Number })
+  @Expose()
+  profileId: number;
 }

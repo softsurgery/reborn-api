@@ -61,8 +61,12 @@ export class UserEntity extends EntityHelper {
   logs?: LogEntity[];
 
   @OneToOne(() => ProfileEntity, (profile) => profile.user, {
-    cascade: true,
     eager: true,
+    nullable: true,
   })
-  profile: ProfileEntity;
+  @JoinColumn({ name: 'profileId' })
+  profile?: ProfileEntity;
+
+  @Column()
+  profileId: number;
 }

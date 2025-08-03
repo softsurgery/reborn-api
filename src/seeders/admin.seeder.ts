@@ -1,13 +1,13 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { RoleService } from 'src/modules/user-management/services/role.service';
 import { UserService } from 'src/modules/user-management/services/user.service';
 import { UserRepository } from 'src/modules/user-management/repositories/user.repository';
+import { Gender } from 'src/modules/user-management/enums/gender.enum';
+import { BasicRoles } from 'src/modules/user-management/enums/basic-roles.enum';
 
 @Injectable()
 export class AdminSeedCommand {
   constructor(
-    private readonly roleService: RoleService,
     private readonly userService: UserService,
     private readonly userRepository: UserRepository,
   ) {}
@@ -21,25 +21,27 @@ export class AdminSeedCommand {
     console.log('🚀 Starting seeding of admin...');
     //=============================================================================================
 
-    const adminRole = await this.roleService.findOneById('Admin');
-    if (!adminRole) {
-      throw new Error('Admin role not found');
-    }
-
     let adminUser = await this.userRepository.findOne({
       where: { username: 'superadmin' },
     });
+
     if (!adminUser)
-      adminUser = await this.userService.saveRaw({
-        id: 'super-admin',
+      adminUser = await this.userService.saveUserWithProfile({
         firstName: 'SUPER$',
         lastName: 'SUPER$',
         username: 'superadmin',
         email: 'superadmin@example.com',
         password: 'superpassword',
-        roleId: adminRole?.id,
+        roleId: BasicRoles.Admin,
         isActive: true,
         isApproved: true,
+        profile: {
+          phone: '+33123456789',
+          cin: '123456789',
+          bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+          gender: Gender.Male,
+          isPrivate: false,
+        },
       });
 
     //=============================================================================================

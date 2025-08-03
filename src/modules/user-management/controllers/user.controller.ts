@@ -79,7 +79,7 @@ export class UserController {
   ): Promise<ResponseUserDto> {
     const user = toDto(
       ResponseUserDto,
-      await this.userService.save(createUserDto),
+      await this.userService.saveUserWithProfile(createUserDto),
     );
     req.logInfo = { id: user.id };
     return user;
@@ -95,7 +95,7 @@ export class UserController {
     req.logInfo = { id };
     return toDto(
       ResponseUserDto,
-      await this.userService.update(id, updateUserDto),
+      await this.userService.updateUserWithProfile(id, updateUserDto),
     );
   }
 

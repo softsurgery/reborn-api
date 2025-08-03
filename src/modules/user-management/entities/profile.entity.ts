@@ -37,15 +37,13 @@ export class ProfileEntity extends EntityHelper {
     nullable: true,
   })
   @JoinColumn({ name: 'regionId' })
-  region: RegionEntity;
+  region?: RegionEntity;
 
   @Column({ nullable: true })
   regionId?: number;
 
-  @OneToOne(() => UserEntity, (user) => user.profile)
-  @JoinColumn({ name: 'userId' })
+  @OneToOne(() => UserEntity, (user) => user.profile, {
+    cascade: true,
+  })
   user: UserEntity;
-
-  @Column()
-  userId: string;
 }

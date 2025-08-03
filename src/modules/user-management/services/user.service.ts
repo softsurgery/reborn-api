@@ -12,8 +12,6 @@ import { hashPassword } from 'src/shared/helpers/hash.utils';
 import { UserAlreadyExistsException } from '../errors/user/user.alreadyexists.error';
 import { UpdateUserDto } from '../dtos/user/update-user.dto';
 import { UserEntity } from '../entities/user.entity';
-import { BasicRoles } from '../enums/basic-roles.enum';
-import { UserRequirePasswordException } from '../errors/user/user.requirepassword.error';
 import { ProfileService } from 'src/modules/user-management/services/profile.service';
 
 @Injectable()
@@ -109,37 +107,41 @@ export class UserService {
   //Extended Methods ===========================================================================
 
   @Transactional()
-  async saveRaw(createUserDto: Partial<UserEntity>): Promise<UserEntity> {
-    if (!createUserDto.password) throw new UserRequirePasswordException();
-    const hashedPassword = await hashPassword(createUserDto.password);
-    createUserDto.password = hashedPassword;
-    return this.userRepository.save({
-      ...createUserDto,
-      password: hashedPassword,
-    });
-  }
-
-  async saveBasicUserWithProfile(
-    createUserDto: CreateUserDto,
-  ): Promise<UserEntity> {
+  async saveUserWithProfile(createUserDto: CreateUserDto): Promise<UserEntity> {
     const { profile: profileDto, ...dto } = createUserDto;
-    const user = await this.save({
-      ...dto,
-      roleId: BasicRoles.User,
-      isApproved: false,
-    });
+
+    let profileId: number | undefined = undefined;
 
     if (profileDto) {
-      await this.profileService.save({
-        ...profileDto,
-        userId: user.id,
-      });
+      const profile = await this.profileService.save(profileDto);
+      profileId = profile.id;
     }
-    return user;
+
+    return this.userRepository.save({
+      ...dto,
+      profileId,
+    });
   }
 
-  async findOneByEmail(email: string): Promise<UserEntity | null> {
-    return this.userRepository.findOne({ where: { email } });
+  @Transactional()
+  async updateUserWithProfile(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserEntity | null> {
+    const existingUser = await this.userRepository.findOneById(id);
+    const { profile: profileDto, ...dto } = updateUserDto;
+    let profileId: number | undefined = undefined;
+    if (profileDto && existingUser?.profileId) {
+      const profile = await this.profileService.update(
+        existingUser?.profileId,
+        profileDto,
+      );
+      profileId = profile?.id;
+    }
+    return this.userRepository.update(id, {
+      ...dto,
+      profileId,
+    });
   }
 
   async findOneByUsernameOrEmail(
@@ -147,6 +149,12 @@ export class UserService {
   ): Promise<UserEntity | null> {
     return this.userRepository.findOne({
       where: [{ email: usernameOrEmail }, { username: usernameOrEmail }],
+    });
+  }
+
+  async findOneByEmail(email: string): Promise<UserEntity | null> {
+    return this.userRepository.findOne({
+      where: { email },
     });
   }
 

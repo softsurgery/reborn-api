@@ -41,8 +41,4 @@ export class CreateProfileDto {
   @IsNumber()
   @IsOptional()
   regionId?: number;
-
-  @ApiProperty({ type: String })
-  @IsString()
-  userId: string;
 }
