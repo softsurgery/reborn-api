@@ -35,6 +35,7 @@ export class ResponseProfileDto {
   region?: ResponseRegionDto;
 
   @ApiProperty({ type: String })
+  @Expose()
   regionId?: number;
 
   @ApiProperty({ type: () => ResponseUserDto })
