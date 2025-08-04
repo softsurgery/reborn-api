@@ -6,9 +6,15 @@ import { AuthModule } from 'src/shared/auth/auth.module';
 import { AuthController } from 'src/shared/auth/controllers/auth.controller';
 import { LoggerModule } from 'src/shared/logger/logger.module';
 import { UserManagementModule } from 'src/modules/user-management/user-management.module';
+import { ClientAuthController } from 'src/shared/auth/controllers/client-auth.controller';
 
 @Module({
-  controllers: [AuthController, FeedbackController, BugController],
+  controllers: [
+    AuthController,
+    ClientAuthController,
+    FeedbackController,
+    BugController,
+  ],
   providers: [],
   exports: [],
   imports: [

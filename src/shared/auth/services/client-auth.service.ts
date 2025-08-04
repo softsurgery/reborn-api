@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UserService } from 'src/modules/user-management/services/user.service';
 import * as bcrypt from 'bcrypt';
-import { ResponseSigninDto } from '../dtos/web/response-signin.dto';
+import { CreateUserDto } from 'src/modules/user-management/dtos/user/create-user.dto';
 import { OAuth2Client } from 'google-auth-library';
 import { ResponseUserDto } from 'src/modules/user-management/dtos/user/response-user.dto';
 import {
@@ -24,9 +24,11 @@ import { Owner } from 'src/app/interface/owner.interface';
 import { GenericStore } from 'src/shared/store/interfaces/generic-store.interface';
 import { ForgetPasswordTemplateProps } from 'src/assets/templates/forget-password/type';
 import { identifyUser } from 'src/modules/user-management/utils/identify-user';
+import { ResponseClientSigninDto } from '../dtos/client/response-client-signin.dto';
+import { ResponseClientSignupDto } from '../dtos/client/response-client-signup.dto';
 
 @Injectable()
-export class AuthService {
+export class ClientAuthService {
   constructor(
     private userRepository: UserRepository,
     private userService: UserService,
@@ -53,11 +55,11 @@ export class AuthService {
   }
 
   async signin(
-    usernameOrEmail: string,
+    email: string,
     password: string,
-  ): Promise<ResponseSigninDto> {
+  ): Promise<ResponseClientSigninDto> {
     const user = await this.userRepository.findOne({
-      where: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
+      where: [{ email: email }],
     });
 
     if (!user) {
@@ -85,7 +87,13 @@ export class AuthService {
     };
   }
 
-  async refreshToken(refreshToken: string): Promise<ResponseSigninDto> {
+  async signup(createUserDto: CreateUserDto): Promise<ResponseClientSignupDto> {
+    return {
+      user: await this.userService.save(createUserDto),
+    };
+  }
+
+  async refreshToken(refreshToken: string): Promise<ResponseClientSigninDto> {
     try {
       const payload: { sub: string; email: string } =
         await this.jwtService.verifyAsync(refreshToken, {

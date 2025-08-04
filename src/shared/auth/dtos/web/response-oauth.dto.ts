@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { OAuthProvider } from '../enums/oauth.enum';
+import { OAuthProvider } from '../../enums/oauth.enum';
 
 export class OAuthRequestDto {
   @ApiProperty({

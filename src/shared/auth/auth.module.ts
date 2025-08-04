@@ -6,6 +6,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { AuthService } from './services/auth.service';
 import { StoreModule } from '../store/store.module';
 import { MailModule } from '../mail/mail.module';
+import { ClientAuthService } from './services/client-auth.service';
 
 @Module({
   imports: [UserManagementModule, ConfigModule, StoreModule, MailModule],
@@ -16,7 +17,8 @@ import { MailModule } from '../mail/mail.module';
       useClass: AuthGuard,
     },
     AuthService,
+    ClientAuthService,
   ],
-  exports: [AuthService],
+  exports: [AuthService, ClientAuthService],
 })
 export class AuthModule {}

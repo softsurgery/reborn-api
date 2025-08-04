@@ -10,20 +10,18 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from '../utils/public-strategy';
 import { AuthService } from '../services/auth.service';
-import { RefreshTokenDto } from '../dtos/response-refresh-token';
-import { ResponseSigninDto } from '../dtos/response-signin.dto';
-import { RequestSignInDto } from '../dtos/request-signin.dto';
-import { RequestSignUpDto } from '../dtos/request-signup.dto';
-import { ResponseSignupDto } from '../dtos/response-signup.dto';
-import { OAuthRequestDto } from '../dtos/response-oauth.dto';
+import { RefreshTokenDto } from '../dtos/web/response-refresh-token';
+import { ResponseSigninDto } from '../dtos/web/response-signin.dto';
+import { RequestSignInDto } from '../dtos/web/request-signin.dto';
+import { OAuthRequestDto } from '../dtos/web/response-oauth.dto';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
 import { RequestWithLogInfo } from 'src/types';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
-import { RequestResetTokenDto } from '../dtos/request-reset-token.dto';
-import { ResponseResetTokenDto } from '../dtos/response-reset-token.dto';
-import { RequestCheckResetTokenDto } from '../dtos/request-check-reset-token.dto';
-import { ResponseCheckResetTokenDto } from '../dtos/response-check-reset-token.dto';
+import { RequestResetTokenDto } from '../dtos/web/request-reset-token.dto';
+import { ResponseResetTokenDto } from '../dtos/web/response-reset-token.dto';
+import { RequestCheckResetTokenDto } from '../dtos/web/request-check-reset-token.dto';
+import { ResponseCheckResetTokenDto } from '../dtos/web/response-check-reset-token.dto';
 
 @ApiTags('auth')
 @Controller({ version: '1', path: '/auth' })
@@ -55,27 +53,6 @@ export class AuthController {
     );
     req.logInfo = { userId: result.user.id };
     return result;
-  }
-
-  @Public()
-  @Post('sign-up')
-  @ApiOperation({
-    summary: 'Register a new user',
-    description:
-      'Create a new user account with username, email, and password.',
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'User successfully registered.',
-    type: ResponseSignupDto,
-  })
-  @ApiResponse({ status: 400, description: 'Validation failed.' })
-  async register(@Body() registerDto: RequestSignUpDto) {
-    try {
-      return this.authService.signup(registerDto);
-    } catch (error) {
-      throw new BadRequestException(`User registration failed: ${error}`);
-    }
   }
 
   @Public()
