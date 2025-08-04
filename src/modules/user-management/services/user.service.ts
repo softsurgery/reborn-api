@@ -115,6 +115,7 @@ export class UserService {
       const hashedPassword = await hashPassword(updateUserDto.password);
       updateUserDto.password = hashedPassword;
     }
+    delete updateUserDto.profile;
     return this.userRepository.update(id, updateUserDto);
   }
 
