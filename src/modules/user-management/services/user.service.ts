@@ -81,11 +81,22 @@ export class UserService {
     if (existingUser) {
       throw new UserAlreadyExistsException();
     }
+
+    let profileId: number | undefined = undefined;
+
+    if (createUserDto.profile) {
+      const profile = await this.profileService.save(createUserDto.profile);
+      profileId = profile.id;
+    }
+
     const hashedPassword =
       createUserDto.password && (await hashPassword(createUserDto.password));
     createUserDto.password = hashedPassword;
 
-    return await this.userRepository.save(createUserDto);
+    return this.userRepository.save({
+      ...createUserDto,
+      profileId,
+    });
   }
 
   @Transactional()
@@ -93,6 +104,13 @@ export class UserService {
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<UserEntity | null> {
+    const existingUser = await this.userRepository.findOneById(id);
+    if (updateUserDto.profile && existingUser?.profileId) {
+      await this.profileService.update(
+        existingUser?.profileId,
+        updateUserDto.profile,
+      );
+    }
     if (updateUserDto.password) {
       const hashedPassword = await hashPassword(updateUserDto.password);
       updateUserDto.password = hashedPassword;
@@ -105,44 +123,6 @@ export class UserService {
   }
 
   //Extended Methods ===========================================================================
-
-  @Transactional()
-  async saveUserWithProfile(createUserDto: CreateUserDto): Promise<UserEntity> {
-    const { profile: profileDto, ...dto } = createUserDto;
-
-    let profileId: number | undefined = undefined;
-
-    if (profileDto) {
-      const profile = await this.profileService.save(profileDto);
-      profileId = profile.id;
-    }
-
-    return this.userRepository.save({
-      ...dto,
-      profileId,
-    });
-  }
-
-  @Transactional()
-  async updateUserWithProfile(
-    id: string,
-    updateUserDto: UpdateUserDto,
-  ): Promise<UserEntity | null> {
-    const existingUser = await this.userRepository.findOneById(id);
-    const { profile: profileDto, ...dto } = updateUserDto;
-    let profileId: number | undefined = undefined;
-    if (profileDto && existingUser?.profileId) {
-      const profile = await this.profileService.update(
-        existingUser?.profileId,
-        profileDto,
-      );
-      profileId = profile?.id;
-    }
-    return this.userRepository.update(id, {
-      ...dto,
-      profileId,
-    });
-  }
 
   async findOneByUsernameOrEmail(
     usernameOrEmail: string,

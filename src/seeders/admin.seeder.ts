@@ -26,7 +26,7 @@ export class AdminSeedCommand {
     });
 
     if (!adminUser)
-      adminUser = await this.userService.saveUserWithProfile({
+      adminUser = await this.userService.save({
         firstName: 'SUPER$',
         lastName: 'SUPER$',
         username: 'superadmin',
