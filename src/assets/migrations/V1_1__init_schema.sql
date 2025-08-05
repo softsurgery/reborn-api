@@ -108,6 +108,8 @@ CREATE TABLE
             'SIGNIN',
             'SIGNUP',
             'SIGNOUT',
+            'CLIENT_SIGNIN',
+            'CLIENT_SIGNUP',
             'USER_CREATE',
             'USER_UPDATE',
             'USER_DELETE',

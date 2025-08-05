@@ -8,9 +8,10 @@ import {
   Length,
   MinLength,
 } from 'class-validator';
-import { CreateProfileDto } from 'src/modules/user-management/dtos/profile/create-profile.dto';
+import { UpdateProfileDto } from '../profile/update-profile.dto';
+import { Type } from 'class-transformer';
 
-export class CreateUserDto {
+export class UpdateClientDto {
   @ApiProperty({ type: String })
   @IsString()
   @Length(3, 50)
@@ -33,29 +34,17 @@ export class CreateUserDto {
   @IsBoolean()
   isActive?: boolean;
 
-  @ApiProperty({ type: Boolean, default: false })
-  @IsOptional()
-  @IsBoolean()
-  isApproved?: boolean;
-
   @ApiProperty({ type: String })
   @IsString()
   @MinLength(6)
   password?: string;
 
   @ApiProperty({ type: String })
-  @IsString()
-  @Length(3, 50)
-  username: string;
-
-  @ApiProperty({ type: String })
   @IsEmail()
   email: string;
 
-  @ApiProperty({ type: String })
-  roleId?: string;
-
-  @ApiProperty({ type: CreateProfileDto })
+  @ApiProperty({ type: UpdateProfileDto })
   @IsOptional()
-  profile?: CreateProfileDto;
+  @Type(() => UpdateProfileDto)
+  profile?: UpdateProfileDto;
 }

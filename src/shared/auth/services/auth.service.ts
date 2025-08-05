@@ -24,6 +24,7 @@ import { Owner } from 'src/app/interface/owner.interface';
 import { GenericStore } from 'src/shared/store/interfaces/generic-store.interface';
 import { ForgetPasswordTemplateProps } from 'src/assets/templates/forget-password/type';
 import { identifyUser } from 'src/modules/user-management/utils/identify-user';
+import { AuthNotActiveException } from 'src/shared/auth/errors/auth.notactive.error';
 
 @Injectable()
 export class AuthService {
@@ -71,6 +72,14 @@ export class AuthService {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
+    }
+
+    if (!user.isActive) {
+      throw new AuthNotActiveException();
+    }
+
+    if (!user.isApproved) {
+      throw new UnauthorizedException('User not approved');
     }
 
     const { access_token, refresh_token } = await this.generateTokens(

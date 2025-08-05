@@ -26,6 +26,8 @@ import { ForgetPasswordTemplateProps } from 'src/assets/templates/forget-passwor
 import { identifyUser } from 'src/modules/user-management/utils/identify-user';
 import { ResponseClientSigninDto } from '../dtos/client/response-client-signin.dto';
 import { ResponseClientSignupDto } from '../dtos/client/response-client-signup.dto';
+import { BasicRoles } from 'src/modules/user-management/enums/basic-roles.enum';
+import { AuthNotActiveException } from 'src/shared/auth/errors/auth.notactive.error';
 
 @Injectable()
 export class ClientAuthService {
@@ -75,6 +77,10 @@ export class ClientAuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    if (!user.isActive) {
+      throw new AuthNotActiveException();
+    }
+
     const { access_token, refresh_token } = await this.generateTokens(
       user.id,
       user.email,
@@ -89,7 +95,11 @@ export class ClientAuthService {
 
   async signup(createUserDto: CreateUserDto): Promise<ResponseClientSignupDto> {
     return {
-      user: await this.userService.save(createUserDto),
+      user: await this.userService.save({
+        ...createUserDto,
+        roleId: BasicRoles.User,
+        isActive: true,
+      }),
     };
   }
 

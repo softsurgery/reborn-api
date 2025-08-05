@@ -7,13 +7,18 @@ import { AuthController } from 'src/shared/auth/controllers/auth.controller';
 import { LoggerModule } from 'src/shared/logger/logger.module';
 import { UserManagementModule } from 'src/modules/user-management/user-management.module';
 import { ClientAuthController } from 'src/shared/auth/controllers/client-auth.controller';
+import { UploadController } from 'src/shared/uploads/controllers/upload.controller';
+import { UploadModule } from 'src/shared/uploads/uploads.module';
+import { ClientController } from 'src/modules/user-management/controllers/client.controller';
 
 @Module({
   controllers: [
     AuthController,
     ClientAuthController,
+    ClientController,
     FeedbackController,
     BugController,
+    UploadController,
   ],
   providers: [],
   exports: [],
@@ -22,6 +27,7 @@ import { ClientAuthController } from 'src/shared/auth/controllers/client-auth.co
     LoggerModule,
     SystemReportsModule,
     UserManagementModule,
+    UploadModule,
   ],
 })
 export class RoutesModule {}
