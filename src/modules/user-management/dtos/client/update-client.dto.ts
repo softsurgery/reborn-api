@@ -37,6 +37,7 @@ export class UpdateClientDto {
   @ApiProperty({ type: String })
   @IsString()
   @MinLength(6)
+  @IsOptional()
   password?: string;
 
   @ApiProperty({ type: String })
