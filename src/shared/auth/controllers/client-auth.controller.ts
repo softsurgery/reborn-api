@@ -65,9 +65,14 @@ export class ClientAuthController {
   })
   @ApiResponse({ status: 400, description: 'Validation failed.' })
   @LogEvent(EventType.CLIENT_SIGNUP)
-  async register(@Body() registerDto: RequestClientSignUpDto) {
+  async register(
+    @Body() registerDto: RequestClientSignUpDto,
+    @Request() req: RequestWithLogInfo,
+  ) {
     try {
-      return this.clientAuthService.signup(registerDto);
+      const result = await this.clientAuthService.signup(registerDto);
+      req.logInfo = { userId: result.user.id };
+      return result;
     } catch (error) {
       throw new BadRequestException(`User registration failed: ${error}`);
     }
