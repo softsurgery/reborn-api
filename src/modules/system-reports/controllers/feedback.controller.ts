@@ -65,27 +65,25 @@ export class FeedbackController {
   }
 
   @Post()
-  @LogEvent(EventType.BUG_CREATE)
+  @LogEvent(EventType.FEEDBACK_CREATE)
   async create(
     @Body() createFeedbackDto: CreateFeedbackDto,
     @Request() req: RequestWithLogInfo,
   ): Promise<ResponseFeedbackDto> {
     const feedback =
       await this.feedbackService.saveWithDeviceInfo(createFeedbackDto);
-    req.logInfo = { id: feedback.id };
+    req.logInfo = { id: feedback.id, category: feedback.category };
     return toDto(ResponseFeedbackDto, feedback);
   }
 
   @Delete(':id')
-  @LogEvent(EventType.BUG_DELETE)
+  @LogEvent(EventType.FEEDBACK_DELETE)
   async delete(
     @Param('id') id: string,
     @Request() req: RequestWithLogInfo,
   ): Promise<ResponseFeedbackDto | null> {
-    req.logInfo = { id };
-    return toDto(
-      ResponseFeedbackDto,
-      await this.feedbackService.softDelete(id),
-    );
+    const feedback = await this.feedbackService.softDelete(id);
+    req.logInfo = { id, category: feedback?.category };
+    return toDto(ResponseFeedbackDto, feedback);
   }
 }

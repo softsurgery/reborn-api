@@ -81,7 +81,7 @@ export class UserController {
       ResponseUserDto,
       await this.userService.save(createUserDto),
     );
-    req.logInfo = { id: user.id };
+    req.logInfo = { id: user.id, firstName: user.firstName };
     return user;
   }
 
@@ -92,11 +92,9 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
     @Request() req: RequestWithLogInfo,
   ): Promise<ResponseUserDto | null> {
-    req.logInfo = { id };
-    return toDto(
-      ResponseUserDto,
-      await this.userService.update(id, updateUserDto),
-    );
+    const user = await this.userService.update(id, updateUserDto);
+    req.logInfo = { id: user?.id, firstName: user?.firstName };
+    return toDto(ResponseUserDto, user);
   }
 
   @Put('/activate/:id')
@@ -105,8 +103,9 @@ export class UserController {
     @Param('id') id: string,
     @Request() req: RequestWithLogInfo,
   ): Promise<ResponseUserDto | null> {
-    req.logInfo = { id };
-    return toDto(ResponseUserDto, await this.userService.activate(id));
+    const user = await this.userService.activate(id);
+    req.logInfo = { id: user?.id, firstName: user?.firstName };
+    return toDto(ResponseUserDto, user);
   }
 
   @Put('/deactivate/:id')
@@ -125,8 +124,9 @@ export class UserController {
     @Param('id') id: string,
     @Request() req: RequestWithLogInfo,
   ): Promise<ResponseUserDto | null> {
-    req.logInfo = { id };
-    return toDto(ResponseUserDto, await this.userService.approve(id));
+    const user = await this.userService.approve(id);
+    req.logInfo = { id: user?.id, firstName: user?.firstName };
+    return toDto(ResponseUserDto, user);
   }
 
   @Put('/disapprove/:id')
@@ -135,8 +135,9 @@ export class UserController {
     @Param('id') id: string,
     @Request() req: RequestWithLogInfo,
   ): Promise<ResponseUserDto | null> {
-    req.logInfo = { id };
-    return toDto(ResponseUserDto, await this.userService.disapprove(id));
+    const user = await this.userService.disapprove(id);
+    req.logInfo = { id: user?.id, firstName: user?.firstName };
+    return toDto(ResponseUserDto, user);
   }
 
   @Delete(':id')
@@ -145,7 +146,8 @@ export class UserController {
     @Param('id') id: string,
     @Request() req: RequestWithLogInfo,
   ): Promise<ResponseUserDto | null> {
-    req.logInfo = { id };
-    return toDto(ResponseUserDto, await this.userService.softDelete(id));
+    const user = await this.userService.softDelete(id);
+    req.logInfo = { id: user?.id, firstName: user?.firstName };
+    return toDto(ResponseUserDto, user);
   }
 }

@@ -61,7 +61,7 @@ export class BugController {
     @Request() req: RequestWithLogInfo,
   ): Promise<ResponseBugDto> {
     const bug = await this.bugService.saveWithDeviceInfo(createBugDto);
-    req.logInfo = { id: bug.id };
+    req.logInfo = { id: bug.id, variant: bug.variant };
     return toDto(ResponseBugDto, bug);
   }
 
@@ -71,7 +71,8 @@ export class BugController {
     @Param('id') id: string,
     @Request() req: RequestWithLogInfo,
   ): Promise<ResponseBugDto | null> {
-    req.logInfo = { id };
-    return toDto(ResponseBugDto, await this.bugService.softDelete(id));
+    const bug = await this.bugService.softDelete(id);
+    req.logInfo = { id, variant: bug?.variant };
+    return toDto(ResponseBugDto, bug);
   }
 }
