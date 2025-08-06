@@ -18,6 +18,8 @@ import { ClientAuthService } from '../services/client-auth.service';
 import { RequestClientSignUpDto } from '../dtos/client/request-client-signup.dto';
 import { ResponseClientSignupDto } from '../dtos/client/response-client-signup.dto';
 import { RequestClientSignInDto } from '../dtos/client/request-client-signin.dto';
+import { identifyUser } from 'src/modules/user-management/utils/identify-user';
+import { UserEntity } from 'src/modules/user-management/entities/user.entity';
 
 @ApiTags('client-auth')
 @Controller({ version: '1', path: '/client-auth' })
@@ -47,7 +49,10 @@ export class ClientAuthController {
       signInDto.email,
       signInDto.password,
     );
-    req.logInfo = { userId: result.user.id };
+    req.logInfo = {
+      userId: result.user.id,
+      clientName: identifyUser(result.user as UserEntity),
+    };
     return result;
   }
 
@@ -71,7 +76,10 @@ export class ClientAuthController {
   ) {
     try {
       const result = await this.clientAuthService.signup(registerDto);
-      req.logInfo = { userId: result.user.id };
+      req.logInfo = {
+        userId: result.user.id,
+        clientName: identifyUser(result.user as UserEntity),
+      };
       return result;
     } catch (error) {
       throw new BadRequestException(`User registration failed: ${error}`);
