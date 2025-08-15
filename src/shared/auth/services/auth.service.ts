@@ -20,7 +20,7 @@ import { ResponseCheckResetTokenDto } from '../dtos/web/response-check-reset-tok
 import { RequestCheckResetTokenDto } from '../dtos/web/request-check-reset-token.dto';
 import { StoreService } from 'src/shared/store/services/store.service';
 import { StoreIDs } from 'src/app/enums/store.enum';
-import { Owner } from 'src/app/interface/owner.interface';
+import { Core } from 'src/app/interface/core.interface';
 import { GenericStore } from 'src/shared/store/interfaces/generic-store.interface';
 import { ForgetPasswordTemplateProps } from 'src/assets/templates/forget-password/type';
 import { identifyUser } from 'src/modules/user-management/utils/identify-user';
@@ -223,8 +223,8 @@ export class AuthService {
       const resetLink = `${webAppUrl}?token=${resetToken}`;
 
       //gather informations
-      const owner: GenericStore<Owner> = await this.storeService.findOneById(
-        StoreIDs.OWNER,
+      const core: GenericStore<Core> = await this.storeService.findOneById(
+        StoreIDs.CORE,
       );
 
       await this.mailService.sendTemplate<ForgetPasswordTemplateProps>(
@@ -232,9 +232,9 @@ export class AuthService {
         'Password Reset Request',
         'forget-password',
         {
-          name: owner.value.name,
-          address: owner.value.address,
-          support: owner.value.support,
+          name: core.value.name,
+          address: core.value.address,
+          support: core.value.support,
           logo: `${this.configService.get<string>('app.webAppUrl')}/logo.png`,
           client: identifyUser(user),
           email: user.email,

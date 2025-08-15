@@ -1,5 +1,5 @@
 export interface ForgetPasswordTemplateProps {
-  //owner
+  //core
   logo?: string;
   name: string;
   address: string;

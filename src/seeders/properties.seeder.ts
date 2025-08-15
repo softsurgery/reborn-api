@@ -16,7 +16,7 @@ export class PropertiesSeedCommand {
     //=============================================================================================
     await this.storeService.saveMany([
       {
-        id: 'owner',
+        id: 'core',
         value: {
           name: 'SUPER COMPANY',
           support: 'support@super.company',
