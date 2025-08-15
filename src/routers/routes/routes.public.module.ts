@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ContenttModule } from 'src/modules/content/content.module';
+import { ContentModule } from 'src/modules/content/content.module';
 import { RegionController } from 'src/modules/content/region/controllers/region.controller';
 import { LoggerModule } from 'src/shared/logger/logger.module';
 
@@ -7,6 +7,6 @@ import { LoggerModule } from 'src/shared/logger/logger.module';
   controllers: [RegionController],
   providers: [],
   exports: [],
-  imports: [ContenttModule, LoggerModule],
+  imports: [ContentModule, LoggerModule],
 })
 export class RoutesPublicModule {}

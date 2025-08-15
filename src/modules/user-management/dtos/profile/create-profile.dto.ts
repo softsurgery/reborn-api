@@ -37,8 +37,13 @@ export class CreateProfileDto {
   @IsOptional()
   isPrivate?: boolean;
 
-  @ApiProperty({ type: String })
+  @ApiProperty({ type: Number })
   @IsNumber()
   @IsOptional()
   regionId?: number;
+
+  @ApiProperty({ type: Number })
+  @IsNumber()
+  @IsOptional()
+  pictureId?: number;
 }

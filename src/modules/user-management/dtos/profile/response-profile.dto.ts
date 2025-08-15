@@ -38,6 +38,10 @@ export class ResponseProfileDto {
   @Expose()
   regionId?: number;
 
+  @ApiProperty({ type: Number })
+  @Expose()
+  pictureId?: number;
+
   @ApiProperty({ type: () => ResponseUserDto })
   @Expose()
   @Type(() => ResponseUserDto)

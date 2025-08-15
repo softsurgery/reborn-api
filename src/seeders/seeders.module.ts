@@ -7,14 +7,17 @@ import { AdminSeedCommand } from './admin.seeder';
 import { TemplateModule } from 'src/shared/templates/template.module';
 import { TemplatesSeedCommand } from './templates.seeder';
 import { RegionsSeedCommand } from './region.seeder';
-import { ContenttModule } from 'src/modules/content/content.module';
+import { ContentModule } from 'src/modules/content/content.module';
+import { PropertiesSeedCommand } from './properties.seeder';
+import { StoreModule } from 'src/shared/store/store.module';
 
 @Module({
   imports: [
     CommandModule,
     UserManagementModule,
     TemplateModule,
-    ContenttModule,
+    ContentModule,
+    StoreModule,
   ],
   providers: [
     PermissionsSeedCommand,
@@ -22,6 +25,7 @@ import { ContenttModule } from 'src/modules/content/content.module';
     AdminSeedCommand,
     TemplatesSeedCommand,
     RegionsSeedCommand,
+    PropertiesSeedCommand,
   ],
 })
 export class SeedersModule {}

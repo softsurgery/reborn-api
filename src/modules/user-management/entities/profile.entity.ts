@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Gender } from '../enums/gender.enum';
+import { UploadEntity } from 'src/shared/uploads/entities/upload.entity';
 
 @Entity('profiles')
 export class ProfileEntity extends EntityHelper {
@@ -41,6 +42,17 @@ export class ProfileEntity extends EntityHelper {
 
   @Column({ nullable: true })
   regionId?: number;
+
+  @ManyToOne(() => UploadEntity, {
+    onDelete: 'CASCADE',
+    eager: true,
+    nullable: true,
+  })
+  @JoinColumn({ name: 'pirctureId' })
+  picture?: UploadEntity;
+
+  @Column({ nullable: true })
+  pirctureId?: number;
 
   @OneToOne(() => UserEntity, (user) => user.profile, {
     cascade: true,

@@ -1,4 +1,21 @@
 CREATE TABLE
+    `upload` (
+        `id` int NOT NULL AUTO_INCREMENT,
+        `slug` varchar(255) NOT NULL,
+        `filename` varchar(255) NOT NULL,
+        `relativePath` varchar(255) NOT NULL,
+        `mimetype` varchar(255) NOT NULL,
+        `size` int NOT NULL,
+        `isTemporary` tinyint NOT NULL DEFAULT '0',
+        `isPrivate` tinyint NOT NULL DEFAULT '1',
+        `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+        `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+        `deletedAt` datetime (6) DEFAULT NULL,
+        `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE
     `permissions` (
         `id` varchar(255) NOT NULL,
         `label` varchar(255) NOT NULL,
@@ -61,6 +78,7 @@ CREATE TABLE
         `gender` enum ('Male', 'Female') DEFAULT NULL,
         `isPrivate` tinyint NOT NULL DEFAULT '0',
         `regionId` int DEFAULT NULL,
+        `pirctureId` int DEFAULT NULL,
         `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
         `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
         `deletedAt` datetime (6) DEFAULT NULL,
@@ -69,7 +87,9 @@ CREATE TABLE
         UNIQUE KEY `IDX_6ca5cd9bacd921599be9d92097` (`phone`),
         UNIQUE KEY `IDX_81a7ccecddaae7a7ec3f25e52a` (`cin`),
         KEY `FK_0059e9b53abca28e5d62e1ebc19` (`regionId`),
-        CONSTRAINT `FK_0059e9b53abca28e5d62e1ebc19` FOREIGN KEY (`regionId`) REFERENCES `regions` (`id`) ON DELETE CASCADE
+        KEY `FK_967b6749afa9dce2f3dc7af8af1` (`pirctureId`),
+        CONSTRAINT `FK_0059e9b53abca28e5d62e1ebc19` FOREIGN KEY (`regionId`) REFERENCES `regions` (`id`) ON DELETE CASCADE,
+        CONSTRAINT `FK_967b6749afa9dce2f3dc7af8af1` FOREIGN KEY (`pirctureId`) REFERENCES `upload` (`id`) ON DELETE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 CREATE TABLE
@@ -178,23 +198,6 @@ CREATE TABLE
         KEY `IDX_da6b0f561e3324d22e771e5af4` (`styleId`),
         CONSTRAINT `FK_17694cf06ef5a0e0dcc8fac0494` FOREIGN KEY (`templateId`) REFERENCES `templates` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
         CONSTRAINT `FK_da6b0f561e3324d22e771e5af41` FOREIGN KEY (`styleId`) REFERENCES `template-styles` (`id`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
-
-CREATE TABLE
-    `upload` (
-        `id` int NOT NULL AUTO_INCREMENT,
-        `slug` varchar(255) NOT NULL,
-        `filename` varchar(255) NOT NULL,
-        `relativePath` varchar(255) NOT NULL,
-        `mimetype` varchar(255) NOT NULL,
-        `size` int NOT NULL,
-        `isTemporary` tinyint NOT NULL DEFAULT '0',
-        `isPrivate` tinyint NOT NULL DEFAULT '1',
-        `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-        `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-        `deletedAt` datetime (6) DEFAULT NULL,
-        `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
-        PRIMARY KEY (`id`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 CREATE TABLE

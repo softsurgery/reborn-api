@@ -10,4 +10,4 @@ import { RegionRepository } from './region/repositories/region.repository';
   exports: [RegionService],
   imports: [TypeOrmModule.forFeature([RegionEntity])],
 })
-export class ContenttModule {}
+export class ContentModule {}
