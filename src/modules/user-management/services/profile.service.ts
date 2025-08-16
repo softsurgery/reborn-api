@@ -111,4 +111,17 @@ export class ProfileService {
       await this.uploadService.confirm(createProfileDto.pictureId);
     return this.save(createProfileDto);
   }
+
+  @Transactional()
+  async updateWithUpload(
+    profileId: number,
+    updateProfileDto: UpdateProfileDto,
+  ): Promise<ProfileEntity | null> {
+    const profile = await this.findOneById(profileId);
+    if (updateProfileDto.pictureId) {
+      await this.uploadService.confirm(updateProfileDto.pictureId);
+      if (profile.pictureId) await this.uploadService.delete(profile.pictureId);
+    }
+    return this.update(profileId, updateProfileDto);
+  }
 }

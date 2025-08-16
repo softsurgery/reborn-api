@@ -108,7 +108,7 @@ export class UserService {
   ): Promise<UserEntity | null> {
     const existingUser = await this.userRepository.findOneById(id);
     if (updateUserDto.profile && existingUser?.profileId) {
-      await this.profileService.update(
+      await this.profileService.updateWithUpload(
         existingUser?.profileId,
         updateUserDto.profile,
       );
