@@ -164,6 +164,42 @@ export class UploadController {
     fileStream.pipe(res);
   }
 
+  @Get('/view/slug/:slug')
+  async viewFileBySlug(
+    @Param('slug') slug: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    const upload = await this.uploadService.findBySlug(slug);
+    const fileStream = await this.uploadService.loadResource(slug);
+
+    res.setHeader('Content-Type', upload.mimetype);
+    res.setHeader('Content-Length', upload.size);
+    res.setHeader(
+      'Content-Disposition',
+      `inline; filename="${upload.filename}"`,
+    );
+
+    fileStream.pipe(res);
+  }
+
+  @Get('/view/id/:id')
+  async viewFileById(
+    @Param('id') id: number,
+    @Res() res: Response,
+  ): Promise<void> {
+    const upload = await this.uploadService.findOneById(id);
+    const fileStream = await this.uploadService.loadResource(upload.slug);
+
+    res.setHeader('Content-Type', upload.mimetype);
+    res.setHeader('Content-Length', upload.size);
+    res.setHeader(
+      'Content-Disposition',
+      `inline; filename="${upload.filename}"`,
+    );
+
+    fileStream.pipe(res);
+  }
+
   @Delete(':id')
   async delete(@Param('id') id: number): Promise<UploadEntity> {
     return this.uploadService.delete(id);

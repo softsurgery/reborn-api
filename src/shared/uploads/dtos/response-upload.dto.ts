@@ -3,9 +3,9 @@ import { Expose } from 'class-transformer';
 import { ResponseDtoHelper } from 'src/shared/database/dtos/database.response.dto';
 
 export class ResponseUploadDto extends ResponseDtoHelper {
-  @ApiProperty({ type: String })
+  @ApiProperty({ type: Number })
   @Expose()
-  id: string;
+  id: number;
 
   @ApiProperty({ type: String })
   @Expose()

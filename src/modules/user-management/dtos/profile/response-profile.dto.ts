@@ -3,6 +3,7 @@ import { Gender } from '../../enums/gender.enum';
 import { Expose, Type } from 'class-transformer';
 import { ResponseRegionDto } from 'src/modules/content/region/dtos/response-region.dto';
 import { ResponseUserDto } from 'src/modules/user-management/dtos/user/response-user.dto';
+import { ResponseUploadDto } from 'src/shared/uploads/dtos/response-upload.dto';
 
 export class ResponseProfileDto {
   @ApiProperty({ type: Number })
@@ -41,6 +42,11 @@ export class ResponseProfileDto {
   @ApiProperty({ type: Number })
   @Expose()
   pictureId?: number;
+
+  @ApiProperty({ type: ResponseUploadDto })
+  @Expose()
+  @Type(() => ResponseUploadDto)
+  picture?: ResponseUploadDto;
 
   @ApiProperty({ type: () => ResponseUserDto })
   @Expose()
