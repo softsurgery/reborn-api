@@ -10,10 +10,14 @@ import { ProfileNotFoundException } from '../errors/profile/profile.notfound.err
 import { CreateProfileDto } from '../dtos/profile/create-profile.dto';
 import { UpdateProfileDto } from '../dtos/profile/update-profile.dto';
 import { ProfileRepository } from '../repositories/profile.repository';
+import { UploadService } from 'src/shared/uploads/services/upload.service';
 
 @Injectable()
 export class ProfileService {
-  constructor(private readonly profileRepository: ProfileRepository) {}
+  constructor(
+    private readonly profileRepository: ProfileRepository,
+    private readonly uploadService: UploadService,
+  ) {}
 
   async findOneById(id: number): Promise<ProfileEntity> {
     const profile = await this.profileRepository.findOneById(id);
@@ -95,5 +99,16 @@ export class ProfileService {
       throw new ProfileNotFoundException();
     }
     return this.profileRepository.remove(profile);
+  }
+
+  //Extended Methods ===========================================================================
+
+  @Transactional()
+  async saveWithUpload(
+    createProfileDto: CreateProfileDto,
+  ): Promise<ProfileEntity> {
+    if (createProfileDto.pictureId)
+      await this.uploadService.confirm(createProfileDto.pictureId);
+    return this.save(createProfileDto);
   }
 }

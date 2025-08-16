@@ -48,11 +48,11 @@ export class ProfileEntity extends EntityHelper {
     eager: true,
     nullable: true,
   })
-  @JoinColumn({ name: 'pirctureId' })
+  @JoinColumn({ name: 'pictureId' })
   picture?: UploadEntity;
 
   @Column({ nullable: true })
-  pirctureId?: number;
+  pictureId?: number;
 
   @OneToOne(() => UserEntity, (user) => user.profile, {
     cascade: true,

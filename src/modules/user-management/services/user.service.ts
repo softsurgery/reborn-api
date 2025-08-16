@@ -85,7 +85,9 @@ export class UserService {
     let profileId: number | undefined = undefined;
 
     if (createUserDto.profile) {
-      const profile = await this.profileService.save(createUserDto.profile);
+      const profile = await this.profileService.saveWithUpload(
+        createUserDto.profile,
+      );
       profileId = profile.id;
     }
 
