@@ -10,6 +10,8 @@ import { ClientAuthController } from 'src/shared/auth/controllers/client-auth.co
 import { UploadController } from 'src/shared/uploads/controllers/upload.controller';
 import { UploadModule } from 'src/shared/uploads/uploads.module';
 import { ClientController } from 'src/modules/user-management/controllers/client.controller';
+import { JobController } from 'src/modules/job-management/controllers/job.controller';
+import { JobManagementModule } from 'src/modules/job-management/job-management.module';
 
 @Module({
   controllers: [
@@ -19,6 +21,7 @@ import { ClientController } from 'src/modules/user-management/controllers/client
     FeedbackController,
     BugController,
     UploadController,
+    JobController,
   ],
   providers: [],
   exports: [],
@@ -28,6 +31,7 @@ import { ClientController } from 'src/modules/user-management/controllers/client
     SystemReportsModule,
     UserManagementModule,
     UploadModule,
+    JobManagementModule,
   ],
 })
 export class RoutesModule {}
