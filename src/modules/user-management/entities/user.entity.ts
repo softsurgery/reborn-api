@@ -11,6 +11,7 @@ import {
 import { RoleEntity } from './role.entity';
 import { LogEntity } from 'src/shared/logger/entities/log.entity';
 import { ProfileEntity } from 'src/modules/user-management/entities/profile.entity';
+import { JobEntity } from 'src/modules/job-management/entities/job.entity';
 
 @Entity('users')
 export class UserEntity extends EntityHelper {
@@ -69,4 +70,7 @@ export class UserEntity extends EntityHelper {
 
   @Column()
   profileId: number;
+
+  @OneToMany(() => JobEntity, (job) => job.postedBy)
+  postedJobs: JobEntity[];
 }
