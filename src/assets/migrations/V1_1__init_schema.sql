@@ -258,6 +258,7 @@ CREATE TABLE
 CREATE TABLE
     `store` (
         `id` varchar(255) NOT NULL,
+        `description` varchar(255) DEFAULT NULL,
         `value` json DEFAULT NULL,
         `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
         `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -267,17 +268,17 @@ CREATE TABLE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 CREATE TABLE
-  `jobs` (
-    `id` varchar(36) NOT NULL,
-    `title` varchar(255) NOT NULL,
-    `description` text NOT NULL,
-    `price` int NOT NULL,
-    `postedById` varchar(255) NOT NULL,
-    `createdAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-    `updatedAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-    `deletedAt` datetime(6) DEFAULT NULL,
-    `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
-    PRIMARY KEY (`id`),
-    KEY `FK_3b563d091959c77690f07360bd6` (`postedById`),
-    CONSTRAINT `FK_3b563d091959c77690f07360bd6` FOREIGN KEY (`postedById`) REFERENCES `users` (`id`) ON DELETE CASCADE
-  ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci
+    `jobs` (
+        `id` varchar(36) NOT NULL,
+        `title` varchar(255) NOT NULL,
+        `description` text NOT NULL,
+        `price` int NOT NULL,
+        `postedById` varchar(255) NOT NULL,
+        `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+        `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+        `deletedAt` datetime (6) DEFAULT NULL,
+        `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        KEY `FK_3b563d091959c77690f07360bd6` (`postedById`),
+        CONSTRAINT `FK_3b563d091959c77690f07360bd6` FOREIGN KEY (`postedById`) REFERENCES `users` (`id`) ON DELETE CASCADE
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci

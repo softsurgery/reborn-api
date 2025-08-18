@@ -7,6 +7,8 @@ import { UserController } from 'src/modules/user-management/controllers/user.con
 import { UserManagementModule } from 'src/modules/user-management/user-management.module';
 import { LoggerController } from 'src/shared/logger/controller/logger.controller';
 import { LoggerModule } from 'src/shared/logger/logger.module';
+import { StoreController } from 'src/shared/store/controllers/store.controller';
+import { StoreModule } from 'src/shared/store/store.module';
 
 @Module({
   controllers: [
@@ -15,9 +17,15 @@ import { LoggerModule } from 'src/shared/logger/logger.module';
     PermissionController,
     LoggerController,
     DeviceInfoController,
+    StoreController,
   ],
   providers: [],
   exports: [],
-  imports: [UserManagementModule, LoggerModule, SystemReportsModule],
+  imports: [
+    UserManagementModule,
+    LoggerModule,
+    SystemReportsModule,
+    StoreModule,
+  ],
 })
 export class RoutesAdminModule {}
