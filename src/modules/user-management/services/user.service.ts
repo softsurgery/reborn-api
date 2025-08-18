@@ -69,8 +69,41 @@ export class UserService {
     return new PageDto(entities, pageMetaDto);
   }
 
+  async save(createUserDto: Partial<UserEntity>): Promise<UserEntity> {
+    const hashedPassword =
+      createUserDto.password && (await hashPassword(createUserDto.password));
+    createUserDto.password = hashedPassword;
+    return this.userRepository.save(createUserDto);
+  }
+
   @Transactional()
-  async save(createUserDto: CreateUserDto): Promise<UserEntity> {
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserEntity | null> {
+    const existingUser = await this.userRepository.findOneById(id);
+    if (updateUserDto.profile && existingUser?.profileId) {
+      await this.profileService.updateWithUpload(
+        existingUser?.profileId,
+        updateUserDto.profile,
+      );
+    }
+    if (updateUserDto.password) {
+      const hashedPassword = await hashPassword(updateUserDto.password);
+      updateUserDto.password = hashedPassword;
+    }
+    delete updateUserDto.profile;
+    return this.userRepository.update(id, updateUserDto);
+  }
+
+  async softDelete(id: string): Promise<UserEntity | null> {
+    return await this.userRepository.softDelete(id);
+  }
+
+  //Extended Methods ===========================================================================
+
+  @Transactional()
+  async saveWithProfile(createUserDto: CreateUserDto): Promise<UserEntity> {
     const existingUser = await this.userRepository.findOne({
       where: [
         { username: createUserDto.username },
@@ -100,32 +133,6 @@ export class UserService {
       profileId,
     });
   }
-
-  @Transactional()
-  async update(
-    id: string,
-    updateUserDto: UpdateUserDto,
-  ): Promise<UserEntity | null> {
-    const existingUser = await this.userRepository.findOneById(id);
-    if (updateUserDto.profile && existingUser?.profileId) {
-      await this.profileService.updateWithUpload(
-        existingUser?.profileId,
-        updateUserDto.profile,
-      );
-    }
-    if (updateUserDto.password) {
-      const hashedPassword = await hashPassword(updateUserDto.password);
-      updateUserDto.password = hashedPassword;
-    }
-    delete updateUserDto.profile;
-    return this.userRepository.update(id, updateUserDto);
-  }
-
-  async softDelete(id: string): Promise<UserEntity | null> {
-    return await this.userRepository.softDelete(id);
-  }
-
-  //Extended Methods ===========================================================================
 
   async findOneByUsernameOrEmail(
     usernameOrEmail: string,

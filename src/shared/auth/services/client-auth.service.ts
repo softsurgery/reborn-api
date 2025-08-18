@@ -95,7 +95,7 @@ export class ClientAuthService {
 
   async signup(createUserDto: CreateUserDto): Promise<ResponseClientSignupDto> {
     return {
-      user: await this.userService.save({
+      user: await this.userService.saveWithProfile({
         ...createUserDto,
         roleId: BasicRoles.User,
         isActive: true,

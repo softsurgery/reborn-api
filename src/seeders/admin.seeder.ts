@@ -1,15 +1,17 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { UserService } from 'src/modules/user-management/services/user.service';
 import { UserRepository } from 'src/modules/user-management/repositories/user.repository';
 import { Gender } from 'src/modules/user-management/enums/gender.enum';
 import { BasicRoles } from 'src/modules/user-management/enums/basic-roles.enum';
+import { ProfileRepository } from 'src/modules/user-management/repositories/profile.repository';
+import { UserService } from 'src/modules/user-management/services/user.service';
 
 @Injectable()
 export class AdminSeedCommand {
   constructor(
-    private readonly userService: UserService,
+    private readonly userservice: UserService,
     private readonly userRepository: UserRepository,
+    private readonly profileRepository: ProfileRepository,
   ) {}
 
   @Command({
@@ -25,8 +27,17 @@ export class AdminSeedCommand {
       where: { username: 'superadmin' },
     });
 
-    if (!adminUser)
-      adminUser = await this.userService.save({
+    if (!adminUser) {
+      const profile = await this.profileRepository.save({
+        phone: '+33123456789',
+        cin: '123456789',
+        bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        gender: Gender.Male,
+        isPrivate: false,
+      });
+
+      adminUser = await this.userservice.save({
+        id: 'superadmin',
         firstName: 'SUPER$',
         lastName: 'SUPER$',
         username: 'superadmin',
@@ -35,14 +46,9 @@ export class AdminSeedCommand {
         roleId: BasicRoles.Admin,
         isActive: true,
         isApproved: true,
-        profile: {
-          phone: '+33123456789',
-          cin: '123456789',
-          bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-          gender: Gender.Male,
-          isPrivate: false,
-        },
+        profileId: profile.id,
       });
+    }
 
     //=============================================================================================
     const end = new Date();

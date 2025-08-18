@@ -79,7 +79,7 @@ export class UserController {
   ): Promise<ResponseUserDto> {
     const user = toDto(
       ResponseUserDto,
-      await this.userService.save(createUserDto),
+      await this.userService.saveWithProfile(createUserDto),
     );
     req.logInfo = { id: user.id, firstName: user.firstName };
     return user;
