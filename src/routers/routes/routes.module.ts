@@ -12,6 +12,7 @@ import { UploadModule } from 'src/shared/uploads/uploads.module';
 import { ClientController } from 'src/modules/user-management/controllers/client.controller';
 import { JobController } from 'src/modules/job-management/controllers/job.controller';
 import { JobManagementModule } from 'src/modules/job-management/job-management.module';
+import { JobTagController } from 'src/modules/job-management/controllers/job-tag.controller';
 
 @Module({
   controllers: [
@@ -22,6 +23,7 @@ import { JobManagementModule } from 'src/modules/job-management/job-management.m
     BugController,
     UploadController,
     JobController,
+    JobTagController,
   ],
   providers: [],
   exports: [],

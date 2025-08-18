@@ -21,9 +21,9 @@ import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor'
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
 import { RequestWithLogInfo } from 'src/types';
-import { ResponseJobDto } from '../dtos/response-job.dto';
-import { CreateJobDto } from '../dtos/create-job.dto';
-import { UpdateJobDto } from '../dtos/update-job.dto';
+import { ResponseJobDto } from '../dtos/job/response-job.dto';
+import { CreateJobDto } from '../dtos/job/create-job.dto';
+import { UpdateJobDto } from '../dtos/job/update-job.dto';
 
 @ApiTags('job')
 @ApiBearerAuth('access_token')

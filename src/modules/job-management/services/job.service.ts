@@ -7,9 +7,9 @@ import { PageDto } from 'src/shared/database/dtos/database.page.dto';
 import { PageMetaDto } from 'src/shared/database/dtos/database.page-meta.dto';
 import { JobRepository } from '../repositories/job.repository';
 import { JobEntity } from '../entities/job.entity';
-import { JobNotFoundException } from '../errors/job.notfound.error';
-import { CreateJobDto } from '../dtos/create-job.dto';
-import { UpdateJobDto } from '../dtos/update-job.dto';
+import { JobNotFoundException } from '../errors/job/job.notfound.error';
+import { CreateJobDto } from '../dtos/job/create-job.dto';
+import { UpdateJobDto } from '../dtos/job/update-job.dto';
 
 @Injectable()
 export class JobService {

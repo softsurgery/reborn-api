@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsPositive, IsString, Length } from 'class-validator';
+import {
+  IsArray,
+  IsNumber,
+  IsPositive,
+  IsString,
+  Length,
+} from 'class-validator';
 
 export class CreateJobDto {
   @ApiProperty({ type: String })
@@ -15,4 +21,9 @@ export class CreateJobDto {
   @IsNumber()
   @IsPositive()
   price: number;
+
+  @ApiProperty({ type: [Number], description: 'IDs of job tags to attach' })
+  @IsArray()
+  @IsNumber({}, { each: true })
+  jobTagIds: number[];
 }

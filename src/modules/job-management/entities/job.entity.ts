@@ -4,9 +4,12 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { JobTagEntity } from './job-tag.entity';
 
 @Entity('jobs')
 export class JobEntity extends EntityHelper {
@@ -31,4 +34,21 @@ export class JobEntity extends EntityHelper {
 
   @Column({})
   postedById: string;
+
+  @ManyToMany(() => JobTagEntity, (jobTag) => jobTag.jobs, {
+    cascade: true,
+    eager: true,
+  })
+  @JoinTable({
+    name: 'job_job_tags',
+    joinColumn: {
+      name: 'jobId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'jobTagId',
+      referencedColumnName: 'id',
+    },
+  })
+  jobTags: JobTagEntity[];
 }

@@ -152,7 +152,10 @@ CREATE TABLE
             'REGION_DELETE',
             'JOB_CREATE',
             'JOB_UPDATE',
-            'JOB_DELETE'
+            'JOB_DELETE',
+            'JOB_TAG_CREATE',
+            'JOB_TAG_UPDATE',
+            'JOB_TAG_DELETE'
         ) DEFAULT NULL,
         `api` varchar(255) DEFAULT NULL,
         `method` varchar(255) DEFAULT NULL,
@@ -268,6 +271,18 @@ CREATE TABLE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 CREATE TABLE
+    `job-tags` (
+        `id` int NOT NULL AUTO_INCREMENT,
+        `label` varchar(255) NOT NULL,
+        `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+        `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+        `deletedAt` datetime (6) DEFAULT NULL,
+        `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `IDX_8b3d2fd8296525b032650cdf9b` (`label`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE
     `jobs` (
         `id` varchar(36) NOT NULL,
         `title` varchar(255) NOT NULL,
@@ -281,6 +296,17 @@ CREATE TABLE
         PRIMARY KEY (`id`),
         KEY `FK_3b563d091959c77690f07360bd6` (`postedById`),
         CONSTRAINT `FK_3b563d091959c77690f07360bd6` FOREIGN KEY (`postedById`) REFERENCES `users` (`id`) ON DELETE CASCADE
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE
+    `job_job_tags` (
+        `jobId` varchar(36) NOT NULL,
+        `jobTagId` int NOT NULL,
+        PRIMARY KEY (`jobId`, `jobTagId`),
+        KEY `IDX_02924f0f4d37f7f68567827628` (`jobId`),
+        KEY `IDX_2c9c0e9a37da670cc570c05f03` (`jobTagId`),
+        CONSTRAINT `FK_02924f0f4d37f7f68567827628b` FOREIGN KEY (`jobId`) REFERENCES `jobs` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT `FK_2c9c0e9a37da670cc570c05f033` FOREIGN KEY (`jobTagId`) REFERENCES `job-tags` (`id`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 CREATE TABLE

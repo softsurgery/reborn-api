@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 import { ResponseUserDto } from 'src/modules/user-management/dtos/user/response-user.dto';
 import { ResponseDtoHelper } from 'src/shared/database/dtos/database.response.dto';
+import { ResponseJobTagDto } from '../job-tag/response-job-tag.dto';
 
 export class ResponseJobDto extends ResponseDtoHelper {
   @ApiProperty({ type: String })
@@ -24,4 +25,9 @@ export class ResponseJobDto extends ResponseDtoHelper {
   @Expose()
   @Type(() => ResponseUserDto)
   postedBy: ResponseUserDto;
+
+  @ApiProperty({ type: [ResponseJobTagDto] })
+  @Expose()
+  @Type(() => ResponseJobTagDto)
+  jobTags: ResponseJobTagDto[];
 }
