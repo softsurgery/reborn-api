@@ -118,7 +118,10 @@ export class ProfileService {
     updateProfileDto: UpdateProfileDto,
   ): Promise<ProfileEntity | null> {
     const profile = await this.findOneById(profileId);
-    if (updateProfileDto.pictureId) {
+    if (
+      updateProfileDto.pictureId &&
+      updateProfileDto.pictureId != profile.pictureId
+    ) {
       await this.uploadService.confirm(updateProfileDto.pictureId);
       if (profile.pictureId) await this.uploadService.delete(profile.pictureId);
     }
