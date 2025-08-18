@@ -10,6 +10,7 @@ import { RegionsSeedCommand } from './region.seeder';
 import { ContentModule } from 'src/modules/content/content.module';
 import { PropertiesSeedCommand } from './properties.seeder';
 import { StoreModule } from 'src/shared/store/store.module';
+import { CurrenciesSeedCommand } from './currencies.seeder';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { StoreModule } from 'src/shared/store/store.module';
     TemplatesSeedCommand,
     RegionsSeedCommand,
     PropertiesSeedCommand,
+    CurrenciesSeedCommand,
   ],
 })
 export class SeedersModule {}
