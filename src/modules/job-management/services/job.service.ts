@@ -1,5 +1,5 @@
 import { Transactional } from '@nestjs-cls/transactional';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { FindManyOptions, FindOneOptions } from 'typeorm';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
 import { QueryBuilder } from 'src/shared/database/utils/database-query-builder';
@@ -93,5 +93,19 @@ export class JobService {
       throw new JobNotFoundException();
     }
     return this.jobRepository.remove(job);
+  }
+
+  //Extended Methods ===========================================================================
+  async saveJob(
+    createJobDto: CreateJobDto,
+    postedBy?: string,
+  ): Promise<JobEntity> {
+    if (!postedBy) {
+      throw new BadRequestException('postedBy is required');
+    }
+    return this.jobRepository.save({
+      ...createJobDto,
+      postedById: postedBy,
+    });
   }
 }

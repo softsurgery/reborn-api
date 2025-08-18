@@ -61,7 +61,7 @@ export class JobController {
     @Body() createJobDto: CreateJobDto,
     @Request() req: RequestWithLogInfo,
   ): Promise<ResponseJobDto> {
-    const job = await this.jobService.save(createJobDto);
+    const job = await this.jobService.saveJob(createJobDto, req?.user?.sub);
     req.logInfo = { id: job.id, title: job.title };
     return toDto(ResponseJobDto, job);
   }

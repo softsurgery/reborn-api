@@ -6,6 +6,10 @@ import { ResponseDtoHelper } from 'src/shared/database/dtos/database.response.dt
 export class ResponseJobDto extends ResponseDtoHelper {
   @ApiProperty({ type: String })
   @Expose()
+  id: string;
+
+  @ApiProperty({ type: String })
+  @Expose()
   title: string;
 
   @ApiProperty({ type: String })
