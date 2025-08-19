@@ -23,7 +23,7 @@ export class JobEntity extends EntityHelper {
   @Column({ type: 'text', nullable: false })
   description: string;
 
-  @Column({ nullable: false })
+  @Column({ type: 'float', nullable: false })
   price: number;
 
   @ManyToOne(() => CurrencyEntity, (currency) => currency.jobs, {

@@ -301,7 +301,7 @@ CREATE TABLE
         `id` varchar(36) NOT NULL,
         `title` varchar(255) NOT NULL,
         `description` text NOT NULL,
-        `price` int NOT NULL,
+        `price` float NOT NULL,
         `postedById` varchar(255) NOT NULL,
         `currencyId` varchar(255) NOT NULL,
         `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
