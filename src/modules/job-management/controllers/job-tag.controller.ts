@@ -58,7 +58,7 @@ export class JobTagController {
 
   @Get(':id')
   async findOneById(
-    @Param('id') id: string,
+    @Param('id') id: number,
   ): Promise<ResponseJobTagDto | null> {
     return toDto(ResponseJobTagDto, await this.jobTagService.findOneById(id));
   }
@@ -77,7 +77,7 @@ export class JobTagController {
   @Put(':id')
   @LogEvent(EventType.JOB_TAG_UPDATE)
   async update(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updateJobTagDto: UpdateJobTagDto,
     @Request() req: RequestWithLogInfo,
   ): Promise<ResponseJobTagDto | null> {
@@ -91,7 +91,7 @@ export class JobTagController {
   @Delete(':id')
   @LogEvent(EventType.JOB_TAG_DELETE)
   async delete(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Request() req: RequestWithLogInfo,
   ): Promise<ResponseJobTagDto | null> {
     req.logInfo = { id };

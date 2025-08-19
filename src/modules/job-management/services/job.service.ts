@@ -10,10 +10,14 @@ import { JobEntity } from '../entities/job.entity';
 import { JobNotFoundException } from '../errors/job/job.notfound.error';
 import { CreateJobDto } from '../dtos/job/create-job.dto';
 import { UpdateJobDto } from '../dtos/job/update-job.dto';
+import { JobTagService } from './job-tag.service';
 
 @Injectable()
 export class JobService {
-  constructor(private readonly jobRepository: JobRepository) {}
+  constructor(
+    private readonly jobRepository: JobRepository,
+    private readonly jobTagRepository: JobTagService,
+  ) {}
 
   async findOneById(id: string): Promise<JobEntity> {
     const job = await this.jobRepository.findOneById(id);
@@ -80,7 +84,21 @@ export class JobService {
     id: string,
     updateJobDto: UpdateJobDto,
   ): Promise<JobEntity | null> {
-    return this.jobRepository.update(id, updateJobDto);
+    const job = await this.jobRepository.findOne({ where: { id } });
+    if (!job) return null;
+
+    Object.assign(job, updateJobDto);
+
+    if (updateJobDto.jobTagIds && Array.isArray(updateJobDto.jobTagIds)) {
+      const tags = await Promise.all(
+        updateJobDto.jobTagIds.map((tagId) =>
+          this.jobTagRepository.findOneById(tagId),
+        ),
+      );
+      job.jobTags = tags.filter(Boolean);
+    }
+
+    return this.jobRepository.save(job);
   }
 
   async softDelete(id: string): Promise<JobEntity | null> {

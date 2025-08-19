@@ -22,6 +22,10 @@ export class CreateJobDto {
   @IsPositive()
   price: number;
 
+  @ApiProperty({ type: String })
+  @IsString()
+  currencyId: string;
+
   @ApiProperty({ type: [Number], description: 'IDs of job tags to attach' })
   @IsArray()
   @IsNumber({}, { each: true })

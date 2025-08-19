@@ -15,7 +15,7 @@ import { UpdateJobTagDto } from '../dtos/job-tag/update-job-tag.dto';
 export class JobTagService {
   constructor(private readonly jobTagRepository: JobTagRepository) {}
 
-  async findOneById(id: string): Promise<JobTagEntity> {
+  async findOneById(id: number): Promise<JobTagEntity> {
     const jobTag = await this.jobTagRepository.findOneById(id);
     if (!jobTag) {
       throw new JobTagNotFoundException();
@@ -77,17 +77,17 @@ export class JobTagService {
 
   @Transactional()
   async update(
-    id: string,
+    id: number,
     updateJobTagDto: UpdateJobTagDto,
   ): Promise<JobTagEntity | null> {
     return this.jobTagRepository.update(id, updateJobTagDto);
   }
 
-  async softDelete(id: string): Promise<JobTagEntity | null> {
+  async softDelete(id: number): Promise<JobTagEntity | null> {
     return this.jobTagRepository.softDelete(id);
   }
 
-  async delete(id: string): Promise<JobTagEntity | null> {
+  async delete(id: number): Promise<JobTagEntity | null> {
     const jobTag = await this.jobTagRepository.findOneById(id);
     if (!jobTag) {
       throw new JobTagNotFoundException();

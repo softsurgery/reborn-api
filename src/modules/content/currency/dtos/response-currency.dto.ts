@@ -16,14 +16,17 @@ export class ResponseCurrencyDto extends ResponseDtoHelper {
     type: Number,
     example: faker.finance.currencyCode(),
   })
+  @Expose()
   code?: string;
 
   @ApiProperty({
     type: Number,
     example: faker.finance.currencySymbol(),
   })
+  @Expose()
   symbol?: string;
 
   @ApiProperty({ type: Number, example: 2 })
+  @Expose()
   digitsAfterComma: number;
 }
