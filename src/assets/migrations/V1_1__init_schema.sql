@@ -271,6 +271,20 @@ CREATE TABLE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 CREATE TABLE
+    `currencies` (
+        `id` varchar(255) NOT NULL,
+        `label` varchar(255) NOT NULL,
+        `code` varchar(3) NOT NULL,
+        `symbol` varchar(10) DEFAULT NULL,
+        `digitsAfterComma` int DEFAULT NULL,
+        `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+        `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+        `deletedAt` datetime (6) DEFAULT NULL,
+        `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE
     `job-tags` (
         `id` int NOT NULL AUTO_INCREMENT,
         `label` varchar(255) NOT NULL,
@@ -289,13 +303,16 @@ CREATE TABLE
         `description` text NOT NULL,
         `price` int NOT NULL,
         `postedById` varchar(255) NOT NULL,
+        `currencyId` varchar(255) NOT NULL,
         `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
         `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
         `deletedAt` datetime (6) DEFAULT NULL,
         `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`),
         KEY `FK_3b563d091959c77690f07360bd6` (`postedById`),
-        CONSTRAINT `FK_3b563d091959c77690f07360bd6` FOREIGN KEY (`postedById`) REFERENCES `users` (`id`) ON DELETE CASCADE
+        KEY `FK_d07ac12c2f76e3cd30d66225150` (`currencyId`),
+        CONSTRAINT `FK_3b563d091959c77690f07360bd6` FOREIGN KEY (`postedById`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+        CONSTRAINT `FK_d07ac12c2f76e3cd30d66225150` FOREIGN KEY (`currencyId`) REFERENCES `currencies` (`id`) ON DELETE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 CREATE TABLE
@@ -308,17 +325,3 @@ CREATE TABLE
         CONSTRAINT `FK_02924f0f4d37f7f68567827628b` FOREIGN KEY (`jobId`) REFERENCES `jobs` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
         CONSTRAINT `FK_2c9c0e9a37da670cc570c05f033` FOREIGN KEY (`jobTagId`) REFERENCES `job-tags` (`id`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
-
-CREATE TABLE
-    `currencies` (
-        `id` varchar(255) NOT NULL,
-        `label` varchar(255) NOT NULL,
-        `code` varchar(3) NOT NULL,
-        `symbol` varchar(10) DEFAULT NULL,
-        `digitsAfterComma` int DEFAULT NULL,
-        `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-        `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-        `deletedAt` datetime (6) DEFAULT NULL,
-        `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
-        PRIMARY KEY (`id`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci

@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { JobTagEntity } from './job-tag.entity';
+import { CurrencyEntity } from 'src/modules/content/currency/entities/currency.entity';
 
 @Entity('jobs')
 export class JobEntity extends EntityHelper {
@@ -24,6 +25,16 @@ export class JobEntity extends EntityHelper {
 
   @Column({ nullable: false })
   price: number;
+
+  @ManyToOne(() => CurrencyEntity, (currency) => currency.jobs, {
+    onDelete: 'CASCADE',
+    eager: true,
+  })
+  @JoinColumn({ name: 'currencyId' })
+  currency: CurrencyEntity;
+
+  @Column({})
+  currencyId: string;
 
   @ManyToOne(() => UserEntity, (user) => user.postedJobs, {
     onDelete: 'CASCADE',
