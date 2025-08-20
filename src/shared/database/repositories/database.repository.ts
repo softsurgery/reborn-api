@@ -210,4 +210,72 @@ export abstract class DatabaseAbstractRepository<T extends ObjectLiteral>
 
     return { keptItems, newItems, eliminatedItems };
   }
+
+  async updateJunctionAssociations<
+    U extends { id: number | string } & Record<string, unknown>,
+  >({
+    existingItems,
+    updatedItems,
+    keys,
+    onCreate,
+    onDelete,
+    onUpdate,
+  }: {
+    existingItems: U[];
+    updatedItems: U[];
+    keys: [keyof U, keyof U];
+    onCreate: (item: U) => Promise<U>;
+    onDelete: (id: number | string) => Promise<U | null>;
+    onUpdate: (id: number | string, item: Partial<U>) => Promise<U | null>;
+  }): Promise<{
+    keptItems: U[];
+    updatedItemsResult: U[];
+    newItems: U[];
+    eliminatedItems: U[];
+  }> {
+    const keptItems: U[] = [];
+    const updatedItemsResult: U[] = [];
+    const newItems: U[] = [];
+    const eliminatedItems: U[] = [];
+
+    const [key1, key2] = keys;
+
+    const match = (a: U, b: U) => a[key1] === b[key1] && a[key2] === b[key2];
+
+    // Handle deletes and updates
+    for (const existing of existingItems) {
+      const updated = updatedItems.find((u) => match(existing, u));
+      if (updated) {
+        keptItems.push(existing);
+
+        const changedFields: Partial<U> = {};
+        for (const key of Object.keys(updated) as (keyof U)[]) {
+          if (updated[key] !== existing[key]) {
+            changedFields[key] = updated[key];
+          }
+        }
+
+        if (Object.keys(changedFields).length > 0) {
+          const updatedEntity = await onUpdate(existing.id, changedFields);
+          if (updatedEntity) updatedItemsResult.push(updatedEntity);
+        }
+      } else {
+        const deleted = await onDelete(existing.id);
+        if (deleted) eliminatedItems.push(deleted);
+      }
+    }
+
+    // Handle creates
+    for (const updated of updatedItems) {
+      const alreadyExists = existingItems.some((existing) =>
+        match(existing, updated),
+      );
+      if (!alreadyExists) {
+        const created = await onCreate(updated);
+        newItems.push(created);
+      }
+    }
+
+    return { keptItems, updatedItemsResult, newItems, eliminatedItems };
+  }
 }

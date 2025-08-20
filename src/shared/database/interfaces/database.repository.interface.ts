@@ -61,4 +61,27 @@ export interface DatabaseInterfaceRepository<T extends ObjectLiteral> {
     newItems: U[];
     eliminatedItems: U[];
   }>;
+
+  updateJunctionAssociations<
+    U extends { id: number | string } & Record<string, unknown>,
+  >({
+    existingItems,
+    updatedItems,
+    keys,
+    onCreate,
+    onDelete,
+    onUpdate,
+  }: {
+    existingItems: U[];
+    updatedItems: U[];
+    keys: [keyof U, keyof U];
+    onCreate: (item: U) => Promise<U>;
+    onDelete: (id: number | string) => Promise<U | null>;
+    onUpdate: (id: number | string, item: Partial<U>) => Promise<U | null>;
+  }): Promise<{
+    keptItems: U[];
+    updatedItemsResult: U[];
+    newItems: U[];
+    eliminatedItems: U[];
+  }>;
 }
