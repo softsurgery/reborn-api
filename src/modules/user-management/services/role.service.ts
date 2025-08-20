@@ -138,6 +138,9 @@ export class RoleService {
     updateRoleDto: UpdateRoleDto,
   ): Promise<RoleEntity | null> {
     const { permissions, ...rest } = updateRoleDto;
+    const existingRole = await this.roleRepository.findOneById(id);
+    if (!existingRole) throw new RoleNotFoundException();
+
     await this.roleRepository.update(id, rest);
 
     const updatedRole = await this.roleRepository.findOne({
@@ -145,9 +148,7 @@ export class RoleService {
       relations: ['permissions'],
     });
 
-    if (!updatedRole) {
-      throw new RoleNotFoundException();
-    }
+    if (!updatedRole) throw new RoleNotFoundException();
 
     const existingPermissions = updatedRole?.permissions?.map(
       (p: RolePermissionEntity) => {
