@@ -325,3 +325,20 @@ CREATE TABLE
         CONSTRAINT `FK_02924f0f4d37f7f68567827628b` FOREIGN KEY (`jobId`) REFERENCES `jobs` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
         CONSTRAINT `FK_2c9c0e9a37da670cc570c05f033` FOREIGN KEY (`jobTagId`) REFERENCES `job-tags` (`id`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE
+    `job_uploads` (
+        `id` int NOT NULL AUTO_INCREMENT,
+        `jobId` varchar(255) NOT NULL,
+        `uploadId` int NOT NULL,
+        `order` int NOT NULL,
+        `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+        `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+        `deletedAt` datetime (6) DEFAULT NULL,
+        `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        KEY `FK_826347bb13ae440c23284adc2ad` (`jobId`),
+        KEY `FK_3aaa480326667bed53b721cc772` (`uploadId`),
+        CONSTRAINT `FK_3aaa480326667bed53b721cc772` FOREIGN KEY (`uploadId`) REFERENCES `upload` (`id`) ON DELETE CASCADE,
+        CONSTRAINT `FK_826347bb13ae440c23284adc2ad` FOREIGN KEY (`jobId`) REFERENCES `jobs` (`id`) ON DELETE CASCADE
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;

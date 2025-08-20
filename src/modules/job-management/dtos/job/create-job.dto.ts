@@ -6,6 +6,7 @@ import {
   IsString,
   Length,
 } from 'class-validator';
+import { JobUploadEntity } from '../../entities/job-upload.entity';
 
 export class CreateJobDto {
   @ApiProperty({ type: String })
@@ -30,4 +31,8 @@ export class CreateJobDto {
   @IsArray()
   @IsNumber({}, { each: true })
   jobTagIds: number[];
+
+  @ApiProperty({ isArray: true, description: 'ID of uploaded file' })
+  @IsArray()
+  uploads: Pick<JobUploadEntity, 'uploadId'>[];
 }

@@ -73,7 +73,7 @@ export class JobController {
     @Body() updateJobDto: UpdateJobDto,
     @Request() req: RequestWithLogInfo,
   ): Promise<ResponseJobDto | null> {
-    const job = await this.jobService.update(id, updateJobDto);
+    const job = await this.jobService.updateJob(id, updateJobDto);
     req.logInfo = { id, title: job?.title };
     return toDto(ResponseJobDto, job);
   }

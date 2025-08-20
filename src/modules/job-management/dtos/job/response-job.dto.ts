@@ -4,6 +4,7 @@ import { ResponseUserDto } from 'src/modules/user-management/dtos/user/response-
 import { ResponseDtoHelper } from 'src/shared/database/dtos/database.response.dto';
 import { ResponseJobTagDto } from '../job-tag/response-job-tag.dto';
 import { ResponseCurrencyDto } from 'src/modules/content/currency/dtos/response-currency.dto';
+import { ResponseJobUploadDto } from '../job-upload/response-job-upload.dto';
 
 export class ResponseJobDto extends ResponseDtoHelper {
   @ApiProperty({ type: String })
@@ -40,4 +41,9 @@ export class ResponseJobDto extends ResponseDtoHelper {
   @Expose()
   @Type(() => ResponseJobTagDto)
   jobTags: ResponseJobTagDto[];
+
+  @ApiProperty({ type: [ResponseJobUploadDto] })
+  @Expose()
+  @Type(() => ResponseJobUploadDto)
+  uploads: ResponseJobUploadDto[];
 }

@@ -11,12 +11,17 @@ import { JobNotFoundException } from '../errors/job/job.notfound.error';
 import { CreateJobDto } from '../dtos/job/create-job.dto';
 import { UpdateJobDto } from '../dtos/job/update-job.dto';
 import { JobTagService } from './job-tag.service';
+import { JobUploadService } from './job-upload.service';
+import { JobUploadEntity } from '../entities/job-upload.entity';
+import { CreateJobUploadDto } from '../dtos/job-upload/create-job-upload.dto';
+import { UpdateJobUploadDto } from '../dtos/job-upload/update-job-upload.dto';
 
 @Injectable()
 export class JobService {
   constructor(
     private readonly jobRepository: JobRepository,
-    private readonly jobTagRepository: JobTagService,
+    private readonly jobTagService: JobTagService,
+    private readonly jobUploadService: JobUploadService,
   ) {}
 
   async findOneById(id: string): Promise<JobEntity> {
@@ -92,7 +97,7 @@ export class JobService {
     if (updateJobDto.jobTagIds && Array.isArray(updateJobDto.jobTagIds)) {
       const tags = await Promise.all(
         updateJobDto.jobTagIds.map((tagId) =>
-          this.jobTagRepository.findOneById(tagId),
+          this.jobTagService.findOneById(tagId),
         ),
       );
       job.jobTags = tags.filter(Boolean);
@@ -114,16 +119,84 @@ export class JobService {
   }
 
   //Extended Methods ===========================================================================
+  @Transactional()
   async saveJob(
     createJobDto: CreateJobDto,
     postedBy?: string,
   ): Promise<JobEntity> {
+    const { uploads, ...rest } = createJobDto;
+
     if (!postedBy) {
       throw new BadRequestException('postedBy is required');
     }
-    return this.jobRepository.save({
-      ...createJobDto,
+
+    const job = await this.jobRepository.save({
+      ...rest,
       postedById: postedBy,
     });
+
+    await this.jobUploadService.saveMany(
+      uploads.map((upload, index) => ({
+        jobId: job.id,
+        uploadId: upload.uploadId,
+        order: index,
+      })),
+    );
+
+    return job;
+  }
+
+  @Transactional()
+  async updateJob(
+    id: string,
+    updateJobDto: UpdateJobDto,
+  ): Promise<JobEntity | null> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { uploads, jobTagIds, ...rest } = updateJobDto;
+    const existingJob = await this.jobRepository.findOneById(id);
+    if (!existingJob) throw new JobNotFoundException();
+
+    await this.jobRepository.update(id, { ...rest });
+
+    const updatedJob = await this.jobRepository.findOne({
+      where: { id },
+      relations: ['jobTags', 'uploads'],
+    });
+
+    if (!updatedJob) throw new JobNotFoundException();
+
+    const existingUploads = updatedJob?.uploads?.map((j: JobUploadEntity) => {
+      return {
+        id: j.id,
+        jobId: j.jobId,
+        uploadId: j.uploadId,
+        order: j.order,
+      };
+    });
+
+    await this.jobRepository.updateJunctionAssociations<
+      Pick<JobUploadEntity, 'id' | 'jobId' | 'uploadId' | 'order'>
+    >({
+      existingItems: existingUploads || [],
+      updatedItems:
+        uploads?.map((upload, index) => ({
+          id: upload.id,
+          jobId: id,
+          uploadId: upload.uploadId,
+          order: index, // Frontend order
+        })) || [],
+      keys: ['jobId', 'uploadId'],
+      onDelete: async (id: number) => this.jobUploadService.softDelete(id),
+      onCreate: async (j: CreateJobUploadDto) =>
+        this.jobUploadService.save({
+          jobId: id,
+          uploadId: j.uploadId,
+          order: j.order,
+        }),
+      onUpdate: async (id: number, item: UpdateJobUploadDto) =>
+        this.jobUploadService.update(id, item),
+    });
+
+    return updatedJob;
   }
 }

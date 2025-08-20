@@ -7,10 +7,12 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { JobTagEntity } from './job-tag.entity';
 import { CurrencyEntity } from 'src/modules/content/currency/entities/currency.entity';
+import { JobUploadEntity } from './job-upload.entity';
 
 @Entity('jobs')
 export class JobEntity extends EntityHelper {
@@ -62,4 +64,7 @@ export class JobEntity extends EntityHelper {
     },
   })
   jobTags: JobTagEntity[];
+
+  @OneToMany(() => JobUploadEntity, (jobUpload) => jobUpload.job)
+  uploads: JobUploadEntity[];
 }
