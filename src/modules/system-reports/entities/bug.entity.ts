@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { BugVariant } from '../enums/bug-variant.enum';
 import { DeviceInfoEntity } from './device-info.entity';
+import { UserEntity } from 'src/modules/user-management/entities/user.entity';
 
 @Entity('bugs')
 export class BugEntity extends EntityHelper {
@@ -33,4 +34,13 @@ export class BugEntity extends EntityHelper {
 
   @Column({ nullable: true })
   deviceId: number;
+
+  @ManyToOne(() => UserEntity, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'userId' })
+  user: UserEntity;
+
+  @Column({})
+  userId: string;
 }

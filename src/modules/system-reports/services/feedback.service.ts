@@ -106,6 +106,7 @@ export class FeedbackService {
   @Transactional()
   async saveWithDeviceInfo(
     createFeedbackDto: CreateFeedbackDto,
+    userId?: string,
   ): Promise<FeedbackEntity> {
     const { device, ...rest } = createFeedbackDto;
     let existingDevice: DeviceInfoEntity | undefined = undefined;
@@ -115,6 +116,7 @@ export class FeedbackService {
     return this.feedbackRepository.save({
       ...rest,
       deviceId: existingDevice?.id,
+      userId,
     });
   }
 }

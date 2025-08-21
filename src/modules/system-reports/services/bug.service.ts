@@ -94,7 +94,10 @@ export class BugService {
   //Extended Methods ===========================================================================
 
   @Transactional()
-  async saveWithDeviceInfo(createBugDto: CreateBugDto): Promise<BugEntity> {
+  async saveWithDeviceInfo(
+    createBugDto: CreateBugDto,
+    userId?: string,
+  ): Promise<BugEntity> {
     const { device, ...rest } = createBugDto;
     let existingDevice: DeviceInfoEntity | undefined = undefined;
     if (device) {
@@ -103,6 +106,7 @@ export class BugService {
     return this.bugRepository.save({
       ...rest,
       deviceId: existingDevice?.id,
+      userId,
     });
   }
 }

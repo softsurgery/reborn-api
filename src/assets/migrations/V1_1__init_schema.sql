@@ -233,13 +233,16 @@ CREATE TABLE
         `title` varchar(255) NOT NULL,
         `description` text NOT NULL,
         `deviceId` int DEFAULT NULL,
+        `userId` varchar(255) NOT NULL,
         `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
         `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
         `deletedAt` datetime (6) DEFAULT NULL,
         `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`),
         KEY `FK_4d27d4b86accd8af3f35daad8fd` (`deviceId`),
-        CONSTRAINT `FK_4d27d4b86accd8af3f35daad8fd` FOREIGN KEY (`deviceId`) REFERENCES `device-infos` (`id`) ON DELETE CASCADE
+        KEY `FK_8618e646642c534f54f153fdb9e` (`userId`),
+        CONSTRAINT `FK_4d27d4b86accd8af3f35daad8fd` FOREIGN KEY (`deviceId`) REFERENCES `device-infos` (`id`) ON DELETE CASCADE,
+        CONSTRAINT `FK_8618e646642c534f54f153fdb9e` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 CREATE TABLE
@@ -249,13 +252,16 @@ CREATE TABLE
         `category` enum ('General Feedback', 'Feature Request', 'Other') NOT NULL,
         `rating` int DEFAULT NULL,
         `deviceId` int NOT NULL,
+        `userId` varchar(255) NOT NULL,
         `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
         `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
         `deletedAt` datetime (6) DEFAULT NULL,
         `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`),
         KEY `FK_1927d990407e091b1b45add4c13` (`deviceId`),
-        CONSTRAINT `FK_1927d990407e091b1b45add4c13` FOREIGN KEY (`deviceId`) REFERENCES `device-infos` (`id`) ON DELETE CASCADE
+        KEY `FK_4a39e6ac0cecdf18307a365cf3c` (`userId`),
+        CONSTRAINT `FK_1927d990407e091b1b45add4c13` FOREIGN KEY (`deviceId`) REFERENCES `device-infos` (`id`) ON DELETE CASCADE,
+        CONSTRAINT `FK_4a39e6ac0cecdf18307a365cf3c` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 CREATE TABLE

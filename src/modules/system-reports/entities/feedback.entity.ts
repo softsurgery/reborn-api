@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { DeviceInfoEntity } from './device-info.entity';
 import { FeedbackCategory } from '../enums/feedback-category.enum';
+import { UserEntity } from 'src/modules/user-management/entities/user.entity';
 
 @Entity('feedback')
 export class FeedbackEntity extends EntityHelper {
@@ -32,4 +33,13 @@ export class FeedbackEntity extends EntityHelper {
 
   @Column({})
   deviceId: number;
+
+  @ManyToOne(() => UserEntity, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'userId' })
+  user: UserEntity;
+
+  @Column({})
+  userId: string;
 }
