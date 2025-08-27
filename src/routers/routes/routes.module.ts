@@ -13,11 +13,14 @@ import { ClientController } from 'src/modules/user-management/controllers/client
 import { JobController } from 'src/modules/job-management/controllers/job.controller';
 import { JobManagementModule } from 'src/modules/job-management/job-management.module';
 import { JobTagController } from 'src/modules/job-management/controllers/job-tag.controller';
+import { StoreController } from 'src/shared/store/controllers/store.controller';
+import { StoreModule } from 'src/shared/store/store.module';
 
 @Module({
   controllers: [
     AuthController,
     ClientAuthController,
+    StoreController,
     ClientController,
     FeedbackController,
     BugController,
@@ -29,6 +32,7 @@ import { JobTagController } from 'src/modules/job-management/controllers/job-tag
   exports: [],
   imports: [
     AuthModule,
+    StoreModule,
     LoggerModule,
     SystemReportsModule,
     UserManagementModule,
