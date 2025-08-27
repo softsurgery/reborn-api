@@ -223,9 +223,9 @@ export class AuthService {
       const resetLink = `${webAppUrl}?token=${resetToken}`;
 
       //gather informations
-      const core: GenericStore<Core> = await this.storeService.findOneById(
+      const core = (await this.storeService.findOneById(
         StoreIDs.CORE,
-      );
+      )) as GenericStore<Core>;
 
       await this.mailService.sendTemplate<ForgetPasswordTemplateProps>(
         user.email,
