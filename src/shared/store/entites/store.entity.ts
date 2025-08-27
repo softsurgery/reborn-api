@@ -10,6 +10,5 @@ export class StoreEntity extends EntityHelper {
   description?: string;
 
   @Column({ type: 'json', nullable: true })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any;
+  value: object;
 }
