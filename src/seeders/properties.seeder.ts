@@ -17,11 +17,38 @@ export class PropertiesSeedCommand {
     await this.storeService.saveMany([
       {
         id: 'core',
+        description: 'Core company information',
         value: {
           name: 'SUPER COMPANY',
           support: 'support@super.company',
           address: '123 Main Street, Anytown',
         },
+      },
+      {
+        id: 'faqs',
+        description: 'Frequently Asked Questions',
+        value: [
+          {
+            question: 'What is the return policy?',
+            answer: 'You can return any item within 30 days for a full refund.',
+          },
+          {
+            question: 'How long does shipping take?',
+            answer: 'Shipping usually takes 5-7 business days.',
+          },
+          {
+            question: 'What is the return policy?',
+            answer: 'You can return any item within 30 days for a full refund.',
+          },
+          {
+            question: 'How long does shipping take?',
+            answer: 'Shipping usually takes 5-7 business days.',
+          },
+          {
+            question: 'What is the warranty period?',
+            answer: 'All products come with a 1-year warranty.',
+          },
+        ],
       },
     ]);
     //=============================================================================================
