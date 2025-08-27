@@ -1,10 +1,11 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
 import { PageDto } from 'src/shared/database/dtos/database.page.dto';
 import { StoreService } from '../services/store.service';
 import { StoreEntity } from '../entites/store.entity';
 import { ApiPaginatedResponse } from 'src/shared/database/decorators/api-paginated-resposne.decorator';
+import { UpdateStoreDto } from '../dtos/update-store.dto';
 
 @ApiTags('store')
 @Controller({
@@ -30,5 +31,19 @@ export class StoreController {
   @Get(':id')
   async findOneById(@Param('id') id: string): Promise<StoreEntity | null> {
     return this.storeService.findOneById(id);
+  }
+
+  @Put('')
+  async update(
+    @Body() updateData: UpdateStoreDto,
+  ): Promise<StoreEntity | null> {
+    return this.storeService.update(updateData);
+  }
+
+  @Put('/bulk')
+  async updateMany(
+    @Body() updateData: UpdateStoreDto[],
+  ): Promise<StoreEntity[]> {
+    return this.storeService.updateMany(updateData);
   }
 }

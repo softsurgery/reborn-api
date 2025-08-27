@@ -8,6 +8,7 @@ import { FindManyOptions, FindOneOptions } from 'typeorm';
 import { PageDto } from 'src/shared/database/dtos/database.page.dto';
 import { PageMetaDto } from 'src/shared/database/dtos/database.page-meta.dto';
 import { Transactional } from '@nestjs-cls/transactional';
+import { UpdateStoreDto } from '../dtos/update-store.dto';
 
 @Injectable()
 export class StoreService {
@@ -70,14 +71,24 @@ export class StoreService {
     return this.storeRepository.saveMany(createStoreDtos);
   }
 
-  async update(
-    id: string,
-    updateStoreDto: Partial<StoreEntity>,
-  ): Promise<StoreEntity | null> {
-    const store = await this.findOneById(id);
+  async update(updateStoreDto: UpdateStoreDto): Promise<StoreEntity | null> {
+    const store = await this.findOneById(updateStoreDto.id);
     if (!store) return null;
-    Object.assign(store, updateStoreDto);
-    return this.storeRepository.save(store);
+    return this.storeRepository.update(store.id, updateStoreDto);
+  }
+
+  async updateMany(data: UpdateStoreDto[]): Promise<StoreEntity[]> {
+    const updatedStores: StoreEntity[] = [];
+
+    for (const update of data) {
+      const store = await this.findOneById(update.id);
+      if (!store) continue;
+      const savedStore = await this.storeRepository.update(store.id, update);
+
+      if (savedStore) updatedStores.push(savedStore);
+    }
+
+    return updatedStores;
   }
 
   async softDelete(id: string): Promise<StoreEntity | null> {
