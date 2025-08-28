@@ -3,6 +3,7 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
+  Param,
   Put,
   Request,
   UseInterceptors,
@@ -34,6 +35,12 @@ export class ClientController {
       return null;
     }
     const user = await this.userService.findOneById(req?.user?.sub);
+    return toDto(ResponseClientDto, user);
+  }
+
+  @Get('/:id')
+  async findById(@Param('id') id: string): Promise<ResponseClientDto | null> {
+    const user = await this.userService.findOneById(id);
     return toDto(ResponseClientDto, user);
   }
 
