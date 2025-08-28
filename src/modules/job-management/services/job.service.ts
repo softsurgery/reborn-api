@@ -94,13 +94,13 @@ export class JobService {
 
     Object.assign(job, updateJobDto);
 
-    if (updateJobDto.jobTagIds && Array.isArray(updateJobDto.jobTagIds)) {
+    if (updateJobDto.tagIds && Array.isArray(updateJobDto.tagIds)) {
       const tags = await Promise.all(
-        updateJobDto.jobTagIds.map((tagId) =>
+        updateJobDto.tagIds.map((tagId) =>
           this.jobTagService.findOneById(tagId),
         ),
       );
-      job.jobTags = tags.filter(Boolean);
+      job.tags = tags.filter(Boolean);
     }
 
     return this.jobRepository.save(job);
@@ -152,7 +152,7 @@ export class JobService {
     updateJobDto: UpdateJobDto,
   ): Promise<JobEntity | null> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { uploads, jobTagIds, ...rest } = updateJobDto;
+    const { uploads, tagIds, ...rest } = updateJobDto;
     const existingJob = await this.jobRepository.findOneById(id);
     if (!existingJob) throw new JobNotFoundException();
 

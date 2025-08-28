@@ -13,6 +13,7 @@ import {
 import { JobTagEntity } from './job-tag.entity';
 import { CurrencyEntity } from 'src/modules/content/currency/entities/currency.entity';
 import { JobUploadEntity } from './job-upload.entity';
+import { JobCategoryEntity } from './job-category.entity';
 
 @Entity('jobs')
 export class JobEntity extends EntityHelper {
@@ -48,7 +49,7 @@ export class JobEntity extends EntityHelper {
   @Column({})
   postedById: string;
 
-  @ManyToMany(() => JobTagEntity, (jobTag) => jobTag.jobs, {
+  @ManyToMany(() => JobTagEntity, (tag) => tag.jobs, {
     cascade: true,
     eager: true,
   })
@@ -63,7 +64,17 @@ export class JobEntity extends EntityHelper {
       referencedColumnName: 'id',
     },
   })
-  jobTags: JobTagEntity[];
+  tags: JobTagEntity[];
+
+  @ManyToOne(() => JobCategoryEntity, (category) => category.jobs, {
+    onDelete: 'CASCADE',
+    eager: true,
+  })
+  @JoinColumn({ name: 'categoryId' })
+  category: JobCategoryEntity;
+
+  @Column({})
+  categoryId: number;
 
   @OneToMany(() => JobUploadEntity, (jobUpload) => jobUpload.job)
   uploads: JobUploadEntity[];

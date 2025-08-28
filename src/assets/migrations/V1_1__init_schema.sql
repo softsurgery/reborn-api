@@ -155,7 +155,10 @@ CREATE TABLE
             'JOB_DELETE',
             'JOB_TAG_CREATE',
             'JOB_TAG_UPDATE',
-            'JOB_TAG_DELETE'
+            'JOB_TAG_DELETE',
+            'JOB_CATEGORY_CREATE',
+            'JOB_CATEGORY_UPDATE',
+            'JOB_CATEGORY_DELETE'
         ) DEFAULT NULL,
         `api` varchar(255) DEFAULT NULL,
         `method` varchar(255) DEFAULT NULL,
@@ -303,21 +306,36 @@ CREATE TABLE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 CREATE TABLE
-    `jobs` (
-        `id` varchar(36) NOT NULL,
-        `title` varchar(255) NOT NULL,
-        `description` text NOT NULL,
-        `price` float NOT NULL,
-        `postedById` varchar(255) NOT NULL,
-        `currencyId` varchar(255) NOT NULL,
+    `job-category` (
+        `id` int NOT NULL AUTO_INCREMENT,
+        `label` varchar(255) NOT NULL,
         `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
         `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
         `deletedAt` datetime (6) DEFAULT NULL,
         `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`),
-        KEY `FK_3b563d091959c77690f07360bd6` (`postedById`),
+        UNIQUE KEY `IDX_c7f801f418ece2d5ab91849afd` (`label`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE
+    `jobs` (
+        `id` varchar(36) NOT NULL,
+        `title` varchar(255) NOT NULL,
+        `description` text NOT NULL,
+        `price` float NOT NULL,
+        `currencyId` varchar(255) NOT NULL,
+        `postedById` varchar(255) NOT NULL,
+        `categoryId` int NOT NULL,
+        `createdAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+        `updatedAt` datetime (6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+        `deletedAt` datetime (6) DEFAULT NULL,
+        `isDeletionRestricted` tinyint NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
         KEY `FK_d07ac12c2f76e3cd30d66225150` (`currencyId`),
+        KEY `FK_3b563d091959c77690f07360bd6` (`postedById`),
+        KEY `FK_73a44bd20f3520849aafd304f69` (`categoryId`),
         CONSTRAINT `FK_3b563d091959c77690f07360bd6` FOREIGN KEY (`postedById`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+        CONSTRAINT `FK_73a44bd20f3520849aafd304f69` FOREIGN KEY (`categoryId`) REFERENCES `job-category` (`id`) ON DELETE CASCADE,
         CONSTRAINT `FK_d07ac12c2f76e3cd30d66225150` FOREIGN KEY (`currencyId`) REFERENCES `currencies` (`id`) ON DELETE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 

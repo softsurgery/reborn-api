@@ -30,7 +30,12 @@ export class CreateJobDto {
   @ApiProperty({ type: [Number], description: 'IDs of job tags to attach' })
   @IsArray()
   @IsNumber({}, { each: true })
-  jobTagIds: number[];
+  tagIds: number[];
+
+  @ApiProperty({ type: Number })
+  @IsNumber()
+  @IsPositive()
+  categoryId: number;
 
   @ApiProperty({ isArray: true, description: 'ID of uploaded file' })
   @IsArray()

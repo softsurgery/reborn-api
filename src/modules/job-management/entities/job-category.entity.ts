@@ -1,15 +1,15 @@
 import { EntityHelper } from 'src/shared/database/interfaces/database.entity.interface';
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { JobEntity } from './job.entity';
 
-@Entity('job-tags')
-export class JobTagEntity extends EntityHelper {
+@Entity('job-category')
+export class JobCategoryEntity extends EntityHelper {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
   @Column({ unique: true })
   label: string;
 
-  @ManyToMany(() => JobEntity, (job) => job.tags)
+  @OneToMany(() => JobEntity, (job) => job.category)
   jobs: JobEntity[];
 }

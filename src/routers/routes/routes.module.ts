@@ -15,18 +15,25 @@ import { JobManagementModule } from 'src/modules/job-management/job-management.m
 import { JobTagController } from 'src/modules/job-management/controllers/job-tag.controller';
 import { StoreController } from 'src/shared/store/controllers/store.controller';
 import { StoreModule } from 'src/shared/store/store.module';
+import { JobCategoryController } from 'src/modules/job-management/controllers/job-category.controller';
 
 @Module({
   controllers: [
+    //auth
     AuthController,
     ClientAuthController,
+    //common
+    UploadController,
     StoreController,
+    //user
     ClientController,
+    //system reports
     FeedbackController,
     BugController,
-    UploadController,
+    //job-management
     JobController,
     JobTagController,
+    JobCategoryController,
   ],
   providers: [],
   exports: [],
