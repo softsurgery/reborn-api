@@ -12,6 +12,7 @@ import { RoleEntity } from './role.entity';
 import { LogEntity } from 'src/shared/logger/entities/log.entity';
 import { ProfileEntity } from 'src/modules/user-management/entities/profile.entity';
 import { JobEntity } from 'src/modules/job-management/entities/job.entity';
+import { FollowEntity } from './follow.entity';
 
 @Entity('users')
 export class UserEntity extends EntityHelper {
@@ -73,4 +74,10 @@ export class UserEntity extends EntityHelper {
 
   @OneToMany(() => JobEntity, (job) => job.postedBy)
   postedJobs: JobEntity[];
+
+  @OneToMany(() => FollowEntity, (follow) => follow.follower)
+  following: FollowEntity[];
+
+  @OneToMany(() => FollowEntity, (follow) => follow.following)
+  followers: FollowEntity[];
 }

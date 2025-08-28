@@ -16,6 +16,9 @@ import { ProfileEntity } from './entities/profile.entity';
 import { ProfileRepository } from './repositories/profile.repository';
 import { ProfileService } from './services/profile.service';
 import { UploadModule } from 'src/shared/uploads/uploads.module';
+import { FollowRepository } from './repositories/follow.repository';
+import { FollowService } from './services/follow.service';
+import { FollowEntity } from './entities/follow.entity';
 
 @Module({
   controllers: [],
@@ -25,24 +28,28 @@ import { UploadModule } from 'src/shared/uploads/uploads.module';
     PermissionRepository,
     RolePermissionRepository,
     ProfileRepository,
+    FollowRepository,
 
     UserService,
     RoleService,
     PermissionService,
     RolePermissionService,
     ProfileService,
+    FollowService,
   ],
   exports: [
     UserService,
     RoleService,
     PermissionService,
     ProfileService,
+    FollowService,
 
     UserRepository,
     RoleRepository,
     PermissionRepository,
     RolePermissionRepository,
     ProfileRepository,
+    FollowRepository,
   ],
   imports: [
     TypeOrmModule.forFeature([
@@ -51,6 +58,7 @@ import { UploadModule } from 'src/shared/uploads/uploads.module';
       PermissionEntity,
       RolePermissionEntity,
       ProfileEntity,
+      FollowEntity,
     ]),
     UploadModule,
   ],

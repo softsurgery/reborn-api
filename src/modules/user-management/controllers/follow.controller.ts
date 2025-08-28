@@ -1,0 +1,64 @@
+import {
+  Controller,
+  Post,
+  Delete,
+  Param,
+  Get,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  Request,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { FollowService } from '../services/follow.service';
+import { RequestWithLogInfo } from 'src/types';
+import { EventType } from 'src/shared/logger/enums/event-type.enum';
+import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
+
+@ApiTags('follow')
+@ApiBearerAuth('access_token')
+@UseInterceptors(ClassSerializerInterceptor)
+@Controller({
+  version: '1',
+  path: '/follow',
+})
+export class FollowController {
+  constructor(private readonly followService: FollowService) {}
+
+  @Post(':id/follow')
+  @LogEvent(EventType.USER_FOLLOW)
+  follow(@Param('id') targetId: string, @Request() req: RequestWithLogInfo) {
+    req.logInfo = { id: req.user?.sub, targetId };
+    return this.followService.follow(targetId, req.user?.sub);
+  }
+
+  @Delete(':id/unfollow')
+  @LogEvent(EventType.USER_UNFOLLOW)
+  unfollow(@Param('id') targetId: string, @Request() req: RequestWithLogInfo) {
+    req.logInfo = { id: req.user?.sub, targetId };
+    return this.followService.unfollow(targetId, req.user?.sub);
+  }
+
+  @Get(':id/followers')
+  getFollowers(@Param('id') userId: string) {
+    return this.followService.getFollowers(userId);
+  }
+
+  @Get(':id/following')
+  getFollowing(@Param('id') userId: string) {
+    return this.followService.getFollowing(userId);
+  }
+
+  @Get(':id/data-count')
+  getDataCount(@Param('id') userId: string) {
+    return this.followService.getDataCount(userId);
+  }
+
+  @Get(':id/is-following')
+  isFollowing(
+    @Param('id') targetId: string,
+    @Request() req: RequestWithLogInfo,
+  ) {
+    req.logInfo = { id: req.user?.sub, targetId };
+    return this.followService.isFollowing(targetId, req.user?.sub);
+  }
+}

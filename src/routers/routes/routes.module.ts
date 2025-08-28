@@ -16,6 +16,7 @@ import { JobTagController } from 'src/modules/job-management/controllers/job-tag
 import { StoreController } from 'src/shared/store/controllers/store.controller';
 import { StoreModule } from 'src/shared/store/store.module';
 import { JobCategoryController } from 'src/modules/job-management/controllers/job-category.controller';
+import { FollowController } from 'src/modules/user-management/controllers/follow.controller';
 
 @Module({
   controllers: [
@@ -27,6 +28,7 @@ import { JobCategoryController } from 'src/modules/job-management/controllers/jo
     StoreController,
     //user
     ClientController,
+    FollowController,
     //system reports
     FeedbackController,
     BugController,
