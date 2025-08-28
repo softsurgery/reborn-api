@@ -11,6 +11,10 @@ import { ContentModule } from 'src/modules/content/content.module';
 import { PropertiesSeedCommand } from './properties.seeder';
 import { StoreModule } from 'src/shared/store/store.module';
 import { CurrenciesSeedCommand } from './currencies.seeder';
+import { PlaygroundUsersSeedCommand } from './playground/users.seeder';
+import { JobCategoriesSeedCommand } from './job-categories.seeder';
+import { JobManagementModule } from 'src/modules/job-management/job-management.module';
+import { PlaygroundJobsSeedCommand } from './playground/job.seeder';
 
 @Module({
   imports: [
@@ -19,8 +23,10 @@ import { CurrenciesSeedCommand } from './currencies.seeder';
     TemplateModule,
     ContentModule,
     StoreModule,
+    JobManagementModule,
   ],
   providers: [
+    //seeders
     PermissionsSeedCommand,
     RolesSeedCommand,
     AdminSeedCommand,
@@ -28,6 +34,10 @@ import { CurrenciesSeedCommand } from './currencies.seeder';
     RegionsSeedCommand,
     PropertiesSeedCommand,
     CurrenciesSeedCommand,
+    JobCategoriesSeedCommand,
+    //playground
+    PlaygroundUsersSeedCommand,
+    PlaygroundJobsSeedCommand,
   ],
 })
 export class SeedersModule {}

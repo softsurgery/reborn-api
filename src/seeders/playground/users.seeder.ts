@@ -3,10 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { UserRepository } from 'src/modules/user-management/repositories/user.repository';
 import { ProfileRepository } from 'src/modules/user-management/repositories/profile.repository';
 import { UserService } from 'src/modules/user-management/services/user.service';
-import { adminSeed } from './data/admin.data';
+import { mockUsersSeed } from '../data/playground-users.data';
 
 @Injectable()
-export class AdminSeedCommand {
+export class PlaygroundUsersSeedCommand {
   constructor(
     private readonly userservice: UserService,
     private readonly userRepository: UserRepository,
@@ -14,25 +14,30 @@ export class AdminSeedCommand {
   ) {}
 
   @Command({
-    command: 'seed:admin',
-    describe: 'seed system admin',
+    command: 'seed:playground-users',
+    describe: 'seed playground users',
   })
   async seed() {
     const start = new Date();
-    console.log('🚀 Starting seeding of admin...');
+    console.log('🚀 Starting seeding of playground users...');
     //=============================================================================================
 
-    let adminUser = await this.userRepository.findOne({
-      where: { username: 'superadmin' },
-    });
-
-    if (!adminUser) {
-      const profile = await this.profileRepository.save(adminSeed.profile);
-
-      adminUser = await this.userservice.save({
-        ...adminSeed.core,
-        profileId: profile.id,
+    for (const user of mockUsersSeed) {
+      const exists = await this.userRepository.findOne({
+        where: { username: user.core.username },
       });
+
+      if (!exists) {
+        const profile = await this.profileRepository.save(user.profile);
+        await this.userservice.save({
+          ...user.core,
+          profileId: profile.id,
+        });
+
+        console.log(`✅ Created user: ${user.core.username}`);
+      } else {
+        console.log(`⚠️ User already exists: ${user.core.username}`);
+      }
     }
 
     //=============================================================================================

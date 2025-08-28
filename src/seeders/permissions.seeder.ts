@@ -1,6 +1,10 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
 import { PermissionService } from 'src/modules/user-management/services/permission.service';
+import {
+  permissionActionsSeed,
+  permissionEntitiesSeed,
+} from './data/permissions.data';
 
 @Injectable()
 export class PermissionsSeedCommand {
@@ -14,11 +18,10 @@ export class PermissionsSeedCommand {
     const start = new Date();
     console.log('🚀 Starting seeding of permissions...');
     //=============================================================================================
-    const entities = ['Permission', 'Role', 'User'];
-    const actions = ['create', 'read', 'update', 'delete'];
+
     await this.permissionService.saveMany(
-      entities.flatMap((entity) => {
-        return actions.map((action) => {
+      permissionEntitiesSeed.flatMap((entity) => {
+        return permissionActionsSeed.map((action) => {
           const id = `${action.toUpperCase()}_${entity.toUpperCase()}`;
 
           const label = id;
