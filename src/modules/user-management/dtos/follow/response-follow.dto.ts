@@ -25,4 +25,8 @@ export class ResponseFollowDto extends ResponseDtoHelper {
   @Expose()
   @Type(() => ResponseUserDto)
   following?: ResponseUserDto;
+
+  @ApiProperty({ type: Boolean })
+  @Expose()
+  isFollowing: boolean;
 }

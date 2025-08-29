@@ -39,13 +39,13 @@ export class FollowController {
   }
 
   @Get(':id/followers')
-  getFollowers(@Param('id') userId: string) {
-    return this.followService.getFollowers(userId);
+  getFollowers(@Param('id') id: string, @Request() req: RequestWithLogInfo) {
+    return this.followService.getFollowers(id, req.user?.sub);
   }
 
   @Get(':id/following')
-  getFollowing(@Param('id') userId: string) {
-    return this.followService.getFollowing(userId);
+  getFollowing(@Param('id') id: string, @Request() req: RequestWithLogInfo) {
+    return this.followService.getFollowing(id, req.user?.sub);
   }
 
   @Get(':id/data-count')

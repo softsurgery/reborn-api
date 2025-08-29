@@ -57,18 +57,59 @@ export class FollowService {
     return this.followRepository.remove(follow);
   }
 
-  async getFollowers(userId: string): Promise<ResponseFollowDto[]> {
-    return this.followRepository.findAll({
-      where: { following: { id: userId } },
-      relations: ['follower'],
+  private sortByPriority(
+    list: ResponseFollowDto[],
+    userId?: string,
+  ): ResponseFollowDto[] {
+    return list.sort((a, b) => {
+      const score = (item: ResponseFollowDto): number => {
+        if (item.followerId === userId || item.followingId === userId) return 2; // highest priority
+        if (item.isFollowing) return 1;
+        return 0;
+      };
+
+      return score(b) - score(a);
     });
   }
 
-  async getFollowing(userId: string): Promise<ResponseFollowDto[]> {
-    return this.followRepository.findAll({
-      where: { follower: { id: userId } },
+  async getFollowers(
+    targetId: string,
+    userId?: string,
+  ): Promise<ResponseFollowDto[]> {
+    const followers = await this.followRepository.findAll({
+      where: { following: { id: targetId } },
+      relations: ['follower'],
+    });
+
+    const result = await Promise.all(
+      followers.map(async (follower) => ({
+        ...follower,
+        isFollowing: (await this.isFollowing(follower.followerId, userId))
+          .isFollowing,
+      })),
+    );
+
+    return this.sortByPriority(result, userId);
+  }
+
+  async getFollowing(
+    targetId: string,
+    userId?: string,
+  ): Promise<ResponseFollowDto[]> {
+    const followings = await this.followRepository.findAll({
+      where: { follower: { id: targetId } },
       relations: ['following'],
     });
+
+    const result = await Promise.all(
+      followings.map(async (following) => ({
+        ...following,
+        isFollowing: (await this.isFollowing(following.followingId, userId))
+          .isFollowing,
+      })),
+    );
+
+    return this.sortByPriority(result, userId);
   }
 
   async isFollowing(

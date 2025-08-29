@@ -12,5 +12,5 @@ export class ResponseIsFollowingDto {
 
   @ApiProperty({ type: Boolean })
   @Expose()
-  isFollowing?: boolean;
+  isFollowing: boolean;
 }
