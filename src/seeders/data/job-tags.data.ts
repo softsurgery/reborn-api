@@ -1,0 +1,43 @@
+export const jobTagsSeed = [
+  // Skills
+  'React',
+  'JavaScript',
+  'HTML',
+  'CSS',
+  'Node.js',
+  'Python',
+  'UI/UX',
+  'Graphic Design',
+  'Photography',
+  'Video Editing',
+  'SEO',
+  'Social Media',
+  'Content Writing',
+  'Mobile Development',
+  'Database Management',
+  'Plumbing Skills',
+  'Electrical Skills',
+  'Carpentry',
+  'Driving Skills',
+
+  // Benefits
+  'Easy Money',
+  'High Demand',
+  'Quick Payout',
+  'High Salary',
+  'Low Stress',
+  'Good Tools Provided',
+  'Growth Opportunity',
+  'Great Work Environment',
+
+  // Other
+  'Urgent Hiring',
+  'No Experience Required',
+  'Entry Level',
+  'Skilled Labor',
+  'Creative Work',
+  'Physical Work',
+  'Customer Facing',
+  'Tech Job',
+  'Manual Work',
+];

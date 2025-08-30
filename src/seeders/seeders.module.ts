@@ -15,6 +15,7 @@ import { PlaygroundUsersSeedCommand } from './playground/users.seeder';
 import { JobCategoriesSeedCommand } from './job-categories.seeder';
 import { JobManagementModule } from 'src/modules/job-management/job-management.module';
 import { PlaygroundJobsSeedCommand } from './playground/job.seeder';
+import { JobTagsSeedCommand } from './job-tags.seeder';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { PlaygroundJobsSeedCommand } from './playground/job.seeder';
     PropertiesSeedCommand,
     CurrenciesSeedCommand,
     JobCategoriesSeedCommand,
+    JobTagsSeedCommand,
     //playground
     PlaygroundUsersSeedCommand,
     PlaygroundJobsSeedCommand,
