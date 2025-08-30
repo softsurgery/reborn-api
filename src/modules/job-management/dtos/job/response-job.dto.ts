@@ -54,6 +54,7 @@ export class ResponseJobDto extends ResponseDtoHelper {
   category: ResponseJobCategoryDto;
 
   @ApiProperty({ type: String, enum: JobStyle })
+  @Expose()
   style: JobStyle;
 
   @ApiProperty({ type: [ResponseJobUploadDto] })
