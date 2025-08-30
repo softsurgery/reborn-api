@@ -1,12 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
+  IsEnum,
   IsNumber,
   IsPositive,
   IsString,
   Length,
 } from 'class-validator';
 import { JobUploadEntity } from '../../entities/job-upload.entity';
+import { JobStyle } from '../../enums/job-style.enum';
 
 export class CreateJobDto {
   @ApiProperty({ type: String })
@@ -36,6 +38,10 @@ export class CreateJobDto {
   @IsNumber()
   @IsPositive()
   categoryId: number;
+
+  @ApiProperty({ type: String, enum: JobStyle })
+  @IsEnum(JobStyle)
+  style: JobStyle;
 
   @ApiProperty({ isArray: true, description: 'ID of uploaded file' })
   @IsArray()

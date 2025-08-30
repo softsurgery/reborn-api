@@ -14,6 +14,7 @@ import { JobTagEntity } from './job-tag.entity';
 import { CurrencyEntity } from 'src/modules/content/currency/entities/currency.entity';
 import { JobUploadEntity } from './job-upload.entity';
 import { JobCategoryEntity } from './job-category.entity';
+import { JobStyle } from '../enums/job-style.enum';
 
 @Entity('jobs')
 export class JobEntity extends EntityHelper {
@@ -72,6 +73,9 @@ export class JobEntity extends EntityHelper {
   })
   @JoinColumn({ name: 'categoryId' })
   category: JobCategoryEntity;
+
+  @Column({ type: 'enum', enum: JobStyle, nullable: false })
+  style: JobStyle;
 
   @Column({})
   categoryId: number;
