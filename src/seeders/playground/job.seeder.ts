@@ -5,6 +5,7 @@ import { CurrencyService } from 'src/modules/content/currency/services/currency.
 import { JobCategoryService } from 'src/modules/job-management/services/job-category.service';
 import { mockJobsSeed } from '../data/playground-jobs.data';
 import { UserService } from 'src/modules/user-management/services/user.service';
+import { JobStyle } from 'src/modules/job-management/enums/job-style.enum';
 
 @Injectable()
 export class PlaygroundJobsSeedCommand {
@@ -48,6 +49,8 @@ export class PlaygroundJobsSeedCommand {
             jobCategories[
               jobCategories.findIndex((cat) => cat.label === job.category)
             ]?.id,
+          style:
+            JobStyle[Math.floor(Math.random() * Object.keys(JobStyle).length)],
         },
         users[Math.floor(Math.random() * users.length)].id,
       );
