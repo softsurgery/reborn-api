@@ -17,6 +17,7 @@ import { resolveMX } from 'src/shared/mail/utils/mx-resolve.util';
 import { MailModule } from 'src/shared/mail/mail.module';
 import { SeedersModule } from 'src/seeders/seeders.module';
 import { RouterModule } from 'src/routers/router.module';
+import { ChatModule } from 'src/modules/chat/chat.module';
 
 @Module({
   imports: [
@@ -77,6 +78,7 @@ import { RouterModule } from 'src/routers/router.module';
     MailModule,
     SeedersModule,
     RouterModule.forRoot(),
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

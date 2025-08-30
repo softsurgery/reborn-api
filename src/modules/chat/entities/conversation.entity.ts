@@ -14,7 +14,9 @@ export class ConversationEntity extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToMany(() => UserEntity)
+  @ManyToMany(() => UserEntity, {
+    eager: true,
+  })
   @JoinTable()
   participants: UserEntity[];
 

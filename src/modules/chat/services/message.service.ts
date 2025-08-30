@@ -65,8 +65,11 @@ export class MessageService {
   }
 
   @Transactional()
-  async save(createMessageDto: CreateMessageDto): Promise<MessageEntity> {
-    return await this.messageRepository.save(createMessageDto);
+  async save(
+    createMessageDto: CreateMessageDto,
+    userId?: string,
+  ): Promise<MessageEntity> {
+    return await this.messageRepository.save({ ...createMessageDto, userId });
   }
 
   @Transactional()

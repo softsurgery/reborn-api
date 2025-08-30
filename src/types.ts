@@ -1,4 +1,5 @@
 import { Request as ExpressRequest } from 'express';
+import { Socket } from 'socket.io';
 
 export interface RequestWithLogInfo extends ExpressRequest {
   user?: {
@@ -6,4 +7,18 @@ export interface RequestWithLogInfo extends ExpressRequest {
     email: string;
   };
   logInfo?: Record<string, unknown>;
+}
+
+export interface SocketPayload {
+  sub: string;
+  email: string;
+  iat: number;
+  exp: number;
+}
+
+export interface ChatSocket extends Socket {
+  user: {
+    id: string;
+    username: string;
+  };
 }
