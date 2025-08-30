@@ -1,5 +1,5 @@
 import { Transactional } from '@nestjs-cls/transactional';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { FindManyOptions, FindOneOptions } from 'typeorm';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
 import { QueryBuilder } from 'src/shared/database/utils/database-query-builder';
@@ -15,6 +15,7 @@ import { JobUploadService } from './job-upload.service';
 import { JobUploadEntity } from '../entities/job-upload.entity';
 import { CreateJobUploadDto } from '../dtos/job-upload/create-job-upload.dto';
 import { UpdateJobUploadDto } from '../dtos/job-upload/update-job-upload.dto';
+import { JobTagEntity } from '../entities/job-tag.entity';
 
 @Injectable()
 export class JobService {
@@ -124,14 +125,18 @@ export class JobService {
     createJobDto: CreateJobDto,
     postedBy?: string,
   ): Promise<JobEntity> {
-    const { uploads, ...rest } = createJobDto;
+    const { uploads, tagIds, ...rest } = createJobDto;
+    let tags: JobTagEntity[] = [];
 
-    if (!postedBy) {
-      throw new BadRequestException('postedBy is required');
+    if (tagIds && Array.isArray(tagIds)) {
+      tags = await Promise.all(
+        tagIds.map((tagId) => this.jobTagService.findOneById(tagId)),
+      );
     }
 
     const job = await this.jobRepository.save({
       ...rest,
+      tags,
       postedById: postedBy,
     });
 
@@ -151,16 +156,25 @@ export class JobService {
     id: string,
     updateJobDto: UpdateJobDto,
   ): Promise<JobEntity | null> {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { uploads, tagIds, ...rest } = updateJobDto;
+    let tags: JobTagEntity[] = [];
+
+    if (tagIds && Array.isArray(tagIds)) {
+      tags = await Promise.all(
+        tagIds.map((tagId) => this.jobTagService.findOneById(tagId)),
+      );
+    }
     const existingJob = await this.jobRepository.findOneById(id);
     if (!existingJob) throw new JobNotFoundException();
 
-    await this.jobRepository.update(id, { ...rest });
+    existingJob.tags = tags;
+    Object.assign(existingJob, rest);
+
+    await this.jobRepository.save(existingJob);
 
     const updatedJob = await this.jobRepository.findOne({
       where: { id },
-      relations: ['jobTags', 'uploads'],
+      relations: ['tags', 'uploads'],
     });
 
     if (!updatedJob) throw new JobNotFoundException();
@@ -183,7 +197,7 @@ export class JobService {
           id: upload.id,
           jobId: id,
           uploadId: upload.uploadId,
-          order: index, // Frontend order
+          order: index,
         })) || [],
       keys: ['jobId', 'uploadId'],
       onDelete: async (id: number) => this.jobUploadService.softDelete(id),
