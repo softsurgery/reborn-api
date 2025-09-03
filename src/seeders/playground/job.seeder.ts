@@ -6,6 +6,7 @@ import { JobCategoryService } from 'src/modules/job-management/services/job-cate
 import { mockJobsSeed } from '../data/playground-jobs.data';
 import { UserService } from 'src/modules/user-management/services/user.service';
 import { JobStyle } from 'src/modules/job-management/enums/job-style.enum';
+import { JobTagService } from 'src/modules/job-management/services/job-tag.service';
 
 @Injectable()
 export class PlaygroundJobsSeedCommand {
@@ -14,6 +15,7 @@ export class PlaygroundJobsSeedCommand {
     private readonly jobService: JobService,
     private readonly currencyService: CurrencyService,
     private readonly jobCategoryService: JobCategoryService,
+    private readonly jobTagService: JobTagService,
   ) {}
 
   @Command({
@@ -26,9 +28,15 @@ export class PlaygroundJobsSeedCommand {
     //=============================================================================================
     const currencies = await this.currencyService.findAll({});
     const jobCategories = await this.jobCategoryService.findAll({});
+    const jobTags = await this.jobTagService.findAll({});
     const users = await this.userService.findAll({});
 
-    if (!currencies.length || !jobCategories.length || !users.length) {
+    if (
+      !currencies.length ||
+      !jobCategories.length ||
+      !users.length ||
+      !jobTags
+    ) {
       console.log(
         '⚠️ No currencies, job categories, or users found. Seed aborted.',
       );
@@ -36,12 +44,19 @@ export class PlaygroundJobsSeedCommand {
     }
 
     for (const job of mockJobsSeed) {
+      // number of tags to pick for this job
+      const tagsCount = Math.floor(Math.random() * jobTags.length) + 1; // at least 1
+
+      // shuffle jobTags and pick first N
+      const shuffledTags = [...jobTags].sort(() => 0.5 - Math.random());
+      const selectedTags = shuffledTags.slice(0, tagsCount);
+      const tagIds = selectedTags.map((t) => t.id);
+
       await this.jobService.saveJob(
         {
           title: job.title,
           description: job.description,
           price: job.price,
-          tagIds: [],
           uploads: [],
           currencyId:
             currencies[Math.floor(Math.random() * currencies.length)].id,
@@ -49,8 +64,13 @@ export class PlaygroundJobsSeedCommand {
             jobCategories[
               jobCategories.findIndex((cat) => cat.label === job.category)
             ]?.id,
+          tagIds,
           style:
-            JobStyle[Math.floor(Math.random() * Object.keys(JobStyle).length)],
+            JobStyle[
+              Object.keys(JobStyle)[
+                Math.floor(Math.random() * Object.keys(JobStyle).length)
+              ]
+            ],
         },
         users[Math.floor(Math.random() * users.length)].id,
       );
