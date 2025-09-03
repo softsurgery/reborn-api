@@ -6,11 +6,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Gender } from '../enums/gender.enum';
 import { UploadEntity } from 'src/shared/uploads/entities/upload.entity';
+import { ProfileUploadEntity } from './profile-upload.entity';
 
 @Entity('profiles')
 export class ProfileEntity extends EntityHelper {
@@ -58,4 +60,7 @@ export class ProfileEntity extends EntityHelper {
     cascade: true,
   })
   user: UserEntity;
+
+  @OneToMany(() => ProfileUploadEntity, (upload) => upload.profile)
+  uploads: ProfileUploadEntity[];
 }
