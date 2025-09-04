@@ -13,6 +13,7 @@ import { LogEntity } from 'src/shared/logger/entities/log.entity';
 import { ProfileEntity } from 'src/modules/user-management/entities/profile.entity';
 import { JobEntity } from 'src/modules/job-management/entities/job.entity';
 import { FollowEntity } from './follow.entity';
+import { JobRequestEntity } from 'src/modules/job-management/entities/job-request.entity';
 
 @Entity('users')
 export class UserEntity extends EntityHelper {
@@ -80,4 +81,7 @@ export class UserEntity extends EntityHelper {
 
   @OneToMany(() => FollowEntity, (follow) => follow.following)
   followers: FollowEntity[];
+
+  @OneToMany(() => JobRequestEntity, (request) => request.job)
+  requests: JobRequestEntity[];
 }

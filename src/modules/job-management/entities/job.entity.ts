@@ -15,6 +15,7 @@ import { CurrencyEntity } from 'src/modules/content/currency/entities/currency.e
 import { JobUploadEntity } from './job-upload.entity';
 import { JobCategoryEntity } from './job-category.entity';
 import { JobStyle } from '../enums/job-style.enum';
+import { JobRequestEntity } from './job-request.entity';
 
 @Entity('jobs')
 export class JobEntity extends EntityHelper {
@@ -82,4 +83,7 @@ export class JobEntity extends EntityHelper {
 
   @OneToMany(() => JobUploadEntity, (jobUpload) => jobUpload.job)
   uploads: JobUploadEntity[];
+
+  @OneToMany(() => JobRequestEntity, (request) => request.job)
+  requests: JobRequestEntity[];
 }
