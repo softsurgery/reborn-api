@@ -11,11 +11,13 @@ import { CreateProfileDto } from '../dtos/profile/create-profile.dto';
 import { UpdateProfileDto } from '../dtos/profile/update-profile.dto';
 import { ProfileRepository } from '../repositories/profile.repository';
 import { UploadService } from 'src/shared/uploads/services/upload.service';
+import { ProfileUploadService } from './profile-upload.service';
 
 @Injectable()
 export class ProfileService {
   constructor(
     private readonly profileRepository: ProfileRepository,
+    private readonly profileUploadService: ProfileUploadService,
     private readonly uploadService: UploadService,
   ) {}
 
@@ -107,9 +109,20 @@ export class ProfileService {
   async saveWithUpload(
     createProfileDto: CreateProfileDto,
   ): Promise<ProfileEntity> {
+    const { uploads, ...rest } = createProfileDto;
     if (createProfileDto.pictureId)
       await this.uploadService.confirm(createProfileDto.pictureId);
-    return this.save(createProfileDto);
+    const profile = await this.profileRepository.save(rest);
+
+    await this.profileUploadService.saveMany(
+      uploads.map((upload, index) => ({
+        profileId: profile.id,
+        uploadId: upload.uploadId,
+        order: index,
+      })),
+    );
+
+    return profile;
   }
 
   @Transactional()

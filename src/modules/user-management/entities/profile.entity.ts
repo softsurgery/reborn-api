@@ -61,6 +61,8 @@ export class ProfileEntity extends EntityHelper {
   })
   user: UserEntity;
 
-  @OneToMany(() => ProfileUploadEntity, (upload) => upload.profile)
+  @OneToMany(() => ProfileUploadEntity, (upload) => upload.profile, {
+    eager: true,
+  })
   uploads: ProfileUploadEntity[];
 }

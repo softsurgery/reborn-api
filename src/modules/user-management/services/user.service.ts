@@ -104,6 +104,7 @@ export class UserService {
 
   @Transactional()
   async saveWithProfile(createUserDto: CreateUserDto): Promise<UserEntity> {
+    const { profile, ...rest } = createUserDto;
     const existingUser = await this.userRepository.findOne({
       where: [
         { username: createUserDto.username },
@@ -117,19 +118,16 @@ export class UserService {
 
     let profileId: number | undefined = undefined;
 
-    if (createUserDto.profile) {
-      const profile = await this.profileService.saveWithUpload(
-        createUserDto.profile,
-      );
-      profileId = profile.id;
+    if (profile) {
+      const profileEntity = await this.profileService.saveWithUpload(profile);
+      profileId = profileEntity.id;
     }
 
     const hashedPassword =
       createUserDto.password && (await hashPassword(createUserDto.password));
     createUserDto.password = hashedPassword;
-
     return this.userRepository.save({
-      ...createUserDto,
+      ...rest,
       profileId,
     });
   }

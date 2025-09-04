@@ -51,5 +51,5 @@ export class CreateProfileDto {
 
   @ApiProperty({ isArray: true, description: 'ID of uploaded file' })
   @IsArray()
-  uploads?: Pick<ProfileUploadEntity, 'uploadId'>[];
+  uploads: Pick<ProfileUploadEntity, 'uploadId'>[];
 }

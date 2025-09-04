@@ -84,6 +84,7 @@ export class ProfileUploadService {
     return this.profileUploadRepository.save(createProfileUploadDto);
   }
 
+  @Transactional()
   async saveMany(createProfileUploadDto: CreateProfileUploadDto[]) {
     await Promise.all(
       createProfileUploadDto.map(async (dto) => {

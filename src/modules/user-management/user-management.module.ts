@@ -19,6 +19,9 @@ import { UploadModule } from 'src/shared/uploads/uploads.module';
 import { FollowRepository } from './repositories/follow.repository';
 import { FollowService } from './services/follow.service';
 import { FollowEntity } from './entities/follow.entity';
+import { ProfileUploadRepository } from './repositories/profile-upload.repository';
+import { ProfileUploadService } from './services/profile-upload.service';
+import { ProfileUploadEntity } from './entities/profile-upload.entity';
 
 @Module({
   controllers: [],
@@ -28,6 +31,7 @@ import { FollowEntity } from './entities/follow.entity';
     PermissionRepository,
     RolePermissionRepository,
     ProfileRepository,
+    ProfileUploadRepository,
     FollowRepository,
 
     UserService,
@@ -35,6 +39,7 @@ import { FollowEntity } from './entities/follow.entity';
     PermissionService,
     RolePermissionService,
     ProfileService,
+    ProfileUploadService,
     FollowService,
   ],
   exports: [
@@ -42,6 +47,7 @@ import { FollowEntity } from './entities/follow.entity';
     RoleService,
     PermissionService,
     ProfileService,
+    ProfileUploadService,
     FollowService,
 
     UserRepository,
@@ -49,6 +55,7 @@ import { FollowEntity } from './entities/follow.entity';
     PermissionRepository,
     RolePermissionRepository,
     ProfileRepository,
+    ProfileUploadRepository,
     FollowRepository,
   ],
   imports: [
@@ -58,6 +65,7 @@ import { FollowEntity } from './entities/follow.entity';
       PermissionEntity,
       RolePermissionEntity,
       ProfileEntity,
+      ProfileUploadEntity,
       FollowEntity,
     ]),
     UploadModule,
