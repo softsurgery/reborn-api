@@ -13,6 +13,9 @@ import { UploadModule } from 'src/shared/uploads/uploads.module';
 import { JobCategoryRepository } from './repositories/job-category.repository';
 import { JobCategoryService } from './services/job-category.service';
 import { JobCategoryEntity } from './entities/job-category.entity';
+import { JobRequestEntity } from './entities/job-request.entity';
+import { JobRequestRepository } from './repositories/job-request.repository';
+import { JobRequestService } from './services/job-request.service';
 
 @Module({
   controllers: [],
@@ -21,22 +24,26 @@ import { JobCategoryEntity } from './entities/job-category.entity';
     JobTagRepository,
     JobCategoryRepository,
     JobUploadRepository,
+    JobRequestRepository,
 
     JobService,
     JobTagService,
     JobCategoryService,
     JobUploadService,
+    JobRequestService,
   ],
   exports: [
     JobRepository,
     JobTagRepository,
     JobCategoryRepository,
     JobUploadRepository,
+    JobRequestRepository,
 
     JobService,
     JobTagService,
     JobCategoryService,
     JobUploadService,
+    JobRequestService,
   ],
   imports: [
     TypeOrmModule.forFeature([
@@ -44,6 +51,7 @@ import { JobCategoryEntity } from './entities/job-category.entity';
       JobTagEntity,
       JobCategoryEntity,
       JobUploadEntity,
+      JobRequestEntity,
     ]),
     UploadModule,
   ],
