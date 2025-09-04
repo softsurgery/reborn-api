@@ -4,6 +4,7 @@ import { Expose, Type } from 'class-transformer';
 import { ResponseRegionDto } from 'src/modules/content/region/dtos/response-region.dto';
 import { ResponseUserDto } from 'src/modules/user-management/dtos/user/response-user.dto';
 import { ResponseUploadDto } from 'src/shared/uploads/dtos/response-upload.dto';
+import { ResponseProfileUploadDto } from '../profile-upload/response-profile-upload.dto';
 
 export class ResponseProfileDto {
   @ApiProperty({ type: Number })
@@ -52,4 +53,9 @@ export class ResponseProfileDto {
   @Expose()
   @Type(() => ResponseUserDto)
   user: ResponseUserDto;
+
+  @ApiProperty({ type: [ResponseProfileUploadDto] })
+  @Expose()
+  @Type(() => ResponseProfileUploadDto)
+  uploads: ResponseProfileUploadDto[];
 }

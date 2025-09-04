@@ -84,6 +84,7 @@ export class JobUploadService {
     return this.jobUploadRepository.save(createJobUploadDto);
   }
 
+  @Transactional()
   async saveMany(createJobUploadDto: CreateJobUploadDto[]) {
     await Promise.all(
       createJobUploadDto.map(async (dto) => {

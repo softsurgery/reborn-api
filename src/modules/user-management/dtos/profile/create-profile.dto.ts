@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsArray,
   IsBoolean,
   IsEnum,
   IsNumber,
@@ -8,6 +9,7 @@ import {
   Length,
 } from 'class-validator';
 import { Gender } from '../../enums/gender.enum';
+import { ProfileUploadEntity } from '../../entities/profile-upload.entity';
 
 export class CreateProfileDto {
   @ApiProperty({ type: String })
@@ -46,4 +48,8 @@ export class CreateProfileDto {
   @IsNumber()
   @IsOptional()
   pictureId?: number;
+
+  @ApiProperty({ isArray: true, description: 'ID of uploaded file' })
+  @IsArray()
+  uploads: Pick<ProfileUploadEntity, 'uploadId'>[];
 }

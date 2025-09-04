@@ -11,11 +11,16 @@ import { CreateProfileDto } from '../dtos/profile/create-profile.dto';
 import { UpdateProfileDto } from '../dtos/profile/update-profile.dto';
 import { ProfileRepository } from '../repositories/profile.repository';
 import { UploadService } from 'src/shared/uploads/services/upload.service';
+import { ProfileUploadService } from './profile-upload.service';
+import { ProfileUploadEntity } from '../entities/profile-upload.entity';
+import { CreateProfileUploadDto } from '../dtos/profile-upload/create-profile-upload.dto';
+import { UpdateProfileUploadDto } from '../dtos/profile-upload/update-profile-upload.dto';
 
 @Injectable()
 export class ProfileService {
   constructor(
     private readonly profileRepository: ProfileRepository,
+    private readonly profileUploadService: ProfileUploadService,
     private readonly uploadService: UploadService,
   ) {}
 
@@ -107,24 +112,83 @@ export class ProfileService {
   async saveWithUpload(
     createProfileDto: CreateProfileDto,
   ): Promise<ProfileEntity> {
+    const { uploads, ...rest } = createProfileDto;
     if (createProfileDto.pictureId)
       await this.uploadService.confirm(createProfileDto.pictureId);
-    return this.save(createProfileDto);
+    const profile = await this.profileRepository.save(rest);
+
+    await this.profileUploadService.saveMany(
+      uploads.map((upload, index) => ({
+        profileId: profile.id,
+        uploadId: upload.uploadId,
+        order: index,
+      })),
+    );
+
+    return profile;
   }
 
   @Transactional()
   async updateWithUpload(
-    profileId: number,
+    id: number,
     updateProfileDto: UpdateProfileDto,
   ): Promise<ProfileEntity | null> {
-    const profile = await this.findOneById(profileId);
+    const { uploads, ...rest } = updateProfileDto;
+    const existingProfile = await this.findOneById(id);
+    if (!existingProfile) throw new ProfileNotFoundException();
+
+    await this.profileRepository.update(id, rest);
+    //clean old profile picture
     if (
       updateProfileDto.pictureId &&
-      updateProfileDto.pictureId != profile.pictureId
+      updateProfileDto.pictureId != existingProfile.id
     ) {
       await this.uploadService.confirm(updateProfileDto.pictureId);
-      if (profile.pictureId) await this.uploadService.delete(profile.pictureId);
+      if (existingProfile.pictureId)
+        await this.uploadService.delete(existingProfile.pictureId);
     }
-    return this.update(profileId, updateProfileDto);
+
+    const updatedProfile = await this.profileRepository.findOne({
+      where: { id },
+      relations: ['uploads'],
+    });
+
+    if (!updatedProfile) throw new ProfileNotFoundException();
+
+    const existingUploads = updatedProfile?.uploads?.map(
+      (j: ProfileUploadEntity) => {
+        return {
+          id: j.id,
+          profileId: j.profileId,
+          uploadId: j.uploadId,
+          order: j.order,
+        };
+      },
+    );
+
+    await this.profileRepository.updateJunctionAssociations<
+      Pick<ProfileUploadEntity, 'id' | 'profileId' | 'uploadId' | 'order'>
+    >({
+      existingItems: existingUploads || [],
+      updatedItems:
+        uploads?.map((upload, index) => ({
+          id: upload.id,
+          profileId: id,
+          uploadId: upload.uploadId,
+          order: index,
+        })) || [],
+      keys: ['profileId', 'uploadId'],
+      onDelete: async (id: number) => this.profileUploadService.softDelete(id),
+      onCreate: async (j: CreateProfileUploadDto) =>
+        this.profileUploadService.save({
+          profileId: id,
+          uploadId: j.uploadId,
+          order: j.order,
+        }),
+      onUpdate: async (id: number, item: UpdateProfileUploadDto) =>
+        this.profileUploadService.update(id, item),
+    });
+
+    return updatedProfile;
   }
 }
