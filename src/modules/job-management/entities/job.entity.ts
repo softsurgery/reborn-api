@@ -81,7 +81,9 @@ export class JobEntity extends EntityHelper {
   @Column({})
   categoryId: number;
 
-  @OneToMany(() => JobUploadEntity, (jobUpload) => jobUpload.job)
+  @OneToMany(() => JobUploadEntity, (jobUpload) => jobUpload.job, {
+    eager: true,
+  })
   uploads: JobUploadEntity[];
 
   @OneToMany(() => JobRequestEntity, (request) => request.job)

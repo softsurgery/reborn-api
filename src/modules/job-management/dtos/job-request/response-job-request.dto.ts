@@ -3,6 +3,7 @@ import { ResponseDtoHelper } from 'src/shared/database/dtos/database.response.dt
 import { Expose, Type } from 'class-transformer';
 import { ResponseJobDto } from '../job/response-job.dto';
 import { ResponseUserDto } from 'src/modules/user-management/dtos/user/response-user.dto';
+import { JobRequestStatus } from '../../enums/job-request-status.enum';
 
 export class ResponseJobRequestDto extends ResponseDtoHelper {
   @ApiProperty({ type: Number })
@@ -26,4 +27,8 @@ export class ResponseJobRequestDto extends ResponseDtoHelper {
   @Expose()
   @Type(() => ResponseUserDto)
   user?: ResponseUserDto;
+
+  @ApiProperty({ type: String, enum: JobRequestStatus })
+  @Expose()
+  status: JobRequestStatus;
 }

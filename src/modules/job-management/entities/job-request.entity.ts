@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { JobEntity } from './job.entity';
 import { UserEntity } from 'src/modules/user-management/entities/user.entity';
+import { JobRequestStatus } from '../enums/job-request-status.enum';
 
 @Entity('job-requests')
 export class JobRequestEntity extends EntityHelper {
@@ -31,4 +32,11 @@ export class JobRequestEntity extends EntityHelper {
   })
   @JoinColumn({ name: 'userId' })
   user: UserEntity;
+
+  @Column({
+    type: 'enum',
+    enum: JobRequestStatus,
+    default: JobRequestStatus.Pending,
+  })
+  status: JobRequestStatus;
 }
