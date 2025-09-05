@@ -102,6 +102,17 @@ export class JobRequestController {
     );
   }
 
+  @Get(':id/exists')
+  async isJobRequestAlreadyExists(
+    @Param('id') id: string,
+    @Request() req: RequestWithLogInfo,
+  ): Promise<ResponseJobRequestDto | null> {
+    return toDto(
+      ResponseJobRequestDto,
+      await this.jobRequestService.isJobRequestAlreadyExists(id, req.user?.sub),
+    );
+  }
+
   @Post()
   @LogEvent(EventType.JOB_REQUEST_CREATE)
   async create(
@@ -127,6 +138,45 @@ export class JobRequestController {
     return toDto(
       ResponseJobRequestDto,
       await this.jobRequestService.update(id, updateJobRequestDto),
+    );
+  }
+
+  @Put(':id/approve')
+  @LogEvent(EventType.JOB_REQUEST_APPROVE)
+  async approve(
+    @Param('id') id: number,
+    @Request() req: RequestWithLogInfo,
+  ): Promise<ResponseJobRequestDto | null> {
+    req.logInfo = { id };
+    return toDto(
+      ResponseJobRequestDto,
+      await this.jobRequestService.approveJobRequest(id),
+    );
+  }
+
+  @Put(':id/reject')
+  @LogEvent(EventType.JOB_REQUEST_REJECT)
+  async reject(
+    @Param('id') id: number,
+    @Request() req: RequestWithLogInfo,
+  ): Promise<ResponseJobRequestDto | null> {
+    req.logInfo = { id };
+    return toDto(
+      ResponseJobRequestDto,
+      await this.jobRequestService.rejectJobRequest(id),
+    );
+  }
+
+  @Put(':id/cancel')
+  @LogEvent(EventType.JOB_REQUEST_CANCEL)
+  async cancel(
+    @Param('id') id: number,
+    @Request() req: RequestWithLogInfo,
+  ): Promise<ResponseJobRequestDto | null> {
+    req.logInfo = { id };
+    return toDto(
+      ResponseJobRequestDto,
+      await this.jobRequestService.cancelJobRequest(id),
     );
   }
 

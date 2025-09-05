@@ -12,6 +12,7 @@ import { CreateJobRequestDto } from '../dtos/job-request/create-job-request.dto'
 import { UpdateJobRequestDto } from '../dtos/job-request/update-job-request.dto';
 import { JobRepository } from '../repositories/job.repository';
 import { UserNotFoundException } from 'src/modules/user-management/errors/user/user.notfound.error';
+import { JobRequestStatus } from '../enums/job-request-status.enum';
 
 @Injectable()
 export class JobRequestService {
@@ -113,6 +114,47 @@ export class JobRequestService {
   }
 
   //Extended Methods ===========================================================================
+
+  async isJobRequestAlreadyExists(
+    jobId: string,
+    userId?: string,
+  ): Promise<JobRequestEntity | null> {
+    if (!userId) {
+      throw new UserNotFoundException();
+    }
+    const jobRequest = await this.jobRequestRepository.findOne({
+      where: { userId, jobId },
+    });
+    return jobRequest;
+  }
+
+  async approveJobRequest(id: number): Promise<JobRequestEntity | null> {
+    const jobRequest = await this.jobRequestRepository.findOneById(id);
+    if (!jobRequest) {
+      throw new JobRequestNotFoundException();
+    }
+    return this.jobRequestRepository.update(jobRequest.id, {
+      status: JobRequestStatus.Approved,
+    });
+  }
+
+  async rejectJobRequest(id: number): Promise<JobRequestEntity | null> {
+    const jobRequest = await this.jobRequestRepository.findOneById(id);
+    if (!jobRequest) {
+      throw new JobRequestNotFoundException();
+    }
+    return this.jobRequestRepository.update(jobRequest.id, {
+      status: JobRequestStatus.Rejected,
+    });
+  }
+
+  async cancelJobRequest(id: number): Promise<JobRequestEntity | null> {
+    const jobRequest = await this.jobRequestRepository.findOneById(id);
+    if (!jobRequest) {
+      throw new JobRequestNotFoundException();
+    }
+    return this.jobRequestRepository.softDelete(jobRequest.id);
+  }
 
   async findPaginatedUserOngoingJobRequests(
     query: IQueryObject,
