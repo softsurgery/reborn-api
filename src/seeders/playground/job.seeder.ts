@@ -7,6 +7,7 @@ import { mockJobsSeed } from '../data/playground-jobs.data';
 import { UserService } from 'src/modules/user-management/services/user.service';
 import { JobStyle } from 'src/modules/job-management/enums/job-style.enum';
 import { JobTagService } from 'src/modules/job-management/services/job-tag.service';
+import { JobDifficulty } from 'src/modules/job-management/enums/job-difficulty.enum';
 
 @Injectable()
 export class PlaygroundJobsSeedCommand {
@@ -69,6 +70,12 @@ export class PlaygroundJobsSeedCommand {
             JobStyle[
               Object.keys(JobStyle)[
                 Math.floor(Math.random() * Object.keys(JobStyle).length)
+              ]
+            ],
+          difficulty:
+            JobDifficulty[
+              Object.keys(JobDifficulty)[
+                Math.floor(Math.random() * Object.keys(JobDifficulty).length)
               ]
             ],
         },

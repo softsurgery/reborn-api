@@ -7,6 +7,7 @@ import { ResponseCurrencyDto } from 'src/modules/content/currency/dtos/response-
 import { ResponseJobUploadDto } from '../job-upload/response-job-upload.dto';
 import { ResponseJobCategoryDto } from '../job-category/response-job-category.dto';
 import { JobStyle } from '../../enums/job-style.enum';
+import { JobDifficulty } from '../../enums/job-difficulty.enum';
 
 export class ResponseJobDto extends ResponseDtoHelper {
   @ApiProperty({ type: String })
@@ -56,6 +57,10 @@ export class ResponseJobDto extends ResponseDtoHelper {
   @ApiProperty({ type: String, enum: JobStyle })
   @Expose()
   style: JobStyle;
+
+  @ApiProperty({ type: String, enum: JobDifficulty })
+  @Expose()
+  difficulty: JobDifficulty;
 
   @ApiProperty({ type: [ResponseJobUploadDto] })
   @Expose()

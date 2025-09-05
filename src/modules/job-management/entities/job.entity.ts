@@ -16,6 +16,7 @@ import { JobUploadEntity } from './job-upload.entity';
 import { JobCategoryEntity } from './job-category.entity';
 import { JobStyle } from '../enums/job-style.enum';
 import { JobRequestEntity } from './job-request.entity';
+import { JobDifficulty } from '../enums/job-difficulty.enum';
 
 @Entity('jobs')
 export class JobEntity extends EntityHelper {
@@ -77,6 +78,9 @@ export class JobEntity extends EntityHelper {
 
   @Column({ type: 'enum', enum: JobStyle, nullable: false })
   style: JobStyle;
+
+  @Column({ type: 'enum', enum: JobDifficulty, nullable: false })
+  difficulty: JobDifficulty;
 
   @Column({})
   categoryId: number;
