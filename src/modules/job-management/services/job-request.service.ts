@@ -1,6 +1,6 @@
 import { Transactional } from '@nestjs-cls/transactional';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { FindManyOptions, FindOneOptions } from 'typeorm';
+import { FindManyOptions, FindOneOptions, In } from 'typeorm';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
 import { QueryBuilder } from 'src/shared/database/utils/database-query-builder';
 import { PageDto } from 'src/shared/database/dtos/database.page.dto';
@@ -10,10 +10,15 @@ import { JobRequestEntity } from '../entities/job-request.entity';
 import { JobRequestNotFoundException } from '../errors/job-request/job-request.notfound.error';
 import { CreateJobRequestDto } from '../dtos/job-request/create-job-request.dto';
 import { UpdateJobRequestDto } from '../dtos/job-request/update-job-request.dto';
+import { JobRepository } from '../repositories/job.repository';
+import { UserNotFoundException } from 'src/modules/user-management/errors/user/user.notfound.error';
 
 @Injectable()
 export class JobRequestService {
-  constructor(private readonly jobRequestRepository: JobRequestRepository) {}
+  constructor(
+    private readonly jobRequestRepository: JobRequestRepository,
+    private readonly jobRepository: JobRepository,
+  ) {}
 
   async findOneById(id: number): Promise<JobRequestEntity> {
     const jobRequest = await this.jobRequestRepository.findOneById(id);
@@ -105,5 +110,98 @@ export class JobRequestService {
       throw new JobRequestNotFoundException();
     }
     return this.jobRequestRepository.remove(jobRequest);
+  }
+
+  //Extended Methods ===========================================================================
+
+  async findPaginatedUserOngoingJobRequests(
+    query: IQueryObject,
+    userId?: string,
+  ): Promise<PageDto<JobRequestEntity>> {
+    if (!userId) {
+      throw new UserNotFoundException();
+    }
+    const queryBuilder = new QueryBuilder(
+      this.jobRequestRepository.getMetadata(),
+    );
+
+    const queryOptions = queryBuilder.build(query);
+
+    queryOptions.where = {
+      ...queryOptions.where,
+      userId,
+    };
+
+    const count = await this.jobRequestRepository.getTotalCount({
+      where: queryOptions.where,
+    });
+
+    const entities = await this.jobRequestRepository.findAll(
+      queryOptions as FindManyOptions<JobRequestEntity>,
+    );
+
+    const pageMetaDto = new PageMetaDto({
+      pageOptionsDto: {
+        page: Number(query.page),
+        take: Number(query.limit),
+      },
+      itemCount: count,
+    });
+
+    return new PageDto(entities, pageMetaDto);
+  }
+
+  async findPaginatedUserIncomingJobRequests(
+    query: IQueryObject,
+    userId?: string,
+  ): Promise<PageDto<JobRequestEntity>> {
+    if (!userId) {
+      throw new UserNotFoundException();
+    }
+    const userPostedJobs = await this.jobRepository.findAll({
+      where: { postedById: userId },
+    });
+
+    if (userPostedJobs.length === 0) {
+      return new PageDto(
+        [],
+        new PageMetaDto({
+          pageOptionsDto: {
+            page: Number(query.page),
+            take: Number(query.limit),
+          },
+          itemCount: 0,
+        }),
+      );
+    }
+
+    const queryBuilder = new QueryBuilder(
+      this.jobRequestRepository.getMetadata(),
+    );
+
+    const queryOptions = queryBuilder.build(query);
+
+    queryOptions.where = {
+      ...queryOptions.where,
+      jobId: In(userPostedJobs.map((j) => j.id)),
+    };
+
+    const count = await this.jobRequestRepository.getTotalCount({
+      where: queryOptions.where,
+    });
+
+    const entities = await this.jobRequestRepository.findAll(
+      queryOptions as FindManyOptions<JobRequestEntity>,
+    );
+
+    const pageMetaDto = new PageMetaDto({
+      pageOptionsDto: {
+        page: Number(query.page),
+        take: Number(query.limit),
+      },
+      itemCount: count,
+    });
+
+    return new PageDto(entities, pageMetaDto);
   }
 }

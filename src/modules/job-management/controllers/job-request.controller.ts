@@ -48,6 +48,40 @@ export class JobRequestController {
     };
   }
 
+  @Get('/list-incoming')
+  @ApiPaginatedResponse(ResponseJobRequestDto)
+  async findAllPaginatedIncoming(
+    @Query() query: IQueryObject,
+    @Request() req: RequestWithLogInfo,
+  ): Promise<PageDto<ResponseJobRequestDto>> {
+    const paginated =
+      await this.jobRequestService.findPaginatedUserIncomingJobRequests(
+        query,
+        req.user?.sub,
+      );
+    return {
+      ...paginated,
+      data: toDtoArray(ResponseJobRequestDto, paginated.data),
+    };
+  }
+
+  @Get('/list-ongoing')
+  @ApiPaginatedResponse(ResponseJobRequestDto)
+  async findAllPaginatedOngoing(
+    @Query() query: IQueryObject,
+    @Request() req: RequestWithLogInfo,
+  ): Promise<PageDto<ResponseJobRequestDto>> {
+    const paginated =
+      await this.jobRequestService.findPaginatedUserOngoingJobRequests(
+        query,
+        req.user?.sub,
+      );
+    return {
+      ...paginated,
+      data: toDtoArray(ResponseJobRequestDto, paginated.data),
+    };
+  }
+
   @Get('/all')
   async findAll(
     @Query() options: IQueryObject,
