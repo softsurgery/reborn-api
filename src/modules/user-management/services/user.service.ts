@@ -81,18 +81,6 @@ export class UserService {
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<UserEntity | null> {
-    const existingUser = await this.userRepository.findOneById(id);
-    if (updateUserDto.profile && existingUser?.profileId) {
-      await this.profileService.updateWithUpload(
-        existingUser?.profileId,
-        updateUserDto.profile,
-      );
-    }
-    if (updateUserDto.password) {
-      const hashedPassword = await hashPassword(updateUserDto.password);
-      updateUserDto.password = hashedPassword;
-    }
-    delete updateUserDto.profile;
     return this.userRepository.update(id, updateUserDto);
   }
 
@@ -130,6 +118,26 @@ export class UserService {
       ...rest,
       profileId,
     });
+  }
+
+  @Transactional()
+  async updateWithProfile(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserEntity | null> {
+    const { profile, ...rest } = updateUserDto;
+    const existingUser = await this.userRepository.findOneById(id);
+    if (profile && existingUser?.profileId) {
+      await this.profileService.updateWithUpload(
+        existingUser?.profileId,
+        profile,
+      );
+    }
+    if (updateUserDto.password) {
+      const hashedPassword = await hashPassword(updateUserDto.password);
+      updateUserDto.password = hashedPassword;
+    }
+    return this.userRepository.update(id, rest);
   }
 
   async findOneByUsernameOrEmail(

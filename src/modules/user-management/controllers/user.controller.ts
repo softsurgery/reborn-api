@@ -92,7 +92,7 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
     @Request() req: RequestWithLogInfo,
   ): Promise<ResponseUserDto | null> {
-    const user = await this.userService.update(id, updateUserDto);
+    const user = await this.userService.updateWithProfile(id, updateUserDto);
     req.logInfo = { id: user?.id, firstName: user?.firstName };
     return toDto(ResponseUserDto, user);
   }

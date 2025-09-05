@@ -141,7 +141,7 @@ export class ProfileService {
     //clean old profile picture
     if (
       updateProfileDto.pictureId &&
-      updateProfileDto.pictureId != existingProfile.id
+      updateProfileDto.pictureId != existingProfile.pictureId
     ) {
       await this.uploadService.confirm(updateProfileDto.pictureId);
       if (existingProfile.pictureId)
