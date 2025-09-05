@@ -54,7 +54,7 @@ export class ClientController {
     }
     return toDto(
       ResponseClientDto,
-      await this.userService.update(req?.user?.sub, updateClientDto),
+      await this.userService.updateWithProfile(req?.user?.sub, updateClientDto),
     );
   }
 }
