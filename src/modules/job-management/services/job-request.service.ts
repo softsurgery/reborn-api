@@ -13,6 +13,7 @@ import { UpdateJobRequestDto } from '../dtos/job-request/update-job-request.dto'
 import { JobRepository } from '../repositories/job.repository';
 import { UserNotFoundException } from 'src/modules/user-management/errors/user/user.notfound.error';
 import { JobRequestStatus } from '../enums/job-request-status.enum';
+import { JobRequestCannotRequestOwnJobException } from '../errors/job-request/job-request.cannotrequestownjob.error';
 
 @Injectable()
 export class JobRequestService {
@@ -86,6 +87,10 @@ export class JobRequestService {
   ): Promise<JobRequestEntity> {
     if (!userId) {
       throw new BadRequestException('User id is required');
+    }
+    const job = await this.jobRepository.findOneById(createJobRequestDto.jobId);
+    if (job?.postedById == userId) {
+      throw new JobRequestCannotRequestOwnJobException();
     }
     return await this.jobRequestRepository.save({
       ...createJobRequestDto,
