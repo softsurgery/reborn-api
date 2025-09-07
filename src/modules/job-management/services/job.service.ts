@@ -16,11 +16,14 @@ import { JobUploadEntity } from '../entities/job-upload.entity';
 import { CreateJobUploadDto } from '../dtos/job-upload/create-job-upload.dto';
 import { UpdateJobUploadDto } from '../dtos/job-upload/update-job-upload.dto';
 import { JobTagEntity } from '../entities/job-tag.entity';
+import { ResponseJobMetadataDto } from '../dtos/job/response-job-metadata.dto';
+import { JobRequestService } from './job-request.service';
 
 @Injectable()
 export class JobService {
   constructor(
     private readonly jobRepository: JobRepository,
+    private readonly jobRequestService: JobRequestService,
     private readonly jobTagService: JobTagService,
     private readonly jobUploadService: JobUploadService,
   ) {}
@@ -120,6 +123,19 @@ export class JobService {
   }
 
   //Extended Methods ===========================================================================
+
+  async findJobMetadataById(id: string): Promise<ResponseJobMetadataDto> {
+    const requestCount = await this.jobRequestService.findRequestCount(id);
+    return {
+      id,
+      requestCount,
+      paymentVerified: false,
+      reviewCount: 0,
+      rating: 0,
+      hireRate: 0,
+    };
+  }
+
   @Transactional()
   async saveJob(
     createJobDto: CreateJobDto,

@@ -29,6 +29,7 @@ export class JobRequestEntity extends EntityHelper {
 
   @ManyToOne(() => UserEntity, (user) => user.requests, {
     onDelete: 'CASCADE',
+    eager: true,
   })
   @JoinColumn({ name: 'userId' })
   user: UserEntity;

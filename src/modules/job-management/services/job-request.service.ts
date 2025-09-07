@@ -251,4 +251,10 @@ export class JobRequestService {
 
     return new PageDto(entities, pageMetaDto);
   }
+
+  async findRequestCount(id: string): Promise<number> {
+    return this.jobRequestRepository.getTotalCount({
+      where: { jobId: id },
+    });
+  }
 }

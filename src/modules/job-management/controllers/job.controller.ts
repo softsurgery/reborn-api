@@ -24,6 +24,7 @@ import { RequestWithLogInfo } from 'src/types';
 import { ResponseJobDto } from '../dtos/job/response-job.dto';
 import { CreateJobDto } from '../dtos/job/create-job.dto';
 import { UpdateJobDto } from '../dtos/job/update-job.dto';
+import { ResponseJobMetadataDto } from '../dtos/job/response-job-metadata.dto';
 
 @ApiTags('job')
 @ApiBearerAuth('access_token')
@@ -53,6 +54,16 @@ export class JobController {
   @Get(':id')
   async findOneById(@Param('id') id: string): Promise<ResponseJobDto | null> {
     return toDto(ResponseJobDto, await this.jobService.findOneById(id));
+  }
+
+  @Get(':id/metadata')
+  async findOneMetadataById(
+    @Param('id') id: string,
+  ): Promise<ResponseJobMetadataDto | null> {
+    return toDto(
+      ResponseJobMetadataDto,
+      await this.jobService.findJobMetadataById(id),
+    );
   }
 
   @Post()
