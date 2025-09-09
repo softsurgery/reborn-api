@@ -18,6 +18,9 @@ import { StoreModule } from 'src/shared/store/store.module';
 import { JobCategoryController } from 'src/modules/job-management/controllers/job-category.controller';
 import { FollowController } from 'src/modules/user-management/controllers/follow.controller';
 import { JobRequestController } from 'src/modules/job-management/controllers/job-request.controller';
+import { ConversationController } from 'src/modules/chat/controllers/conversation.controller';
+import { ChatModule } from 'src/modules/chat/chat.module';
+import { MessageController } from 'src/modules/chat/controllers/message.controller';
 
 @Module({
   controllers: [
@@ -38,6 +41,9 @@ import { JobRequestController } from 'src/modules/job-management/controllers/job
     JobTagController,
     JobCategoryController,
     JobRequestController,
+    //chat
+    ConversationController,
+    MessageController,
   ],
   providers: [],
   exports: [],
@@ -49,6 +55,7 @@ import { JobRequestController } from 'src/modules/job-management/controllers/job
     UserManagementModule,
     UploadModule,
     JobManagementModule,
+    ChatModule,
   ],
 })
 export class RoutesModule {}

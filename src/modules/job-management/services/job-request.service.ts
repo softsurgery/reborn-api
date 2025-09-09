@@ -14,12 +14,14 @@ import { JobRepository } from '../repositories/job.repository';
 import { UserNotFoundException } from 'src/modules/user-management/errors/user/user.notfound.error';
 import { JobRequestStatus } from '../enums/job-request-status.enum';
 import { JobRequestCannotRequestOwnJobException } from '../errors/job-request/job-request.cannotrequestownjob.error';
+import { ConversationService } from 'src/modules/chat/services/conversation.service';
 
 @Injectable()
 export class JobRequestService {
   constructor(
     private readonly jobRequestRepository: JobRequestRepository,
     private readonly jobRepository: JobRepository,
+    private readonly conversationService: ConversationService,
   ) {}
 
   async findOneById(id: number): Promise<JobRequestEntity> {
@@ -133,10 +135,26 @@ export class JobRequestService {
     return jobRequest;
   }
 
+  @Transactional()
   async approveJobRequest(id: number): Promise<JobRequestEntity | null> {
-    const jobRequest = await this.jobRequestRepository.findOneById(id);
+    const jobRequest = await this.jobRequestRepository.findOne({
+      where: { id },
+      relations: ['job'],
+    });
     if (!jobRequest) {
       throw new JobRequestNotFoundException();
+    }
+    const conversation = await this.conversationService.findConversationByUsers(
+      jobRequest.userId,
+      jobRequest.job.postedById,
+    );
+    if (!conversation) {
+      await this.conversationService.save(
+        {
+          targetUserId: jobRequest.userId,
+        },
+        jobRequest?.job?.postedById,
+      );
     }
     return this.jobRequestRepository.update(jobRequest.id, {
       status: JobRequestStatus.Approved,

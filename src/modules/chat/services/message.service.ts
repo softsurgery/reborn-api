@@ -90,4 +90,38 @@ export class MessageService {
     }
     return this.messageRepository.remove(message);
   }
+
+  //Extended Methods ===========================================================================
+
+  async findPaginatedConversationMessages(
+    query: IQueryObject,
+    conversationId?: string,
+  ): Promise<PageDto<MessageEntity>> {
+    const queryBuilder = new QueryBuilder(this.messageRepository.getMetadata());
+
+    const queryOptions = queryBuilder.build(query);
+
+    queryOptions.where = {
+      ...(queryOptions.where || {}),
+      conversationId,
+    };
+
+    const count = await this.messageRepository.getTotalCount({
+      where: queryOptions.where,
+    });
+
+    const entities = await this.messageRepository.findAll(
+      queryOptions as FindManyOptions<MessageEntity>,
+    );
+
+    const pageMetaDto = new PageMetaDto({
+      pageOptionsDto: {
+        page: Number(query.page),
+        take: Number(query.limit),
+      },
+      itemCount: count,
+    });
+
+    return new PageDto(entities, pageMetaDto);
+  }
 }

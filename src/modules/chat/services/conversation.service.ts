@@ -119,4 +119,52 @@ export class ConversationService {
     }
     return this.conversationRepository.remove(conversation);
   }
+
+  //Extended Methods ===========================================================================
+
+  async findPaginatedUserConversations(
+    query: IQueryObject,
+    userId?: string,
+  ): Promise<PageDto<ConversationEntity>> {
+    const queryBuilder = new QueryBuilder(
+      this.conversationRepository.getMetadata(),
+    );
+
+    const queryOptions = queryBuilder.build(query);
+
+    queryOptions.where = {
+      ...(queryOptions.where || {}),
+      participants: {
+        id: userId,
+      },
+    };
+
+    const count = await this.conversationRepository.getTotalCount({
+      where: queryOptions.where,
+    });
+
+    const entities = await this.conversationRepository.findAll(
+      queryOptions as FindManyOptions<ConversationEntity>,
+    );
+
+    const pageMetaDto = new PageMetaDto({
+      pageOptionsDto: {
+        page: Number(query.page),
+        take: Number(query.limit),
+      },
+      itemCount: count,
+    });
+
+    return new PageDto(entities, pageMetaDto);
+  }
+
+  async findConversationByUsers(userId1: string, userId2: string) {
+    return this.conversationRepository
+      .createQueryBuilder('conversation')
+      .leftJoin('conversation.participants', 'participant')
+      .where('participant.id IN (:...userIds)', { userIds: [userId1, userId2] })
+      .groupBy('conversation.id')
+      .having('COUNT(DISTINCT participant.id) = 2')
+      .getOne();
+  }
 }

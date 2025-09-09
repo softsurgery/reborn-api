@@ -16,6 +16,7 @@ import { JobCategoryEntity } from './entities/job-category.entity';
 import { JobRequestEntity } from './entities/job-request.entity';
 import { JobRequestRepository } from './repositories/job-request.repository';
 import { JobRequestService } from './services/job-request.service';
+import { ChatModule } from '../chat/chat.module';
 
 @Module({
   controllers: [],
@@ -54,6 +55,7 @@ import { JobRequestService } from './services/job-request.service';
       JobRequestEntity,
     ]),
     UploadModule,
+    ChatModule,
   ],
 })
 export class JobManagementModule {}
