@@ -9,6 +9,7 @@ import {
 } from 'class-validator';
 import { JobUploadEntity } from '../../entities/job-upload.entity';
 import { JobStyle } from '../../enums/job-style.enum';
+import { JobDifficulty } from '../../enums/job-difficulty.enum';
 
 export class CreateJobDto {
   @ApiProperty({ type: String })
@@ -42,6 +43,10 @@ export class CreateJobDto {
   @ApiProperty({ type: String, enum: JobStyle })
   @IsEnum(JobStyle)
   style: JobStyle;
+
+  @ApiProperty({ type: String, enum: JobDifficulty })
+  @IsEnum(JobDifficulty)
+  difficulty: JobDifficulty;
 
   @ApiProperty({ isArray: true, description: 'ID of uploaded file' })
   @IsArray()
