@@ -49,6 +49,16 @@ export class CreateProfileDto {
   @IsOptional()
   pictureId?: number;
 
+  @ApiProperty({ type: Number })
+  @IsNumber()
+  @IsOptional()
+  officialDocumentId?: number;
+
+  @ApiProperty({ type: Number })
+  @IsNumber()
+  @IsOptional()
+  driverLicenseDocumentId?: number;
+
   @ApiProperty({ isArray: true, description: 'ID of uploaded file' })
   @IsArray()
   uploads: Pick<ProfileUploadEntity, 'uploadId'>[];

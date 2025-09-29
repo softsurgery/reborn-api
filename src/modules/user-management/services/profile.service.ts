@@ -113,8 +113,15 @@ export class ProfileService {
     createProfileDto: CreateProfileDto,
   ): Promise<ProfileEntity> {
     const { uploads, ...rest } = createProfileDto;
+    //upload confirmation
     if (createProfileDto.pictureId)
       await this.uploadService.confirm(createProfileDto.pictureId);
+    if (createProfileDto.officialDocumentId)
+      await this.uploadService.confirm(createProfileDto.officialDocumentId);
+    if (createProfileDto.driverLicenseDocumentId)
+      await this.uploadService.confirm(
+        createProfileDto.driverLicenseDocumentId,
+      );
     const profile = await this.profileRepository.save(rest);
 
     await this.profileUploadService.saveMany(
@@ -138,7 +145,7 @@ export class ProfileService {
     if (!existingProfile) throw new ProfileNotFoundException();
 
     await this.profileRepository.update(id, rest);
-    //clean old profile picture
+    //confirm new profile picture
     if (
       updateProfileDto.pictureId &&
       updateProfileDto.pictureId != existingProfile.pictureId
@@ -146,6 +153,25 @@ export class ProfileService {
       await this.uploadService.confirm(updateProfileDto.pictureId);
       if (existingProfile.pictureId)
         await this.uploadService.delete(existingProfile.pictureId);
+    }
+
+    //confirm new official document
+    if (
+      updateProfileDto.officialDocumentId &&
+      updateProfileDto.officialDocumentId != existingProfile.officialDocumentId
+    ) {
+      await this.uploadService.confirm(updateProfileDto.officialDocumentId);
+    }
+
+    //confirm new driver license document
+    if (
+      updateProfileDto.driverLicenseDocumentId &&
+      updateProfileDto.driverLicenseDocumentId !=
+        existingProfile.driverLicenseDocumentId
+    ) {
+      await this.uploadService.confirm(
+        updateProfileDto.driverLicenseDocumentId,
+      );
     }
 
     const updatedProfile = await this.profileRepository.findOne({

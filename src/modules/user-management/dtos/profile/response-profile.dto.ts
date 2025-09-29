@@ -49,6 +49,24 @@ export class ResponseProfileDto {
   @Type(() => ResponseUploadDto)
   picture?: ResponseUploadDto;
 
+  @ApiProperty({ type: ResponseUploadDto })
+  @Expose()
+  @Type(() => ResponseUploadDto)
+  officialDocument?: ResponseUploadDto;
+
+  @ApiProperty({ type: Number })
+  @Expose()
+  officialDocumentId?: number;
+
+  @ApiProperty({ type: ResponseUploadDto })
+  @Expose()
+  @Type(() => ResponseUploadDto)
+  driverLicenseDocument?: ResponseUploadDto;
+
+  @ApiProperty({ type: Number })
+  @Expose()
+  driverLicenseDocumentId?: number;
+
   @ApiProperty({ type: () => ResponseUserDto })
   @Expose()
   @Type(() => ResponseUserDto)

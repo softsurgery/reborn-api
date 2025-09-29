@@ -65,4 +65,26 @@ export class ProfileEntity extends EntityHelper {
     eager: true,
   })
   uploads: ProfileUploadEntity[];
+
+  @ManyToOne(() => UploadEntity, {
+    onDelete: 'CASCADE',
+    eager: true,
+    nullable: true,
+  })
+  @JoinColumn({ name: 'officialDocumentId' })
+  officialDocument?: UploadEntity;
+
+  @Column({ nullable: true })
+  officialDocumentId?: number;
+
+  @ManyToOne(() => UploadEntity, {
+    onDelete: 'CASCADE',
+    eager: true,
+    nullable: true,
+  })
+  @JoinColumn({ name: 'driverLicenseDocumentId' })
+  driverLicenseDocument?: UploadEntity;
+
+  @Column({ nullable: true })
+  driverLicenseDocumentId?: number;
 }
