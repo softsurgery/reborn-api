@@ -21,6 +21,8 @@ import { JobRequestController } from 'src/modules/job-management/controllers/job
 import { ConversationController } from 'src/modules/chat/controllers/conversation.controller';
 import { ChatModule } from 'src/modules/chat/chat.module';
 import { MessageController } from 'src/modules/chat/controllers/message.controller';
+import { JobSaveController } from 'src/modules/job-management/controllers/job-save.controller';
+import { JobViewController } from 'src/modules/job-management/controllers/job-view.controller';
 
 @Module({
   controllers: [
@@ -41,6 +43,8 @@ import { MessageController } from 'src/modules/chat/controllers/message.controll
     JobTagController,
     JobCategoryController,
     JobRequestController,
+    JobSaveController,
+    JobViewController,
     //chat
     ConversationController,
     MessageController,

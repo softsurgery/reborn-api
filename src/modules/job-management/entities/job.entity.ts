@@ -17,6 +17,8 @@ import { JobCategoryEntity } from './job-category.entity';
 import { JobStyle } from '../enums/job-style.enum';
 import { JobRequestEntity } from './job-request.entity';
 import { JobDifficulty } from '../enums/job-difficulty.enum';
+import { JobViewEntity } from './job-view.entity';
+import { JobSaveEntity } from './job-save.entity';
 
 @Entity('jobs')
 export class JobEntity extends EntityHelper {
@@ -92,4 +94,10 @@ export class JobEntity extends EntityHelper {
 
   @OneToMany(() => JobRequestEntity, (request) => request.job)
   requests: JobRequestEntity[];
+
+  @OneToMany(() => JobViewEntity, (view) => view.job)
+  views: JobViewEntity[];
+
+  @OneToMany(() => JobSaveEntity, (save) => save.job)
+  saves: JobSaveEntity[];
 }

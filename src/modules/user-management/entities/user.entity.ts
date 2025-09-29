@@ -14,6 +14,7 @@ import { ProfileEntity } from 'src/modules/user-management/entities/profile.enti
 import { JobEntity } from 'src/modules/job-management/entities/job.entity';
 import { FollowEntity } from './follow.entity';
 import { JobRequestEntity } from 'src/modules/job-management/entities/job-request.entity';
+import { JobViewEntity } from 'src/modules/job-management/entities/job-view.entity';
 
 @Entity('users')
 export class UserEntity extends EntityHelper {
@@ -84,4 +85,7 @@ export class UserEntity extends EntityHelper {
 
   @OneToMany(() => JobRequestEntity, (request) => request.job)
   requests: JobRequestEntity[];
+
+  @OneToMany(() => JobViewEntity, (view) => view.user)
+  views: JobViewEntity[];
 }

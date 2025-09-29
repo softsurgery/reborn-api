@@ -8,6 +8,9 @@ import { ResponseJobUploadDto } from '../job-upload/response-job-upload.dto';
 import { ResponseJobCategoryDto } from '../job-category/response-job-category.dto';
 import { JobStyle } from '../../enums/job-style.enum';
 import { JobDifficulty } from '../../enums/job-difficulty.enum';
+import { ResponseJobRequestDto } from '../job-request/response-job-request.dto';
+import { ResponseJobViewDto } from '../job-view/response-job-view.dto';
+import { ResponseJobSaveDto } from '../job-save/response-job-save.dto';
 
 export class ResponseJobDto extends ResponseDtoHelper {
   @ApiProperty({ type: String })
@@ -66,4 +69,19 @@ export class ResponseJobDto extends ResponseDtoHelper {
   @Expose()
   @Type(() => ResponseJobUploadDto)
   uploads: ResponseJobUploadDto[];
+
+  @ApiProperty({ type: [ResponseJobRequestDto] })
+  @Expose()
+  @Type(() => ResponseJobRequestDto)
+  requests: ResponseJobRequestDto[];
+
+  @ApiProperty({ type: [ResponseJobViewDto] })
+  @Expose()
+  @Type(() => ResponseJobViewDto)
+  views: ResponseJobViewDto[];
+
+  @ApiProperty({ type: [ResponseJobSaveDto] })
+  @Expose()
+  @Type(() => ResponseJobSaveDto)
+  saves: ResponseJobSaveDto[];
 }

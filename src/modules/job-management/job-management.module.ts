@@ -17,6 +17,12 @@ import { JobRequestEntity } from './entities/job-request.entity';
 import { JobRequestRepository } from './repositories/job-request.repository';
 import { JobRequestService } from './services/job-request.service';
 import { ChatModule } from '../chat/chat.module';
+import { JobSaveRepository } from './repositories/job-save.repository';
+import { JobViewRepository } from './repositories/job-view.repository';
+import { JobSaveService } from './services/job-save.service';
+import { JobViewService } from './services/job-view.service';
+import { JobSaveEntity } from './entities/job-save.entity';
+import { JobViewEntity } from './entities/job-view.entity';
 
 @Module({
   controllers: [],
@@ -26,12 +32,16 @@ import { ChatModule } from '../chat/chat.module';
     JobCategoryRepository,
     JobUploadRepository,
     JobRequestRepository,
+    JobSaveRepository,
+    JobViewRepository,
 
     JobService,
     JobTagService,
     JobCategoryService,
     JobUploadService,
     JobRequestService,
+    JobSaveService,
+    JobViewService,
   ],
   exports: [
     JobRepository,
@@ -39,12 +49,16 @@ import { ChatModule } from '../chat/chat.module';
     JobCategoryRepository,
     JobUploadRepository,
     JobRequestRepository,
+    JobSaveRepository,
+    JobViewRepository,
 
     JobService,
     JobTagService,
     JobCategoryService,
     JobUploadService,
     JobRequestService,
+    JobSaveService,
+    JobViewService,
   ],
   imports: [
     TypeOrmModule.forFeature([
@@ -53,6 +67,8 @@ import { ChatModule } from '../chat/chat.module';
       JobCategoryEntity,
       JobUploadEntity,
       JobRequestEntity,
+      JobSaveEntity,
+      JobViewEntity,
     ]),
     UploadModule,
     ChatModule,
