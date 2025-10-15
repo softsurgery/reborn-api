@@ -23,6 +23,7 @@ import { JobSaveService } from './services/job-save.service';
 import { JobViewService } from './services/job-view.service';
 import { JobSaveEntity } from './entities/job-save.entity';
 import { JobViewEntity } from './entities/job-view.entity';
+import { UserManagementModule } from '../user-management/user-management.module';
 
 @Module({
   controllers: [],
@@ -70,6 +71,7 @@ import { JobViewEntity } from './entities/job-view.entity';
       JobSaveEntity,
       JobViewEntity,
     ]),
+    UserManagementModule,
     UploadModule,
     ChatModule,
   ],

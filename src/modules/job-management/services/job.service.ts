@@ -1,6 +1,6 @@
 import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
-import { FindManyOptions, FindOneOptions } from 'typeorm';
+import { FindManyOptions, FindOneOptions, In } from 'typeorm';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
 import { QueryBuilder } from 'src/shared/database/utils/database-query-builder';
 import { PageDto } from 'src/shared/database/dtos/database.page.dto';
@@ -18,6 +18,8 @@ import { UpdateJobUploadDto } from '../dtos/job-upload/update-job-upload.dto';
 import { JobTagEntity } from '../entities/job-tag.entity';
 import { ResponseJobMetadataDto } from '../dtos/job/response-job-metadata.dto';
 import { JobRequestService } from './job-request.service';
+import { UserNotFoundException } from 'src/modules/user-management/errors/user/user.notfound.error';
+import { FollowService } from 'src/modules/user-management/services/follow.service';
 
 @Injectable()
 export class JobService {
@@ -26,6 +28,7 @@ export class JobService {
     private readonly jobRequestService: JobRequestService,
     private readonly jobTagService: JobTagService,
     private readonly jobUploadService: JobUploadService,
+    private readonly followService: FollowService,
   ) {}
 
   async findOneById(id: string): Promise<JobEntity> {
@@ -123,6 +126,43 @@ export class JobService {
   }
 
   //Extended Methods ===========================================================================
+  async findAllFollowedPaginated(
+    query: IQueryObject,
+    userId?: string,
+  ): Promise<PageDto<JobEntity>> {
+    if (!userId) {
+      throw new UserNotFoundException();
+    }
+    //find all followings
+    const followingsIds = (await this.followService.getFollowing(userId)).map(
+      (f) => f.followingId,
+    );
+
+    const queryBuilder = new QueryBuilder(this.jobRepository.getMetadata());
+    const queryOptions = queryBuilder.build(query);
+    queryOptions.where = {
+      ...queryOptions.where,
+      postedById: In(followingsIds),
+    };
+
+    const count = await this.jobRepository.getTotalCount({
+      where: queryOptions.where,
+    });
+
+    const entities = await this.jobRepository.findAll(
+      queryOptions as FindManyOptions<JobEntity>,
+    );
+
+    const pageMetaDto = new PageMetaDto({
+      pageOptionsDto: {
+        page: Number(query.page),
+        take: Number(query.limit),
+      },
+      itemCount: count,
+    });
+
+    return new PageDto(entities, pageMetaDto);
+  }
 
   async findJobMetadataById(id: string): Promise<ResponseJobMetadataDto> {
     const requestCount = await this.jobRequestService.findRequestCount(id);

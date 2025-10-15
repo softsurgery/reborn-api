@@ -46,6 +46,19 @@ export class JobController {
     return { ...paginated, data: toDtoArray(ResponseJobDto, paginated.data) };
   }
 
+  @Get('/list-followed')
+  @ApiPaginatedResponse(ResponseJobDto)
+  async findAllFollowedPaginated(
+    @Query() query: IQueryObject,
+    @Request() req: RequestWithLogInfo,
+  ): Promise<PageDto<ResponseJobDto>> {
+    const paginated = await this.jobService.findAllFollowedPaginated(
+      query,
+      req.user?.sub,
+    );
+    return { ...paginated, data: toDtoArray(ResponseJobDto, paginated.data) };
+  }
+
   @Get('/all')
   async findAll(@Query() options: IQueryObject): Promise<ResponseJobDto[]> {
     return toDtoArray(ResponseJobDto, await this.jobService.findAll(options));
