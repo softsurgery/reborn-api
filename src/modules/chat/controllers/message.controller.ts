@@ -29,7 +29,7 @@ export class MessageController {
   @Get(':id/list')
   @ApiPaginatedResponse(ResponseMessageDto)
   async findPaginatedConversationMessages(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Query() query: IQueryObject,
   ): Promise<PageDto<ResponseMessageDto>> {
     const paginated =

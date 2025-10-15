@@ -95,7 +95,7 @@ export class MessageService {
 
   async findPaginatedConversationMessages(
     query: IQueryObject,
-    conversationId?: string,
+    conversationId?: number,
   ): Promise<PageDto<MessageEntity>> {
     const queryBuilder = new QueryBuilder(this.messageRepository.getMetadata());
 
