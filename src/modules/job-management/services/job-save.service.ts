@@ -9,6 +9,7 @@ import { JobSaveEntity } from '../entities/job-save.entity';
 import { JobSaveRepository } from '../repositories/job-save.repository';
 import { JobSaveNotFoundException } from '../errors/job-save/job-save.notfound.error';
 import { CreateJobSaveDto } from '../dtos/job-save/create-job-save.dto';
+import { UserNotFoundException } from 'src/modules/user-management/errors/user/user.notfound.error';
 
 @Injectable()
 export class JobSaveService {
@@ -64,6 +65,41 @@ export class JobSaveService {
     return new PageDto(entities, pageMetaDto);
   }
 
+  async findAllUserPaginated(
+    query: IQueryObject,
+    userId?: string,
+  ): Promise<PageDto<JobSaveEntity>> {
+    if (!userId) {
+      throw new UserNotFoundException();
+    }
+    const queryBuilder = new QueryBuilder(this.jobSaveRepository.getMetadata());
+
+    const queryOptions = queryBuilder.build(query);
+
+    queryOptions.where = {
+      ...queryOptions.where,
+      userId,
+    };
+
+    const count = await this.jobSaveRepository.getTotalCount({
+      where: queryOptions.where,
+    });
+
+    const entities = await this.jobSaveRepository.findAll(
+      queryOptions as FindManyOptions<JobSaveEntity>,
+    );
+
+    const pageMetaDto = new PageMetaDto({
+      pageOptionsDto: {
+        page: Number(query.page),
+        take: Number(query.limit),
+      },
+      itemCount: count,
+    });
+
+    return new PageDto(entities, pageMetaDto);
+  }
+
   @Transactional()
   async save(
     createJobSaveDto: CreateJobSaveDto,
@@ -73,6 +109,23 @@ export class JobSaveService {
       ...createJobSaveDto,
       userId: savedBy,
     });
+  }
+
+  @Transactional()
+  async unsave(
+    jobId: string,
+    unsavedBy?: string,
+  ): Promise<JobSaveEntity | null> {
+    const jobSave = await this.jobSaveRepository.findOne({
+      where: {
+        jobId: jobId,
+        userId: unsavedBy,
+      },
+    });
+    if (!jobSave) {
+      throw new JobSaveNotFoundException();
+    }
+    return this.jobSaveRepository.softDelete(jobSave.id);
   }
 
   @Transactional()
@@ -92,5 +145,20 @@ export class JobSaveService {
       throw new JobSaveNotFoundException();
     }
     return this.jobSaveRepository.remove(jobSave);
+  }
+
+  //Extended Methods ===========================================================================
+
+  async isJobSaveAlreadyExists(
+    jobId: string,
+    userId?: string,
+  ): Promise<JobSaveEntity | null> {
+    if (!userId) {
+      throw new UserNotFoundException();
+    }
+    const jobSave = await this.jobSaveRepository.findOne({
+      where: { userId, jobId },
+    });
+    return jobSave;
   }
 }

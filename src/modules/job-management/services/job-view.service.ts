@@ -94,4 +94,19 @@ export class JobViewService {
     }
     return this.jobViewRepository.remove(jobView);
   }
+
+  //Extended Methods ===========================================================================
+  @Transactional()
+  async markAsViewed(jobId: string, savedBy?: string): Promise<JobViewEntity> {
+    const jobView = await this.jobViewRepository.findOne({
+      where: { jobId, userId: savedBy },
+    });
+    if (!jobView) {
+      return await this.jobViewRepository.save({
+        jobId,
+        userId: savedBy,
+      });
+    }
+    return jobView;
+  }
 }

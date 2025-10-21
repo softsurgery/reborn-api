@@ -46,6 +46,22 @@ export class JobSaveController {
     };
   }
 
+  @Get('/user-list')
+  @ApiPaginatedResponse(ResponseJobSaveDto)
+  async findAllUserPaginated(
+    @Query() query: IQueryObject,
+    @Request() req: RequestWithLogInfo,
+  ): Promise<PageDto<ResponseJobSaveDto>> {
+    const paginated = await this.jobSaveService.findAllUserPaginated(
+      query,
+      req.user?.sub,
+    );
+    return {
+      ...paginated,
+      data: toDtoArray(ResponseJobSaveDto, paginated.data),
+    };
+  }
+
   @Get('/all')
   async findAll(@Query() options: IQueryObject): Promise<ResponseJobSaveDto[]> {
     return toDtoArray(
@@ -59,6 +75,17 @@ export class JobSaveController {
     @Param('id') id: number,
   ): Promise<ResponseJobSaveDto | null> {
     return toDto(ResponseJobSaveDto, await this.jobSaveService.findOneById(id));
+  }
+
+  @Get(':id/exists')
+  async isJobSaveAlreadyExists(
+    @Param('id') id: string,
+    @Request() req: RequestWithLogInfo,
+  ): Promise<ResponseJobSaveDto | null> {
+    return toDto(
+      ResponseJobSaveDto,
+      await this.jobSaveService.isJobSaveAlreadyExists(id, req.user?.sub),
+    );
   }
 
   @Post()
@@ -78,10 +105,11 @@ export class JobSaveController {
   @Delete(':id')
   @LogEvent(EventType.JOB_SAVE_DELETE)
   async delete(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Request() req: RequestWithLogInfo,
   ): Promise<ResponseJobSaveDto | null> {
+    const jobSave = await this.jobSaveService.unsave(id, req.user?.sub);
     req.logInfo = { id };
-    return toDto(ResponseJobSaveDto, await this.jobSaveService.softDelete(id));
+    return toDto(ResponseJobSaveDto, jobSave);
   }
 }

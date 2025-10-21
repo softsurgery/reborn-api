@@ -67,8 +67,8 @@ export class JobViewController {
     @Body() createJobRequestDto: CreateJobViewDto,
     @Request() req: RequestWithLogInfo,
   ): Promise<ResponseJobViewDto> {
-    const jobView = await this.jobViewService.save(
-      createJobRequestDto,
+    const jobView = await this.jobViewService.markAsViewed(
+      createJobRequestDto.jobId,
       req.user?.sub,
     );
     req.logInfo = { id: jobView.id };
