@@ -45,6 +45,20 @@ export class ConversationController {
     };
   }
 
+  @Get('/list/:id')
+  @ApiPaginatedResponse(ResponseConversationDto)
+  async findAllUserPaginated(
+    @Param('id') id: string,
+    @Query() query: IQueryObject,
+  ): Promise<PageDto<ResponseConversationDto>> {
+    const paginated =
+      await this.conversationService.findPaginatedUserConversations(query, id);
+    return {
+      ...paginated,
+      data: toDtoArray(ResponseConversationDto, paginated.data),
+    };
+  }
+
   @Get(':id')
   async findOneById(
     @Param('id') id: number,
