@@ -6,7 +6,7 @@ import { toDto, toDtoArray } from 'src/shared/database/utils/dtos';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 import { RegionService } from '../services/region.service';
 import { ResponseRegionDto } from '../dtos/response-region.dto';
 import { CreateRegionDto } from '../dtos/create-region.dto';
@@ -67,7 +67,7 @@ export class RegionController {
   @LogEvent(EventType.REGION_CREATE)
   async create(
     @Body() createRegionDto: CreateRegionDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseRegionDto> {
     const region = await this.regionService.save(createRegionDto);
     req.logInfo = { id: region.id };
@@ -79,7 +79,7 @@ export class RegionController {
   async update(
     @Param('id') id: string,
     @Body() updateRegionDto: UpdateRegionDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseRegionDto | null> {
     req.logInfo = { id };
     return toDto(
@@ -92,7 +92,7 @@ export class RegionController {
   @LogEvent(EventType.REGION_DELETE)
   async delete(
     @Param('id') id: string,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseRegionDto | null> {
     req.logInfo = { id };
     return toDto(ResponseRegionDto, await this.regionService.softDelete(id));

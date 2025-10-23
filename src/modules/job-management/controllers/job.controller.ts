@@ -20,7 +20,7 @@ import { toDto, toDtoArray } from 'src/shared/database/utils/dtos';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 import { ResponseJobDto } from '../dtos/job/response-job.dto';
 import { CreateJobDto } from '../dtos/job/create-job.dto';
 import { UpdateJobDto } from '../dtos/job/update-job.dto';
@@ -50,7 +50,7 @@ export class JobController {
   @ApiPaginatedResponse(ResponseJobDto)
   async findAllFollowedPaginated(
     @Query() query: IQueryObject,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<PageDto<ResponseJobDto>> {
     const paginated = await this.jobService.findAllFollowedPaginated(
       query,
@@ -83,7 +83,7 @@ export class JobController {
   @LogEvent(EventType.JOB_CREATE)
   async create(
     @Body() createJobDto: CreateJobDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobDto> {
     const job = await this.jobService.saveJob(createJobDto, req?.user?.sub);
     req.logInfo = { id: job.id, title: job.title };
@@ -95,7 +95,7 @@ export class JobController {
   async update(
     @Param('id') id: string,
     @Body() updateJobDto: UpdateJobDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobDto | null> {
     const job = await this.jobService.updateJob(id, updateJobDto);
     req.logInfo = { id, title: job?.title };
@@ -106,7 +106,7 @@ export class JobController {
   @LogEvent(EventType.JOB_DELETE)
   async delete(
     @Param('id') id: string,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobDto | null> {
     const job = await this.jobService.softDelete(id);
     req.logInfo = { id, title: job?.title };

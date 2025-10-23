@@ -15,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { ConversationService } from '../services/conversation.service';
 import { ResponseConversationDto } from '../dtos/conversation/response-conversation.dto';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 
 @ApiTags('conversation')
 @ApiBearerAuth('access_token')
@@ -32,7 +32,7 @@ export class ConversationController {
   @ApiPaginatedResponse(ResponseConversationDto)
   async findAllPaginated(
     @Query() query: IQueryObject,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<PageDto<ResponseConversationDto>> {
     const paginated =
       await this.conversationService.findPaginatedUserConversations(

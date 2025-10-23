@@ -12,7 +12,7 @@ import { Public } from '../utils/public-strategy';
 import { ResponseSigninDto } from '../dtos/web/response-signin.dto';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
 import { ClientAuthService } from '../services/client-auth.service';
 import { RequestClientSignUpDto } from '../dtos/client/request-client-signup.dto';
@@ -43,7 +43,7 @@ export class ClientAuthController {
   @LogEvent(EventType.CLIENT_SIGNIN)
   async signIn(
     @Body() signInDto: RequestClientSignInDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseSigninDto> {
     const result = await this.clientAuthService.signin(
       signInDto.email,
@@ -72,7 +72,7 @@ export class ClientAuthController {
   @LogEvent(EventType.CLIENT_SIGNUP)
   async register(
     @Body() registerDto: RequestClientSignUpDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ) {
     try {
       const result = await this.clientAuthService.signup(registerDto);

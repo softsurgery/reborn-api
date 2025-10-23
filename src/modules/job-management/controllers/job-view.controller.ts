@@ -6,7 +6,7 @@ import { toDto, toDtoArray } from 'src/shared/database/utils/dtos';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 import {
   Body,
   ClassSerializerInterceptor,
@@ -65,7 +65,7 @@ export class JobViewController {
   @LogEvent(EventType.JOB_VIEW_CREATE)
   async create(
     @Body() createJobRequestDto: CreateJobViewDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobViewDto> {
     const jobView = await this.jobViewService.markAsViewed(
       createJobRequestDto.jobId,
@@ -79,7 +79,7 @@ export class JobViewController {
   @LogEvent(EventType.JOB_VIEW_DELETE)
   async delete(
     @Param('id') id: number,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobViewDto | null> {
     req.logInfo = { id };
     return toDto(ResponseJobViewDto, await this.jobViewService.softDelete(id));

@@ -6,7 +6,7 @@ import { toDto, toDtoArray } from 'src/shared/database/utils/dtos';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 import { CurrencyService } from '../services/currency.service';
 import { ResponseCurrencyDto } from '../dtos/response-currency.dto';
 import { CreateCurrencyDto } from '../dtos/create-currency.dto';
@@ -72,7 +72,7 @@ export class CurrencyController {
   @LogEvent(EventType.REGION_CREATE)
   async create(
     @Body() createCurrencyDto: CreateCurrencyDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseCurrencyDto> {
     const currency = await this.currencyService.save(createCurrencyDto);
     req.logInfo = { id: currency.id };
@@ -84,7 +84,7 @@ export class CurrencyController {
   async update(
     @Param('id') id: string,
     @Body() updateCurrencyDto: UpdateCurrencyDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseCurrencyDto | null> {
     req.logInfo = { id };
     return toDto(
@@ -97,7 +97,7 @@ export class CurrencyController {
   @LogEvent(EventType.REGION_DELETE)
   async delete(
     @Param('id') id: string,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseCurrencyDto | null> {
     req.logInfo = { id };
     return toDto(

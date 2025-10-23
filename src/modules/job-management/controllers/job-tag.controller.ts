@@ -6,7 +6,7 @@ import { toDto, toDtoArray } from 'src/shared/database/utils/dtos';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 import {
   Body,
   ClassSerializerInterceptor,
@@ -67,7 +67,7 @@ export class JobTagController {
   @LogEvent(EventType.JOB_TAG_CREATE)
   async create(
     @Body() createJobTagDto: CreateJobTagDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobTagDto> {
     const jobTag = await this.jobTagService.save(createJobTagDto);
     req.logInfo = { id: jobTag.id };
@@ -79,7 +79,7 @@ export class JobTagController {
   async update(
     @Param('id') id: number,
     @Body() updateJobTagDto: UpdateJobTagDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobTagDto | null> {
     req.logInfo = { id };
     return toDto(
@@ -92,7 +92,7 @@ export class JobTagController {
   @LogEvent(EventType.JOB_TAG_DELETE)
   async delete(
     @Param('id') id: number,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobTagDto | null> {
     req.logInfo = { id };
     return toDto(ResponseJobTagDto, await this.jobTagService.softDelete(id));

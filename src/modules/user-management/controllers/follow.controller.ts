@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { FollowService } from '../services/follow.service';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 
@@ -26,25 +26,25 @@ export class FollowController {
 
   @Post(':id/follow')
   @LogEvent(EventType.USER_FOLLOW)
-  follow(@Param('id') targetId: string, @Request() req: RequestWithLogInfo) {
+  follow(@Param('id') targetId: string, @Request() req: AdvancedRequest) {
     req.logInfo = { id: req.user?.sub, targetId };
     return this.followService.follow(targetId, req.user?.sub);
   }
 
   @Delete(':id/unfollow')
   @LogEvent(EventType.USER_UNFOLLOW)
-  unfollow(@Param('id') targetId: string, @Request() req: RequestWithLogInfo) {
+  unfollow(@Param('id') targetId: string, @Request() req: AdvancedRequest) {
     req.logInfo = { id: req.user?.sub, targetId };
     return this.followService.unfollow(targetId, req.user?.sub);
   }
 
   @Get(':id/followers')
-  getFollowers(@Param('id') id: string, @Request() req: RequestWithLogInfo) {
+  getFollowers(@Param('id') id: string, @Request() req: AdvancedRequest) {
     return this.followService.getFollowers(id, req.user?.sub);
   }
 
   @Get(':id/following')
-  getFollowing(@Param('id') id: string, @Request() req: RequestWithLogInfo) {
+  getFollowing(@Param('id') id: string, @Request() req: AdvancedRequest) {
     return this.followService.getFollowing(id, req.user?.sub);
   }
 
@@ -54,10 +54,7 @@ export class FollowController {
   }
 
   @Get(':id/is-following')
-  isFollowing(
-    @Param('id') targetId: string,
-    @Request() req: RequestWithLogInfo,
-  ) {
+  isFollowing(@Param('id') targetId: string, @Request() req: AdvancedRequest) {
     req.logInfo = { id: req.user?.sub, targetId };
     return this.followService.isFollowing(targetId, req.user?.sub);
   }

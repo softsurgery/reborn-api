@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
 import { tap } from 'rxjs';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 import { LoggerService } from '../services/logger.service';
 import { EventType } from '../enums/event-type.enum';
 import { AccessTokenPayload } from 'src/shared/auth/interfaces/access-token-payload.interface';
@@ -25,7 +25,7 @@ export class LogInterceptor implements NestInterceptor {
 
         if (!event) return;
 
-        const request: RequestWithLogInfo = context.switchToHttp().getRequest();
+        const request: AdvancedRequest = context.switchToHttp().getRequest();
         const { method, url, logInfo } = request;
 
         if (event === EventType.SIGNIN) {

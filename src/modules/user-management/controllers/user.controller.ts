@@ -23,7 +23,7 @@ import { toDto, toDtoArray } from 'src/shared/database/utils/dtos';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 
 @ApiTags('user')
 @ApiBearerAuth('access_token')
@@ -75,7 +75,7 @@ export class UserController {
   @LogEvent(EventType.USER_CREATE)
   async create(
     @Body() createUserDto: CreateUserDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseUserDto> {
     const user = toDto(
       ResponseUserDto,
@@ -90,7 +90,7 @@ export class UserController {
   async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseUserDto | null> {
     const user = await this.userService.updateWithProfile(id, updateUserDto);
     req.logInfo = { id: user?.id, firstName: user?.firstName };
@@ -101,7 +101,7 @@ export class UserController {
   @LogEvent(EventType.USER_ACTIVATE)
   async activate(
     @Param('id') id: string,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseUserDto | null> {
     const user = await this.userService.activate(id);
     req.logInfo = { id: user?.id, firstName: user?.firstName };
@@ -112,7 +112,7 @@ export class UserController {
   @LogEvent(EventType.USER_DEACTIVATE)
   async deactivate(
     @Param('id') id: string,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseUserDto | null> {
     req.logInfo = { id };
     return toDto(ResponseUserDto, await this.userService.deactivate(id));
@@ -122,7 +122,7 @@ export class UserController {
   @LogEvent(EventType.USER_APPROVE)
   async approve(
     @Param('id') id: string,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseUserDto | null> {
     const user = await this.userService.approve(id);
     req.logInfo = { id: user?.id, firstName: user?.firstName };
@@ -133,7 +133,7 @@ export class UserController {
   @LogEvent(EventType.USER_DISAPPROVE)
   async disapprove(
     @Param('id') id: string,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseUserDto | null> {
     const user = await this.userService.disapprove(id);
     req.logInfo = { id: user?.id, firstName: user?.firstName };
@@ -144,7 +144,7 @@ export class UserController {
   @LogEvent(EventType.USER_DELETE)
   async delete(
     @Param('id') id: string,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseUserDto | null> {
     const user = await this.userService.softDelete(id);
     req.logInfo = { id: user?.id, firstName: user?.firstName };

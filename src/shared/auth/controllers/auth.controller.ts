@@ -16,7 +16,7 @@ import { RequestSignInDto } from '../dtos/web/request-signin.dto';
 import { OAuthRequestDto } from '../dtos/web/response-oauth.dto';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
 import { RequestResetTokenDto } from '../dtos/web/request-reset-token.dto';
 import { ResponseResetTokenDto } from '../dtos/web/response-reset-token.dto';
@@ -47,7 +47,7 @@ export class AuthController {
   @LogEvent(EventType.SIGNIN)
   async signIn(
     @Body() signInDto: RequestSignInDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseSigninDto> {
     const result = await this.authService.signin(
       signInDto.usernameOrEmail,

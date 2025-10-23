@@ -6,7 +6,7 @@ import { toDto, toDtoArray } from 'src/shared/database/utils/dtos';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 import {
   Body,
   ClassSerializerInterceptor,
@@ -52,7 +52,7 @@ export class JobRequestController {
   @ApiPaginatedResponse(ResponseJobRequestDto)
   async findAllPaginatedIncoming(
     @Query() query: IQueryObject,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<PageDto<ResponseJobRequestDto>> {
     const paginated =
       await this.jobRequestService.findPaginatedUserIncomingJobRequests(
@@ -69,7 +69,7 @@ export class JobRequestController {
   @ApiPaginatedResponse(ResponseJobRequestDto)
   async findAllPaginatedOngoing(
     @Query() query: IQueryObject,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<PageDto<ResponseJobRequestDto>> {
     const paginated =
       await this.jobRequestService.findPaginatedUserOngoingJobRequests(
@@ -105,7 +105,7 @@ export class JobRequestController {
   @Get(':id/exists')
   async isJobRequestAlreadyExists(
     @Param('id') id: string,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobRequestDto | null> {
     return toDto(
       ResponseJobRequestDto,
@@ -117,7 +117,7 @@ export class JobRequestController {
   @LogEvent(EventType.JOB_REQUEST_CREATE)
   async create(
     @Body() createJobRequestDto: CreateJobRequestDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobRequestDto> {
     const jobRequest = await this.jobRequestService.save(
       createJobRequestDto,
@@ -132,7 +132,7 @@ export class JobRequestController {
   async update(
     @Param('id') id: number,
     @Body() updateJobRequestDto: UpdateJobRequestDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobRequestDto | null> {
     req.logInfo = { id };
     return toDto(
@@ -145,7 +145,7 @@ export class JobRequestController {
   @LogEvent(EventType.JOB_REQUEST_APPROVE)
   async approve(
     @Param('id') id: number,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobRequestDto | null> {
     req.logInfo = { id };
     return toDto(
@@ -158,7 +158,7 @@ export class JobRequestController {
   @LogEvent(EventType.JOB_REQUEST_REJECT)
   async reject(
     @Param('id') id: number,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobRequestDto | null> {
     req.logInfo = { id };
     return toDto(
@@ -171,7 +171,7 @@ export class JobRequestController {
   @LogEvent(EventType.JOB_REQUEST_CANCEL)
   async cancel(
     @Param('id') id: number,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobRequestDto | null> {
     req.logInfo = { id };
     return toDto(
@@ -184,7 +184,7 @@ export class JobRequestController {
   @LogEvent(EventType.JOB_REQUEST_DELETE)
   async delete(
     @Param('id') id: number,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobRequestDto | null> {
     req.logInfo = { id };
     return toDto(

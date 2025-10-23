@@ -13,7 +13,7 @@ import {
   Request,
   UseInterceptors,
 } from '@nestjs/common';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 import { NotificationService } from '../services/notification.service';
 import { ResponseNotificationDto } from '../dtos/response-notification.dto';
 
@@ -32,7 +32,7 @@ export class NotificationController {
   @ApiPaginatedResponse(ResponseNotificationDto)
   async findAllPaginated(
     @Query() query: IQueryObject,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<PageDto<ResponseNotificationDto>> {
     const paginated = await this.notificationService.findAllPaginatedByUser(
       query,
