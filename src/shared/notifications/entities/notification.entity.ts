@@ -25,7 +25,7 @@ export class NotificationEntity extends EntityHelper {
   user: UserEntity;
 
   @Column({ nullable: true })
-  userId?: number;
+  userId?: string;
 
   @Column({ type: 'json', nullable: true })
   payload?: object;

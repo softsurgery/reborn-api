@@ -31,7 +31,7 @@ export class LogEntity extends EntityHelper {
   user: UserEntity;
 
   @Column({ nullable: true })
-  userId?: number;
+  userId?: string;
 
   @Column({ type: 'json', nullable: true })
   logInfo?: object;

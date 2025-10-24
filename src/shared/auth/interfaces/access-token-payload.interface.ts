@@ -1,5 +1,5 @@
 export interface AccessTokenPayload {
-  sub: number;
+  sub: string;
   email: string;
   iat: number;
   exp: number;
