@@ -16,42 +16,28 @@ export class MessageService {
 
   async findOneById(id: number): Promise<MessageEntity> {
     const message = await this.messageRepository.findOneById(id);
-    if (!message) {
-      throw new MessageNotFoundException();
-    }
+    if (!message) throw new MessageNotFoundException();
     return message;
   }
 
-  async findOneByCondition(
-    query: IQueryObject = {},
-  ): Promise<MessageEntity | null> {
+  async findOneByCondition(query: IQueryObject = {}): Promise<MessageEntity | null> {
     const queryBuilder = new QueryBuilder(this.messageRepository.getMetadata());
     const queryOptions = queryBuilder.build(query);
-    const message = await this.messageRepository.findOne(
-      queryOptions as FindOneOptions<MessageEntity>,
-    );
-    return message;
+    return await this.messageRepository.findOne(queryOptions as FindOneOptions<MessageEntity>);
   }
 
   async findAll(query: IQueryObject): Promise<MessageEntity[]> {
     const queryBuilder = new QueryBuilder(this.messageRepository.getMetadata());
     const queryOptions = queryBuilder.build(query);
-    const messages = await this.messageRepository.findAll(
-      queryOptions as FindManyOptions<MessageEntity>,
-    );
-    return messages;
+    return await this.messageRepository.findAll(queryOptions as FindManyOptions<MessageEntity>);
   }
 
   async findAllPaginated(query: IQueryObject): Promise<PageDto<MessageEntity>> {
     const queryBuilder = new QueryBuilder(this.messageRepository.getMetadata());
     const queryOptions = queryBuilder.build(query);
-    const count = await this.messageRepository.getTotalCount({
-      where: queryOptions.where,
-    });
 
-    const entities = await this.messageRepository.findAll(
-      queryOptions as FindManyOptions<MessageEntity>,
-    );
+    const count = await this.messageRepository.getTotalCount({ where: queryOptions.where });
+    const entities = await this.messageRepository.findAll(queryOptions as FindManyOptions<MessageEntity>);
 
     const pageMetaDto = new PageMetaDto({
       pageOptionsDto: {
@@ -65,17 +51,12 @@ export class MessageService {
   }
 
   @Transactional()
-  async save(
-    createMessageDto: CreateMessageDto,
-    userId?: string,
-  ): Promise<MessageEntity> {
+  async save(createMessageDto: CreateMessageDto, userId?: string): Promise<MessageEntity> {
     return await this.messageRepository.save({ ...createMessageDto, userId });
   }
 
   @Transactional()
-  async saveMany(
-    createMessageDto: CreateMessageDto[],
-  ): Promise<MessageEntity[]> {
+  async saveMany(createMessageDto: CreateMessageDto[]): Promise<MessageEntity[]> {
     return Promise.all(createMessageDto.map((dto) => this.save(dto)));
   }
 
@@ -85,20 +66,16 @@ export class MessageService {
 
   async delete(id: number): Promise<MessageEntity | null> {
     const message = await this.messageRepository.findOneById(id);
-    if (!message) {
-      throw new MessageNotFoundException();
-    }
+    if (!message) throw new MessageNotFoundException();
     return this.messageRepository.remove(message);
   }
 
-  //Extended Methods ===========================================================================
-
+  // 🔹 Récupère les messages d’une conversation avec tri décroissant (dernier message en premier)
   async findPaginatedConversationMessages(
     query: IQueryObject,
     conversationId?: number,
   ): Promise<PageDto<MessageEntity>> {
     const queryBuilder = new QueryBuilder(this.messageRepository.getMetadata());
-
     const queryOptions = queryBuilder.build(query);
 
     queryOptions.where = {
@@ -106,14 +83,12 @@ export class MessageService {
       conversationId,
     };
 
-    const count = await this.messageRepository.getTotalCount({
-      where: queryOptions.where,
-    });
+    queryOptions.order = { createdAt: 'DESC' }; // 🔹 tri par date décroissante
 
-    const entities = await this.messageRepository.findAll(
-      queryOptions as FindManyOptions<MessageEntity>,
-    );
-
+    const count = await this.messageRepository.getTotalCount({ where: queryOptions.where });
+    
+    const entities = await this.messageRepository.findAll(queryOptions as FindManyOptions<MessageEntity>);
+    
     const pageMetaDto = new PageMetaDto({
       pageOptionsDto: {
         page: Number(query.page),
@@ -122,6 +97,6 @@ export class MessageService {
       itemCount: count,
     });
 
-    return new PageDto(entities, pageMetaDto);
+    return new PageDto(entities || [], pageMetaDto);
   }
 }
