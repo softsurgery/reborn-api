@@ -10,16 +10,16 @@ export interface AdvancedRequest extends ExpressRequest {
   notificationInfo?: Record<string, unknown>;
 }
 
+export interface AdvancedSocket extends Socket {
+  user: {
+    id: string;
+    username: string;
+  };
+}
+
 export interface SocketPayload {
   sub: string;
   email: string;
   iat: number;
   exp: number;
-}
-
-export interface ChatSocket extends Socket {
-  user: {
-    id: string;
-    username: string;
-  };
 }

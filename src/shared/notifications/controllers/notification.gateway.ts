@@ -6,7 +6,7 @@ import {
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { getTokenPayloadForWebSocket } from 'src/shared/auth/utils/token-payload';
-import { ChatSocket } from 'src/types';
+import { AdvancedSocket } from 'src/types';
 
 @WebSocketGateway({
   cors: { origin: '*' },
@@ -17,7 +17,7 @@ export class NotificationGateway
   @WebSocketServer()
   server: Server;
 
-  handleConnection(client: ChatSocket) {
+  handleConnection(client: AdvancedSocket) {
     const payload = getTokenPayloadForWebSocket(client);
     if (!payload) {
       client.disconnect();
@@ -26,5 +26,5 @@ export class NotificationGateway
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  handleDisconnect(_client: ChatSocket) {}
+  handleDisconnect(_client: AdvancedSocket) {}
 }
