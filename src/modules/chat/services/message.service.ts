@@ -16,9 +16,7 @@ export class MessageService {
 
   async findOneById(id: number): Promise<MessageEntity> {
     const message = await this.messageRepository.findOneById(id);
-    if (!message) {
-      throw new MessageNotFoundException();
-    }
+    if (!message) throw new MessageNotFoundException();
     return message;
   }
 
@@ -27,28 +25,26 @@ export class MessageService {
   ): Promise<MessageEntity | null> {
     const queryBuilder = new QueryBuilder(this.messageRepository.getMetadata());
     const queryOptions = queryBuilder.build(query);
-    const message = await this.messageRepository.findOne(
+    return await this.messageRepository.findOne(
       queryOptions as FindOneOptions<MessageEntity>,
     );
-    return message;
   }
 
   async findAll(query: IQueryObject): Promise<MessageEntity[]> {
     const queryBuilder = new QueryBuilder(this.messageRepository.getMetadata());
     const queryOptions = queryBuilder.build(query);
-    const messages = await this.messageRepository.findAll(
+    return await this.messageRepository.findAll(
       queryOptions as FindManyOptions<MessageEntity>,
     );
-    return messages;
   }
 
   async findAllPaginated(query: IQueryObject): Promise<PageDto<MessageEntity>> {
     const queryBuilder = new QueryBuilder(this.messageRepository.getMetadata());
     const queryOptions = queryBuilder.build(query);
+
     const count = await this.messageRepository.getTotalCount({
       where: queryOptions.where,
     });
-
     const entities = await this.messageRepository.findAll(
       queryOptions as FindManyOptions<MessageEntity>,
     );
@@ -85,20 +81,16 @@ export class MessageService {
 
   async delete(id: number): Promise<MessageEntity | null> {
     const message = await this.messageRepository.findOneById(id);
-    if (!message) {
-      throw new MessageNotFoundException();
-    }
+    if (!message) throw new MessageNotFoundException();
     return this.messageRepository.remove(message);
   }
 
-  //Extended Methods ===========================================================================
-
+  // 🔹 Récupère les messages d’une conversation avec tri décroissant (dernier message en premier)
   async findPaginatedConversationMessages(
     query: IQueryObject,
     conversationId?: number,
   ): Promise<PageDto<MessageEntity>> {
     const queryBuilder = new QueryBuilder(this.messageRepository.getMetadata());
-
     const queryOptions = queryBuilder.build(query);
 
     queryOptions.where = {
@@ -122,6 +114,6 @@ export class MessageService {
       itemCount: count,
     });
 
-    return new PageDto(entities, pageMetaDto);
+    return new PageDto(entities || [], pageMetaDto);
   }
 }
