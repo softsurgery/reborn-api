@@ -31,7 +31,8 @@ export class MessageController {
     @Param('id') id: number,
     @Query() query: IQueryObject,
   ): Promise<PageDto<ResponseMessageDto>> {
-    const paginated = await this.messageService.findPaginatedConversationMessages(query, id);
+    const paginated =
+      await this.messageService.findPaginatedConversationMessages(query, id);
 
     return {
       ...paginated,
