@@ -20,10 +20,14 @@ import { ResponseClientSignupDto } from '../dtos/client/response-client-signup.d
 import { RequestClientSignInDto } from '../dtos/client/request-client-signin.dto';
 import { identifyUser } from 'src/modules/user-management/utils/identify-user';
 import { UserEntity } from 'src/modules/user-management/entities/user.entity';
+import { Notify } from 'src/shared/notifications/decorators/notify.decorator';
+import { NotificationType } from 'src/shared/notifications/enums/notification-type.enum';
+import { NotificationInterceptor } from 'src/shared/notifications/decorators/notification.interceptor';
 
 @ApiTags('client-auth')
 @Controller({ version: '1', path: '/client-auth' })
 @UseInterceptors(LogInterceptor)
+@UseInterceptors(NotificationInterceptor)
 export class ClientAuthController {
   constructor(private clientAuthService: ClientAuthService) {}
 
@@ -41,6 +45,7 @@ export class ClientAuthController {
   })
   @ApiResponse({ status: 401, description: 'Invalid credentials.' })
   @LogEvent(EventType.CLIENT_SIGNIN)
+  @Notify(NotificationType.NEW_SIGNIN)
   async signIn(
     @Body() signInDto: RequestClientSignInDto,
     @Request() req: AdvancedRequest,
@@ -50,6 +55,10 @@ export class ClientAuthController {
       signInDto.password,
     );
     req.logInfo = {
+      userId: result.user.id,
+      clientName: identifyUser(result.user as UserEntity),
+    };
+    req.notificationInfo = {
       userId: result.user.id,
       clientName: identifyUser(result.user as UserEntity),
     };
