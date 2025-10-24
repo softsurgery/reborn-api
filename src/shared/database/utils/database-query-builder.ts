@@ -1,6 +1,7 @@
 import {
   Between,
   EntityMetadata,
+  ILike,
   In,
   IsNull,
   LessThan,
@@ -93,29 +94,36 @@ export class QueryBuilder {
       const searchValue = query.search as string;
       const searchableFields = this.getSearchableFields(this.entityMetadata);
 
-      const conditions = searchableFields.map((field: string) => {
+      const searchConditions = searchableFields.map((field: string) => {
         if (isNaN(Number(searchValue))) {
-          // Likely a string or date
           if (/^\d{4}-\d{2}-\d{2}/.test(searchValue)) {
-            // Date-like (yyyy-mm-dd)
             return { [field]: new Date(searchValue) };
           }
-          // String: use LIKE for partial matching
-          return { [field]: Like(`%${searchValue}%`) };
+          return { [field]: ILike(`%${searchValue}%`) };
         } else {
-          // If the value is a number, apply equality check
           return { [field]: Number(searchValue) };
         }
       });
 
-      const flattenedConditions = conditions.flat();
       if (output.where) {
-        output.where = {
-          ...output.where,
-          OR: flattenedConditions,
-        };
+        const filters = Array.isArray(output.where)
+          ? output.where
+          : [output.where];
+
+        const combined: object[] = [];
+
+        filters.forEach((filter) => {
+          searchConditions.forEach((searchCond) => {
+            combined.push({
+              ...filter,
+              ...searchCond,
+            });
+          });
+        });
+
+        output.where = combined;
       } else {
-        output.where = flattenedConditions;
+        output.where = searchConditions;
       }
     }
 
