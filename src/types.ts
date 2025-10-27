@@ -11,12 +11,15 @@ export interface AdvancedRequest extends ExpressRequest {
 }
 
 export interface AdvancedSocket extends Socket {
-  user: {
+  user?: {
     id: string;
-    username: string;
+    email?: string;
+    username?: string;
+  };
+  data: {
+    userId?: string;
   };
 }
-
 export interface SocketPayload {
   sub: string;
   email: string;

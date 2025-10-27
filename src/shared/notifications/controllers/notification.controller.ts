@@ -9,6 +9,7 @@ import {
   Controller,
   Get,
   Param,
+  Post,
   Query,
   Request,
   UseInterceptors,
@@ -16,6 +17,8 @@ import {
 import { AdvancedRequest } from 'src/types';
 import { NotificationService } from '../services/notification.service';
 import { ResponseNotificationDto } from '../dtos/response-notification.dto';
+import { NotificationGateway } from './notification.gateway';
+import { NotificationType } from '../enums/notification-type.enum';
 
 @ApiTags('notification')
 @ApiBearerAuth('access_token')
@@ -26,7 +29,10 @@ import { ResponseNotificationDto } from '../dtos/response-notification.dto';
   path: '/notification',
 })
 export class NotificationController {
-  constructor(private readonly notificationService: NotificationService) {}
+  constructor(
+    private readonly notificationService: NotificationService,
+    private readonly notificationGateway: NotificationGateway,
+  ) {}
 
   @Get('/list')
   @ApiPaginatedResponse(ResponseNotificationDto)
@@ -68,5 +74,12 @@ export class NotificationController {
       ResponseNotificationDto,
       await this.notificationService.findOneById(id),
     );
+  }
+
+  @Post('test/:id')
+  async triggerNotification(@Param('id') id: string): Promise<void> {
+    await this.notificationGateway.notifyUser(id, NotificationType.TEST, {
+      userId: id,
+    });
   }
 }

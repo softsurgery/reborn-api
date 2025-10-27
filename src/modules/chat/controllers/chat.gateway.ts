@@ -15,6 +15,8 @@ import { MessageService } from '../services/message.service';
 import { MessageRepository } from '../repositories/message.repository';
 import { LessThan } from 'typeorm';
 
+const MAX_LIMIT = 20;
+
 @WebSocketGateway({
   cors: { origin: '*' },
 })
@@ -66,7 +68,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       await this.messageService.findPaginatedConversationMessages(
         {
           sort: 'createdAt,DESC',
-          limit: '20',
+          limit: MAX_LIMIT.toString(),
           page: '1',
         },
         data.conversationId,
@@ -104,7 +106,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         ...(data.before ? { createdAt: LessThan(data.before) } : {}),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
-      take: Number(data.limit ?? 20),
+      take: Number(data.limit ?? MAX_LIMIT.toString()),
       order: {
         createdAt: 'DESC',
       },

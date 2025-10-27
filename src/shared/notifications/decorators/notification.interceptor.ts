@@ -1,18 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NestInterceptor,
+  ExecutionContext,
+  CallHandler,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
 import { tap } from 'rxjs';
 import { AdvancedRequest } from 'src/types';
 import { AccessTokenPayload } from 'src/shared/auth/interfaces/access-token-payload.interface';
 import { getTokenPayload } from 'src/shared/auth/utils/token-payload';
-import { NotificationService } from '../services/notification.service';
 import { NotificationType } from '../enums/notification-type.enum';
+import { NotificationGateway } from '../controllers/notification.gateway';
 
 @Injectable()
 export class NotificationInterceptor implements NestInterceptor {
   constructor(
     private readonly reflector: Reflector,
-    private readonly notificationService: NotificationService,
+    private readonly notificationGateway: NotificationGateway,
   ) {}
 
   intercept(context: ExecutionContext, next: CallHandler) {
@@ -22,29 +26,26 @@ export class NotificationInterceptor implements NestInterceptor {
           'type',
           context.getHandler(),
         );
-
         if (!type) return;
 
         const request: AdvancedRequest = context.switchToHttp().getRequest();
         const { notificationInfo } = request;
 
+        let userId: string | undefined;
         if (type === NotificationType.NEW_SIGNIN) {
-          void this.notificationService.save({
-            type,
-            payload: notificationInfo,
-            userId: notificationInfo?.userId as string,
-          });
-
-          return;
+          userId = notificationInfo?.userId as string;
+        } else {
+          const payload: AccessTokenPayload = getTokenPayload(request);
+          userId = payload?.sub;
         }
+        if (!userId) return;
 
-        const payload: AccessTokenPayload = getTokenPayload(request);
-
-        void this.notificationService.save({
+        // Fire-and-forget emit
+        void this.notificationGateway.notifyUser(
+          userId,
           type,
-          payload: notificationInfo,
-          userId: payload?.sub,
-        });
+          notificationInfo || {},
+        );
       }),
     );
   }
