@@ -20,7 +20,7 @@ import { toDto, toDtoArray } from 'src/shared/database/utils/dtos';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
 import { CreateFeedbackDto } from '../dtos/feedback/create-feedback.dto';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 
 @ApiTags('feedback')
 @ApiBearerAuth('access_token')
@@ -68,7 +68,7 @@ export class FeedbackController {
   @LogEvent(EventType.FEEDBACK_CREATE)
   async create(
     @Body() createFeedbackDto: CreateFeedbackDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseFeedbackDto> {
     const feedback = await this.feedbackService.saveWithDeviceInfo(
       createFeedbackDto,
@@ -82,7 +82,7 @@ export class FeedbackController {
   @LogEvent(EventType.FEEDBACK_DELETE)
   async delete(
     @Param('id') id: string,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseFeedbackDto | null> {
     const feedback = await this.feedbackService.softDelete(id);
     req.logInfo = { id, category: feedback?.category };

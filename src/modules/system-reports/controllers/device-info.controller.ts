@@ -20,7 +20,7 @@ import { CreateDeviceInfoDto } from '../dtos/device-info/create-device-info.dto'
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 
 @ApiTags('device-info')
 @ApiBearerAuth('access_token')
@@ -68,7 +68,7 @@ export class DeviceInfoController {
   @LogEvent(EventType.DEVICE_INFO_CREATE)
   async create(
     @Body() createDeviceInfoDto: CreateDeviceInfoDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseDeviceInfoDto> {
     const deviceInfo = await this.deviceInfoService.save(createDeviceInfoDto);
     req.logInfo = { id: deviceInfo.id };
@@ -79,7 +79,7 @@ export class DeviceInfoController {
   @LogEvent(EventType.DEVICE_INFO_DELETE)
   async delete(
     @Param('id') id: string,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseDeviceInfoDto | null> {
     req.logInfo = { id };
     return toDto(

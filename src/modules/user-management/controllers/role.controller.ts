@@ -23,7 +23,7 @@ import { toDto, toDtoArray } from 'src/shared/database/utils/dtos';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 
 @ApiTags('role')
 @ApiBearerAuth('access_token')
@@ -59,7 +59,7 @@ export class RoleController {
   @LogEvent(EventType.ROLE_CREATE)
   async create(
     @Body() createRoleDto: CreateRoleDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseRoleDto> {
     const role = await this.roleService.saveWithPermissions(createRoleDto);
     req.logInfo = { id: role.id, label: role.label };
@@ -70,7 +70,7 @@ export class RoleController {
   @LogEvent(EventType.ROLE_DUPLICATE)
   async duplicate(
     @Param('id') id: string,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseRoleDto | null> {
     const role = await this.roleService.duplicateWithPermissions(id);
     req.logInfo = { id: role?.id, fid: id, label: role?.label };
@@ -82,7 +82,7 @@ export class RoleController {
   async update(
     @Param('id') id: string,
     @Body() updateRoleDto: UpdateRoleDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseRoleDto | null> {
     const role = await this.roleService.updateWithPermissions(
       id,
@@ -96,7 +96,7 @@ export class RoleController {
   @LogEvent(EventType.ROLE_DELETE)
   async delete(
     @Param('id') id: string,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseRoleDto | null> {
     const role = await this.roleService.softDelete(id);
     req.logInfo = { id, label: role?.label };

@@ -12,7 +12,7 @@ import { Public } from '../utils/public-strategy';
 import { ResponseSigninDto } from '../dtos/web/response-signin.dto';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
 import { ClientAuthService } from '../services/client-auth.service';
 import { RequestClientSignUpDto } from '../dtos/client/request-client-signup.dto';
@@ -20,10 +20,14 @@ import { ResponseClientSignupDto } from '../dtos/client/response-client-signup.d
 import { RequestClientSignInDto } from '../dtos/client/request-client-signin.dto';
 import { identifyUser } from 'src/modules/user-management/utils/identify-user';
 import { UserEntity } from 'src/modules/user-management/entities/user.entity';
+import { Notify } from 'src/shared/notifications/decorators/notify.decorator';
+import { NotificationType } from 'src/shared/notifications/enums/notification-type.enum';
+import { NotificationInterceptor } from 'src/shared/notifications/decorators/notification.interceptor';
 
 @ApiTags('client-auth')
 @Controller({ version: '1', path: '/client-auth' })
 @UseInterceptors(LogInterceptor)
+@UseInterceptors(NotificationInterceptor)
 export class ClientAuthController {
   constructor(private clientAuthService: ClientAuthService) {}
 
@@ -41,15 +45,20 @@ export class ClientAuthController {
   })
   @ApiResponse({ status: 401, description: 'Invalid credentials.' })
   @LogEvent(EventType.CLIENT_SIGNIN)
+  @Notify(NotificationType.NEW_SIGNIN)
   async signIn(
     @Body() signInDto: RequestClientSignInDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseSigninDto> {
     const result = await this.clientAuthService.signin(
       signInDto.email,
       signInDto.password,
     );
     req.logInfo = {
+      userId: result.user.id,
+      clientName: identifyUser(result.user as UserEntity),
+    };
+    req.notificationInfo = {
       userId: result.user.id,
       clientName: identifyUser(result.user as UserEntity),
     };
@@ -72,7 +81,7 @@ export class ClientAuthController {
   @LogEvent(EventType.CLIENT_SIGNUP)
   async register(
     @Body() registerDto: RequestClientSignUpDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ) {
     try {
       const result = await this.clientAuthService.signup(registerDto);

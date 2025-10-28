@@ -10,10 +10,12 @@ import {
 import { Server } from 'socket.io';
 import { ChatService } from '../services/chat.service';
 import { getTokenPayloadForWebSocket } from 'src/shared/auth/utils/token-payload';
-import { ChatSocket } from 'src/types';
+import { AdvancedSocket } from 'src/types';
 import { MessageService } from '../services/message.service';
 import { MessageRepository } from '../repositories/message.repository';
 import { LessThan } from 'typeorm';
+
+const MAX_LIMIT = 20;
 
 @WebSocketGateway({
   cors: { origin: '*' },
@@ -28,7 +30,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly messageRepository: MessageRepository,
   ) {}
 
-  handleConnection(client: ChatSocket) {
+  handleConnection(client: AdvancedSocket) {
     const payload = getTokenPayloadForWebSocket(client);
     if (!payload) {
       client.disconnect();
@@ -37,14 +39,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  handleDisconnect(_client: ChatSocket) {}
+  handleDisconnect(_client: AdvancedSocket) {}
 
   /**
    * When user joins a conversation, load the latest 10 messages
    */
   @SubscribeMessage('joinConversation')
   async joinConversation(
-    @ConnectedSocket() client: ChatSocket,
+    @ConnectedSocket() client: AdvancedSocket,
     @MessageBody() data: { conversationId: number },
   ) {
     const payload = getTokenPayloadForWebSocket(client);
@@ -66,7 +68,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       await this.messageService.findPaginatedConversationMessages(
         {
           sort: 'createdAt,DESC',
-          limit: '20',
+          limit: MAX_LIMIT.toString(),
           page: '1',
         },
         data.conversationId,
@@ -81,7 +83,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
    */
   @SubscribeMessage('getConversationMessages')
   async getConversationMessages(
-    @ConnectedSocket() client: ChatSocket,
+    @ConnectedSocket() client: AdvancedSocket,
     @MessageBody()
     data: { conversationId: number; limit?: number; before?: string },
   ) {
@@ -104,7 +106,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         ...(data.before ? { createdAt: LessThan(data.before) } : {}),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
-      take: Number(data.limit ?? 20),
+      take: Number(data.limit ?? MAX_LIMIT.toString()),
       order: {
         createdAt: 'DESC',
       },
@@ -115,7 +117,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('message')
   async handleMessage(
-    @ConnectedSocket() client: ChatSocket,
+    @ConnectedSocket() client: AdvancedSocket,
     @MessageBody() data: { conversationId: number; content: string },
   ) {
     const payload = getTokenPayloadForWebSocket(client);

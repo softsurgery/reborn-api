@@ -6,7 +6,7 @@ import { toDto, toDtoArray } from 'src/shared/database/utils/dtos';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 import {
   Body,
   ClassSerializerInterceptor,
@@ -72,7 +72,7 @@ export class JobCategoryController {
   @LogEvent(EventType.JOB_CATEGORY_CREATE)
   async create(
     @Body() createJobCategoryDto: CreateJobCategoryDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobCategoryDto> {
     const jobCategory =
       await this.jobCategoryService.save(createJobCategoryDto);
@@ -85,7 +85,7 @@ export class JobCategoryController {
   async update(
     @Param('id') id: number,
     @Body() updateJobCategoryDto: UpdateJobCategoryDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobCategoryDto | null> {
     req.logInfo = { id };
     return toDto(
@@ -98,7 +98,7 @@ export class JobCategoryController {
   @LogEvent(EventType.JOB_CATEGORY_DELETE)
   async delete(
     @Param('id') id: number,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobCategoryDto | null> {
     req.logInfo = { id };
     return toDto(

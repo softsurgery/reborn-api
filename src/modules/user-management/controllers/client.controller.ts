@@ -11,7 +11,7 @@ import {
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UserService } from '../services/user.service';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 import { toDto } from 'src/shared/database/utils/dtos';
 import { UpdateClientDto } from '../dtos/client/update-client.dto';
 import { ResponseClientDto } from '../dtos/client/response-client.dto';
@@ -29,7 +29,7 @@ export class ClientController {
 
   @Get('/current')
   async findCurrentUser(
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseClientDto | null> {
     if (!req?.user?.sub) {
       return null;
@@ -47,7 +47,7 @@ export class ClientController {
   @Put()
   async updateCurrentUser(
     @Body() updateClientDto: UpdateClientDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseClientDto | null> {
     if (!req?.user?.sub) {
       return null;

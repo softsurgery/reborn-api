@@ -15,6 +15,7 @@ import { JobEntity } from 'src/modules/job-management/entities/job.entity';
 import { FollowEntity } from './follow.entity';
 import { JobRequestEntity } from 'src/modules/job-management/entities/job-request.entity';
 import { JobViewEntity } from 'src/modules/job-management/entities/job-view.entity';
+import { NotificationEntity } from 'src/shared/notifications/entities/notification.entity';
 
 @Entity('users')
 export class UserEntity extends EntityHelper {
@@ -63,6 +64,9 @@ export class UserEntity extends EntityHelper {
 
   @OneToMany(() => LogEntity, (log) => log.user)
   logs?: LogEntity[];
+
+  @OneToMany(() => NotificationEntity, (notif) => notif.user)
+  notifications?: NotificationEntity[];
 
   @OneToOne(() => ProfileEntity, (profile) => profile.user, {
     eager: true,

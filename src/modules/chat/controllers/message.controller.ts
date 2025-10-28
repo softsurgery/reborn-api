@@ -1,4 +1,4 @@
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
 import { PageDto } from 'src/shared/database/dtos/database.page.dto';
 import { ApiPaginatedResponse } from 'src/shared/database/decorators/api-paginated-resposne.decorator';
@@ -16,6 +16,7 @@ import { MessageService } from '../services/message.service';
 import { ResponseMessageDto } from '../dtos/message/response-message.dto';
 
 @ApiTags('message')
+@ApiBearerAuth('access_token')
 @UseInterceptors(ClassSerializerInterceptor)
 @UseInterceptors(LogInterceptor)
 @Controller({

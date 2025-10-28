@@ -20,7 +20,7 @@ import { toDto, toDtoArray } from 'src/shared/database/utils/dtos';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
 import { CreateBugDto } from '../dtos/bug/create-bug.dto';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 
 @ApiTags('bug')
 @ApiBearerAuth('access_token')
@@ -58,7 +58,7 @@ export class BugController {
   @LogEvent(EventType.BUG_CREATE)
   async create(
     @Body() createBugDto: CreateBugDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseBugDto> {
     const bug = await this.bugService.saveWithDeviceInfo(
       createBugDto,
@@ -72,7 +72,7 @@ export class BugController {
   @LogEvent(EventType.BUG_DELETE)
   async delete(
     @Param('id') id: string,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseBugDto | null> {
     const bug = await this.bugService.softDelete(id);
     req.logInfo = { id, variant: bug?.variant };

@@ -6,7 +6,7 @@ import { toDto, toDtoArray } from 'src/shared/database/utils/dtos';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/shared/logger/enums/event-type.enum';
-import { RequestWithLogInfo } from 'src/types';
+import { AdvancedRequest } from 'src/types';
 import {
   Body,
   ClassSerializerInterceptor,
@@ -50,7 +50,7 @@ export class JobSaveController {
   @ApiPaginatedResponse(ResponseJobSaveDto)
   async findAllUserPaginated(
     @Query() query: IQueryObject,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<PageDto<ResponseJobSaveDto>> {
     const paginated = await this.jobSaveService.findAllUserPaginated(
       query,
@@ -80,7 +80,7 @@ export class JobSaveController {
   @Get(':id/exists')
   async isJobSaveAlreadyExists(
     @Param('id') id: string,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobSaveDto | null> {
     return toDto(
       ResponseJobSaveDto,
@@ -92,7 +92,7 @@ export class JobSaveController {
   @LogEvent(EventType.JOB_SAVE_CREATE)
   async create(
     @Body() createJobRequestDto: CreateJobSaveDto,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobSaveDto> {
     const jobSave = await this.jobSaveService.save(
       createJobRequestDto,
@@ -106,7 +106,7 @@ export class JobSaveController {
   @LogEvent(EventType.JOB_SAVE_DELETE)
   async delete(
     @Param('id') id: string,
-    @Request() req: RequestWithLogInfo,
+    @Request() req: AdvancedRequest,
   ): Promise<ResponseJobSaveDto | null> {
     const jobSave = await this.jobSaveService.unsave(id, req.user?.sub);
     req.logInfo = { id };

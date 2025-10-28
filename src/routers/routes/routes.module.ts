@@ -23,6 +23,8 @@ import { ChatModule } from 'src/modules/chat/chat.module';
 import { MessageController } from 'src/modules/chat/controllers/message.controller';
 import { JobSaveController } from 'src/modules/job-management/controllers/job-save.controller';
 import { JobViewController } from 'src/modules/job-management/controllers/job-view.controller';
+import { NotificationController } from 'src/shared/notifications/controllers/notification.controller';
+import { NotificationModule } from 'src/shared/notifications/notifications.module';
 
 @Module({
   controllers: [
@@ -48,6 +50,8 @@ import { JobViewController } from 'src/modules/job-management/controllers/job-vi
     //chat
     ConversationController,
     MessageController,
+    //notifications
+    NotificationController,
   ],
   providers: [],
   exports: [],
@@ -60,6 +64,7 @@ import { JobViewController } from 'src/modules/job-management/controllers/job-vi
     UploadModule,
     JobManagementModule,
     ChatModule,
+    NotificationModule,
   ],
 })
 export class RoutesModule {}
