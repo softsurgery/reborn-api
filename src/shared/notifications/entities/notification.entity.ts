@@ -19,7 +19,6 @@ export class NotificationEntity extends EntityHelper {
 
   @ManyToOne(() => UserEntity, (user) => user.notifications, {
     nullable: true,
-    eager: true,
   })
   @JoinColumn({ name: 'userId' })
   user: UserEntity;
