@@ -87,6 +87,7 @@ async function bootstrap() {
 ╚═╝  ╚═╝╚══════╝╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝`);
   logger.log(`==========================================================`);
   logger.log(`Http Server running on ${await app.getUrl()}`, 'NestApplication');
+  logger.log(`Timezone set to ${process.env.TZ}`);
   logger.log(`==========================================================`);
 
   //Migrations ==========================================================
