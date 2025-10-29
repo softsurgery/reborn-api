@@ -68,7 +68,7 @@ export class NotificationGateway
     payload: Record<string, unknown>,
   ): Promise<NotificationEntity> {
     const saved = await this.notificationService.save({
-      ...payload,
+      payload,
       type,
       userId,
     });

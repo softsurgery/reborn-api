@@ -40,7 +40,6 @@ export class NotificationInterceptor implements NestInterceptor {
         }
         if (!userId) return;
 
-        // Fire-and-forget emit
         void this.notificationGateway.notifyUser(
           userId,
           type,
