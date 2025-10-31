@@ -25,6 +25,9 @@ import { JobSaveController } from 'src/modules/job-management/controllers/job-sa
 import { JobViewController } from 'src/modules/job-management/controllers/job-view.controller';
 import { NotificationController } from 'src/shared/notifications/controllers/notification.controller';
 import { NotificationModule } from 'src/shared/notifications/notifications.module';
+import { RefTypeController } from 'src/shared/reference-types/controllers/ref-type.controller';
+import { RefParamController } from 'src/shared/reference-types/controllers/ref-param.controller';
+import { ReferenceTypesModule } from 'src/shared/reference-types/reference-types.module';
 
 @Module({
   controllers: [
@@ -52,6 +55,8 @@ import { NotificationModule } from 'src/shared/notifications/notifications.modul
     MessageController,
     //notifications
     NotificationController,
+    RefTypeController,
+    RefParamController,
   ],
   providers: [],
   exports: [],
@@ -65,6 +70,7 @@ import { NotificationModule } from 'src/shared/notifications/notifications.modul
     JobManagementModule,
     ChatModule,
     NotificationModule,
+    ReferenceTypesModule,
   ],
 })
 export class RoutesModule {}
