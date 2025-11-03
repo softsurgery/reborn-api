@@ -3,6 +3,7 @@ import { ResponseDtoHelper } from 'src/shared/database/dtos/database.response.dt
 import { ResponseConversationDto } from '../conversation/response-conversation.dto';
 import { Expose, Type } from 'class-transformer';
 import { ResponseUserDto } from 'src/modules/user-management/dtos/user/response-user.dto';
+import { MessageVariant } from '../../enums/message-variant.enum';
 
 export class ResponseMessageDto extends ResponseDtoHelper {
   @ApiProperty({ type: Number })
@@ -30,4 +31,8 @@ export class ResponseMessageDto extends ResponseDtoHelper {
   @Expose()
   @Type(() => ResponseUserDto)
   user: ResponseUserDto;
+
+  @ApiProperty({ type: String, enum: MessageVariant })
+  @Expose()
+  variant: MessageVariant;
 }

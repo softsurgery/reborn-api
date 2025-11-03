@@ -14,6 +14,7 @@ import { AdvancedSocket } from 'src/types';
 import { MessageService } from '../services/message.service';
 import { MessageRepository } from '../repositories/message.repository';
 import { LessThan } from 'typeorm';
+import { CreateMessageDto } from '../dtos/message/create-message.dto';
 
 const MAX_LIMIT = 20;
 
@@ -118,7 +119,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('message')
   async handleMessage(
     @ConnectedSocket() client: AdvancedSocket,
-    @MessageBody() data: { conversationId: number; content: string },
+    @MessageBody() data: CreateMessageDto,
   ) {
     const payload = getTokenPayloadForWebSocket(client);
     const userId = payload?.sub;
@@ -132,11 +133,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
 
-    const message = await this.chatService.createMessage(
-      data.conversationId,
-      data.content,
-      userId,
-    );
+    const message = await this.chatService.createMessage(data, userId);
 
     this.server
       .to(`conversation_${data.conversationId}`)

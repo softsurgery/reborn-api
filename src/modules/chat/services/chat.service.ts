@@ -15,15 +15,18 @@ export class ChatService {
   ) {}
 
   async createMessage(
-    conversationId: number,
-    content: string,
+    createMessage: Partial<MessageEntity>,
     userId?: string,
   ): Promise<MessageEntity> {
     if (!userId) {
       throw new BadRequestException('User id is required');
     }
-    const conversation =
-      await this.conversationService.findOneById(conversationId);
+    if (!createMessage.conversationId) {
+      throw new BadRequestException('Conversation id is required');
+    }
+    const conversation = await this.conversationService.findOneById(
+      createMessage.conversationId,
+    );
 
     if (!conversation) {
       throw new ConversationNotFoundException();
@@ -34,13 +37,7 @@ export class ChatService {
       throw new UserNotFoundException();
     }
 
-    return this.messageService.save(
-      {
-        content,
-        conversationId,
-      },
-      user.id,
-    );
+    return this.messageService.save(createMessage, user.id);
   }
 
   async isUserInConversation(
