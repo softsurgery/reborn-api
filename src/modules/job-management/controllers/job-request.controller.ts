@@ -24,17 +24,27 @@ import { JobRequestService } from '../services/job-request.service';
 import { ResponseJobRequestDto } from '../dtos/job-request/response-job-request.dto';
 import { CreateJobRequestDto } from '../dtos/job-request/create-job-request.dto';
 import { UpdateJobRequestDto } from '../dtos/job-request/update-job-request.dto';
+import { NotificationInterceptor } from 'src/shared/notifications/decorators/notification.interceptor';
+import { Notify } from 'src/shared/notifications/decorators/notify.decorator';
+import { NotificationType } from 'src/shared/notifications/enums/notification-type.enum';
+import { JobService } from '../services/job.service';
+import { identifyUser } from 'src/modules/user-management/utils/identify-user';
+import { UserEntity } from 'src/modules/user-management/entities/user.entity';
 
 @ApiTags('job-request')
 @ApiBearerAuth('access_token')
 @UseInterceptors(ClassSerializerInterceptor)
 @UseInterceptors(LogInterceptor)
+@UseInterceptors(NotificationInterceptor)
 @Controller({
   version: '1',
   path: '/job-request',
 })
 export class JobRequestController {
-  constructor(private readonly jobRequestService: JobRequestService) {}
+  constructor(
+    private readonly jobRequestService: JobRequestService,
+    private readonly jobService: JobService,
+  ) {}
 
   @Get('/list')
   @ApiPaginatedResponse(ResponseJobRequestDto)
@@ -115,16 +125,26 @@ export class JobRequestController {
 
   @Post()
   @LogEvent(EventType.JOB_REQUEST_CREATE)
+  @Notify(NotificationType.NEW_JOB_REQUEST)
   async create(
     @Body() createJobRequestDto: CreateJobRequestDto,
     @Request() req: AdvancedRequest,
   ): Promise<ResponseJobRequestDto> {
-    const jobRequest = await this.jobRequestService.save(
+    const request = await this.jobRequestService.save(
       createJobRequestDto,
       req.user?.sub,
     );
-    req.logInfo = { id: jobRequest.id };
-    return toDto(ResponseJobRequestDto, jobRequest);
+    const job = request?.jobId
+      ? await this.jobService.findOneById(request?.jobId)
+      : null;
+    req.logInfo = { id: request.id };
+    req.notificationInfo = {
+      id: request?.jobId,
+      title: job?.title,
+      fullname: identifyUser(job?.postedBy as UserEntity),
+      userId: job?.postedById,
+    };
+    return toDto(ResponseJobRequestDto, request);
   }
 
   @Put(':id')
@@ -143,28 +163,42 @@ export class JobRequestController {
 
   @Put(':id/approve')
   @LogEvent(EventType.JOB_REQUEST_APPROVE)
+  @Notify(NotificationType.JOB_REQUEST_APPROVED)
   async approve(
     @Param('id') id: number,
     @Request() req: AdvancedRequest,
   ): Promise<ResponseJobRequestDto | null> {
+    const request = await this.jobRequestService.approveJobRequest(id);
+    const job = request?.jobId
+      ? await this.jobService.findOneById(request?.jobId)
+      : null;
     req.logInfo = { id };
-    return toDto(
-      ResponseJobRequestDto,
-      await this.jobRequestService.approveJobRequest(id),
-    );
+    req.notificationInfo = {
+      id: request?.jobId,
+      title: job?.title,
+      userId: request?.userId,
+    };
+    return toDto(ResponseJobRequestDto, request);
   }
 
   @Put(':id/reject')
   @LogEvent(EventType.JOB_REQUEST_REJECT)
+  @Notify(NotificationType.JOB_REQUEST_REJECTED)
   async reject(
     @Param('id') id: number,
     @Request() req: AdvancedRequest,
   ): Promise<ResponseJobRequestDto | null> {
+    const request = await this.jobRequestService.rejectJobRequest(id);
+    const job = request?.jobId
+      ? await this.jobService.findOneById(request?.jobId)
+      : null;
     req.logInfo = { id };
-    return toDto(
-      ResponseJobRequestDto,
-      await this.jobRequestService.rejectJobRequest(id),
-    );
+    req.notificationInfo = {
+      id: request?.jobId,
+      title: job?.title,
+      userId: request?.userId,
+    };
+    return toDto(ResponseJobRequestDto, request);
   }
 
   @Put(':id/cancel')
