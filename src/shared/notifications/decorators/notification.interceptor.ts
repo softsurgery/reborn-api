@@ -7,8 +7,6 @@ import {
 import { Reflector } from '@nestjs/core';
 import { tap } from 'rxjs';
 import { AdvancedRequest } from 'src/types';
-import { AccessTokenPayload } from 'src/shared/auth/interfaces/access-token-payload.interface';
-import { getTokenPayload } from 'src/shared/auth/utils/token-payload';
 import { NotificationType } from '../enums/notification-type.enum';
 import { NotificationGateway } from '../controllers/notification.gateway';
 
@@ -31,13 +29,7 @@ export class NotificationInterceptor implements NestInterceptor {
         const request: AdvancedRequest = context.switchToHttp().getRequest();
         const { notificationInfo } = request;
 
-        let userId: string | undefined;
-        if (type === NotificationType.NEW_SIGNIN) {
-          userId = notificationInfo?.userId as string;
-        } else {
-          const payload: AccessTokenPayload = getTokenPayload(request);
-          userId = payload?.sub;
-        }
+        const userId = notificationInfo?.userId as string;
         if (!userId) return;
 
         void this.notificationGateway.notifyUser(
