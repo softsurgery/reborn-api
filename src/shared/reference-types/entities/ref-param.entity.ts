@@ -16,12 +16,19 @@ export class RefParamEntity extends EntityHelper {
   @Column({})
   label: string;
 
+  @Column({ nullable: true, type: 'varchar', length: 255 })
+  description: string;
+
   @ManyToOne(() => RefTypeEntity, (reftype) => reftype.params, {
     onDelete: 'CASCADE',
+    eager: true,
   })
   @JoinColumn({ name: 'refTypeId' })
   refType: RefTypeEntity;
 
   @Column({})
   refTypeId: number;
+
+  @Column({ type: 'json', nullable: true })
+  extras: object;
 }
