@@ -12,6 +12,10 @@ export class ResponseRefParamDto extends ResponseDtoHelper {
   @Expose()
   label: string;
 
+  @ApiProperty({ type: String, example: 'description' })
+  @Expose()
+  description: string;
+
   @ApiProperty({ type: () => ResponseRefTypeDto })
   @Expose()
   @Type(() => ResponseRefTypeDto)
@@ -20,4 +24,8 @@ export class ResponseRefParamDto extends ResponseDtoHelper {
   @ApiProperty({ type: String })
   @Expose()
   refTypeId: number;
+
+  @ApiProperty({ type: Object })
+  @Expose()
+  extras: object;
 }
