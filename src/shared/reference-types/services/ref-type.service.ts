@@ -92,4 +92,10 @@ export class RefTypeService {
     }
     return this.refTypeRepository.remove(type);
   }
+
+  //Extended Methods ===========================================================================
+
+  async findByLabel(label: string): Promise<RefTypeEntity | null> {
+    return this.refTypeRepository.findOne({ where: { label } });
+  }
 }
