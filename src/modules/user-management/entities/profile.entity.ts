@@ -5,6 +5,8 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -13,6 +15,11 @@ import {
 import { Gender } from '../enums/gender.enum';
 import { UploadEntity } from 'src/shared/uploads/entities/upload.entity';
 import { ProfileUploadEntity } from './profile-upload.entity';
+import {
+  Education,
+  Experience,
+} from '../modules/profile-management/interfaces/walk-of-life.interface';
+import { RefParamEntity } from 'src/shared/reference-types/entities/ref-param.entity';
 
 @Entity('profiles')
 export class ProfileEntity extends EntityHelper {
@@ -65,6 +72,22 @@ export class ProfileEntity extends EntityHelper {
     eager: true,
   })
   uploads: ProfileUploadEntity[];
+
+  @Column({ nullable: true, type: 'json' })
+  experiences: Experience[];
+
+  @Column({ nullable: true, type: 'json' })
+  educations: Education[];
+
+  @ManyToMany(() => RefParamEntity, {
+    cascade: true,
+  })
+  @JoinTable({
+    name: 'profile_skills',
+    joinColumn: { name: 'profileId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'skillId', referencedColumnName: 'id' },
+  })
+  skills: RefParamEntity[];
 
   @ManyToOne(() => UploadEntity, {
     onDelete: 'CASCADE',
