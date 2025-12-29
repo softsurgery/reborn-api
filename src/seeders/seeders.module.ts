@@ -16,6 +16,8 @@ import { JobCategoriesSeedCommand } from './job-categories.seeder';
 import { JobManagementModule } from 'src/modules/job-management/job-management.module';
 import { PlaygroundJobsSeedCommand } from './playground/job.seeder';
 import { JobTagsSeedCommand } from './job-tags.seeder';
+import { ReferenceTypesModule } from 'src/shared/reference-types/reference-types.module';
+import { SkillsSeedCommand } from './skills.seeder';
 
 @Module({
   imports: [
@@ -25,6 +27,7 @@ import { JobTagsSeedCommand } from './job-tags.seeder';
     ContentModule,
     StoreModule,
     JobManagementModule,
+    ReferenceTypesModule,
   ],
   providers: [
     //seeders
@@ -37,6 +40,7 @@ import { JobTagsSeedCommand } from './job-tags.seeder';
     CurrenciesSeedCommand,
     JobCategoriesSeedCommand,
     JobTagsSeedCommand,
+    SkillsSeedCommand,
     //playground
     PlaygroundUsersSeedCommand,
     PlaygroundJobsSeedCommand,

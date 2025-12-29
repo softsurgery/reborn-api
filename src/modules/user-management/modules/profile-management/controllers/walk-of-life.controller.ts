@@ -49,15 +49,4 @@ export class WalkOfLifeController {
     req.logInfo = { id: req.user?.sub };
     return this.walkOfLifeService.updateEducations(id, educations);
   }
-
-  @Put('skills/:id')
-  @LogEvent(EventType.SKILL_UPDATE)
-  updateSkills(
-    @Param('id') id: number,
-    @Body() skills: Skill[],
-    @Request() req: AdvancedRequest,
-  ) {
-    req.logInfo = { id: req.user?.sub };
-    return this.walkOfLifeService.updateSkills(id, skills);
-  }
 }

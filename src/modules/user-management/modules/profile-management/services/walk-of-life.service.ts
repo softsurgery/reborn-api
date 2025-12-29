@@ -1,10 +1,6 @@
 import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
-import {
-  Education,
-  Experience,
-  Skill,
-} from '../interfaces/walk-of-life.interface';
+import { Education, Experience } from '../interfaces/walk-of-life.interface';
 import { ProfileEntity } from 'src/modules/user-management/entities/profile.entity';
 import { ProfileRepository } from 'src/modules/user-management/repositories/profile.repository';
 import { ProfileNotFoundException } from 'src/modules/user-management/errors/profile/profile.notfound.error';
@@ -31,14 +27,5 @@ export class WalkOfLifeService {
     const profile = await this.profileRepository.findOneById(id);
     if (!profile) throw new ProfileNotFoundException();
     return this.profileRepository.update(id, { educations });
-  }
-
-  async updateSkills(
-    id: number,
-    skills: Skill[],
-  ): Promise<ProfileEntity | null> {
-    const profile = await this.profileRepository.findOneById(id);
-    if (!profile) throw new ProfileNotFoundException();
-    return this.profileRepository.update(id, { skills });
   }
 }
