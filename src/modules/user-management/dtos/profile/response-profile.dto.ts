@@ -9,10 +9,9 @@ import { ExperienceDto } from '../../modules/profile-management/dtos/walk-of-lif
 import {
   Education,
   Experience,
-  Skill,
 } from '../../modules/profile-management/interfaces/walk-of-life.interface';
 import { EducationDto } from '../../modules/profile-management/dtos/walk-of-life/education.dto';
-import { SkillDto } from '../../modules/profile-management/dtos/walk-of-life/skills.dto';
+import { ResponseRefParamDto } from 'src/shared/reference-types/dtos/ref-param/response-ref-param.dto';
 
 export class ResponseProfileDto {
   @ApiProperty({ type: Number })
@@ -95,8 +94,8 @@ export class ResponseProfileDto {
   @Type(() => EducationDto)
   educations: Education[];
 
-  @ApiProperty({ type: [SkillDto] })
+  @ApiProperty({ type: [ResponseRefParamDto] })
   @Expose()
-  @Type(() => SkillDto)
-  skills: Skill[];
+  @Type(() => ResponseRefParamDto)
+  skills: ResponseRefParamDto[];
 }
