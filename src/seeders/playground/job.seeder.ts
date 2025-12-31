@@ -1,20 +1,20 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
 import { JobService } from 'src/modules/job-management/services/job.service';
-import { CurrencyService } from 'src/modules/content/currency/services/currency.service';
 import { JobCategoryService } from 'src/modules/job-management/services/job-category.service';
 import { mockJobsSeed } from '../data/playground-jobs.data';
 import { UserService } from 'src/modules/user-management/services/user.service';
 import { JobStyle } from 'src/modules/job-management/enums/job-style.enum';
 import { JobTagService } from 'src/modules/job-management/services/job-tag.service';
 import { JobDifficulty } from 'src/modules/job-management/enums/job-difficulty.enum';
+import { RefParamRepository } from 'src/shared/reference-types/repositories/ref-param.repository';
 
 @Injectable()
 export class PlaygroundJobsSeedCommand {
   constructor(
     private readonly userService: UserService,
     private readonly jobService: JobService,
-    private readonly currencyService: CurrencyService,
+    private readonly refParamRepository: RefParamRepository,
     private readonly jobCategoryService: JobCategoryService,
     private readonly jobTagService: JobTagService,
   ) {}
@@ -27,7 +27,9 @@ export class PlaygroundJobsSeedCommand {
     const start = new Date();
     console.log('🚀 Starting seeding of playground jobs...');
     //=============================================================================================
-    const currencies = await this.currencyService.findAll({});
+    const currencies = await this.refParamRepository.findAll({
+      where: { refType: { label: 'Currency' } },
+    });
     const jobCategories = await this.jobCategoryService.findAll({});
     const jobTags = await this.jobTagService.findAll({});
     const users = await this.userService.findAll({});

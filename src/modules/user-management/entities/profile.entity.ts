@@ -1,4 +1,3 @@
-import { RegionEntity } from 'src/modules/content/region/entities/region.entity';
 import { UserEntity } from 'src/modules/user-management/entities/user.entity';
 import { EntityHelper } from 'src/shared/database/interfaces/database.entity.interface';
 import {
@@ -41,13 +40,13 @@ export class ProfileEntity extends EntityHelper {
   @Column({ default: false })
   isPrivate: boolean;
 
-  @ManyToOne(() => RegionEntity, (region) => region.profiles, {
+  @ManyToOne(() => RefParamEntity, {
     onDelete: 'CASCADE',
     eager: true,
     nullable: true,
   })
   @JoinColumn({ name: 'regionId' })
-  region?: RegionEntity;
+  region?: RefParamEntity;
 
   @Column({ nullable: true })
   regionId?: number;

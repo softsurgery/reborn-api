@@ -7,7 +7,6 @@ import { AdminSeedCommand } from './admin.seeder';
 import { TemplateModule } from 'src/shared/templates/template.module';
 import { TemplatesSeedCommand } from './templates.seeder';
 import { RegionsSeedCommand } from './region.seeder';
-import { ContentModule } from 'src/modules/content/content.module';
 import { PropertiesSeedCommand } from './properties.seeder';
 import { StoreModule } from 'src/shared/store/store.module';
 import { CurrenciesSeedCommand } from './currencies.seeder';
@@ -24,7 +23,6 @@ import { SkillsSeedCommand } from './skills.seeder';
     CommandModule,
     UserManagementModule,
     TemplateModule,
-    ContentModule,
     StoreModule,
     JobManagementModule,
     ReferenceTypesModule,

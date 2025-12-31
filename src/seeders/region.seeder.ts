@@ -1,11 +1,15 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { RegionService } from 'src/modules/content/region/services/region.service';
 import { tunisianGovernoratesSeed } from './data/region.data';
+import { RefTypeRepository } from 'src/shared/reference-types/repositories/ref-type.repository';
+import { RefParamRepository } from 'src/shared/reference-types/repositories/ref-param.repository';
 
 @Injectable()
 export class RegionsSeedCommand {
-  constructor(private readonly regionService: RegionService) {}
+  constructor(
+    private readonly refTypeRepository: RefTypeRepository,
+    private readonly refParamRepository: RefParamRepository,
+  ) {}
 
   @Command({
     command: 'seed:regions',
@@ -15,12 +19,24 @@ export class RegionsSeedCommand {
     const start = new Date();
     console.log('🚀 Starting seeding of regions...');
     //=============================================================================================
+    let regionRefType = await this.refTypeRepository.findOne({
+      where: { label: 'Region' },
+    });
 
-    await this.regionService.saveMany(
-      tunisianGovernoratesSeed.map((region) => ({
-        label: region,
-      })),
-    );
+    if (!regionRefType) {
+      regionRefType = await this.refTypeRepository.save({
+        label: 'Region',
+        description: 'Parent reference type for all regions',
+      });
+      for (const region of tunisianGovernoratesSeed) {
+        await this.refParamRepository.save({
+          label: region,
+          description: `This is a ${region} reference param`,
+          refType: regionRefType,
+          extras: {},
+        });
+      }
+    }
     //=============================================================================================
     const end = new Date();
     console.log(

@@ -11,7 +11,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { JobTagEntity } from './job-tag.entity';
-import { CurrencyEntity } from 'src/modules/content/currency/entities/currency.entity';
 import { JobUploadEntity } from './job-upload.entity';
 import { JobCategoryEntity } from './job-category.entity';
 import { JobStyle } from '../enums/job-style.enum';
@@ -19,6 +18,7 @@ import { JobRequestEntity } from './job-request.entity';
 import { JobDifficulty } from '../enums/job-difficulty.enum';
 import { JobViewEntity } from './job-view.entity';
 import { JobSaveEntity } from './job-save.entity';
+import { RefParamEntity } from 'src/shared/reference-types/entities/ref-param.entity';
 
 @Entity('jobs')
 export class JobEntity extends EntityHelper {
@@ -34,15 +34,15 @@ export class JobEntity extends EntityHelper {
   @Column({ type: 'float', nullable: false })
   price: number;
 
-  @ManyToOne(() => CurrencyEntity, (currency) => currency.jobs, {
+  @ManyToOne(() => RefParamEntity, {
     onDelete: 'CASCADE',
     eager: true,
   })
   @JoinColumn({ name: 'currencyId' })
-  currency: CurrencyEntity;
+  currency: RefParamEntity;
 
   @Column({})
-  currencyId: string;
+  currencyId: number;
 
   @ManyToOne(() => UserEntity, (user) => user.postedJobs, {
     onDelete: 'CASCADE',
