@@ -10,23 +10,23 @@ import { JobEntity } from '../entities/job.entity';
 import { JobNotFoundException } from '../errors/job/job.notfound.error';
 import { CreateJobDto } from '../dtos/job/create-job.dto';
 import { UpdateJobDto } from '../dtos/job/update-job.dto';
-import { JobTagService } from './job-tag.service';
 import { JobUploadService } from './job-upload.service';
 import { JobUploadEntity } from '../entities/job-upload.entity';
 import { CreateJobUploadDto } from '../dtos/job-upload/create-job-upload.dto';
 import { UpdateJobUploadDto } from '../dtos/job-upload/update-job-upload.dto';
-import { JobTagEntity } from '../entities/job-tag.entity';
 import { ResponseJobMetadataDto } from '../dtos/job/response-job-metadata.dto';
 import { JobRequestService } from './job-request.service';
 import { UserNotFoundException } from 'src/modules/user-management/errors/user/user.notfound.error';
 import { FollowService } from 'src/modules/user-management/services/follow.service';
+import { RefParamService } from 'src/shared/reference-types/services/ref-param.service';
+import { RefParamEntity } from 'src/shared/reference-types/entities/ref-param.entity';
 
 @Injectable()
 export class JobService {
   constructor(
     private readonly jobRepository: JobRepository,
     private readonly jobRequestService: JobRequestService,
-    private readonly jobTagService: JobTagService,
+    private readonly refParamService: RefParamService,
     private readonly jobUploadService: JobUploadService,
     private readonly followService: FollowService,
   ) {}
@@ -104,10 +104,12 @@ export class JobService {
     if (updateJobDto.tagIds && Array.isArray(updateJobDto.tagIds)) {
       const tags = await Promise.all(
         updateJobDto.tagIds.map((tagId) =>
-          this.jobTagService.findOneById(tagId),
+          this.refParamService.findOneByCondition({
+            filter: `id||$eq||${tagId}`,
+          }),
         ),
       );
-      job.tags = tags.filter(Boolean);
+      job.tags = tags.filter(Boolean) as RefParamEntity[];
     }
 
     return this.jobRepository.save(job);
@@ -182,11 +184,11 @@ export class JobService {
     postedBy?: string,
   ): Promise<JobEntity> {
     const { uploads, tagIds, ...rest } = createJobDto;
-    let tags: JobTagEntity[] = [];
+    let tags: RefParamEntity[] = [];
 
     if (tagIds && Array.isArray(tagIds)) {
       tags = await Promise.all(
-        tagIds.map((tagId) => this.jobTagService.findOneById(tagId)),
+        tagIds.map((tagId) => this.refParamService.findOneById(tagId)),
       );
     }
 
@@ -213,11 +215,11 @@ export class JobService {
     updateJobDto: UpdateJobDto,
   ): Promise<JobEntity | null> {
     const { uploads, tagIds, ...rest } = updateJobDto;
-    let tags: JobTagEntity[] = [];
+    let tags: RefParamEntity[] = [];
 
     if (tagIds && Array.isArray(tagIds)) {
       tags = await Promise.all(
-        tagIds.map((tagId) => this.jobTagService.findOneById(tagId)),
+        tagIds.map((tagId) => this.refParamService.findOneById(tagId)),
       );
     }
     const existingJob = await this.jobRepository.findOneById(id);

@@ -4,7 +4,6 @@ import { ResponseUserDto } from 'src/modules/user-management/dtos/user/response-
 import { ResponseDtoHelper } from 'src/shared/database/dtos/database.response.dto';
 import { ResponseJobTagDto } from '../job-tag/response-job-tag.dto';
 import { ResponseJobUploadDto } from '../job-upload/response-job-upload.dto';
-import { ResponseJobCategoryDto } from '../job-category/response-job-category.dto';
 import { JobStyle } from '../../enums/job-style.enum';
 import { JobDifficulty } from '../../enums/job-difficulty.enum';
 import { ResponseJobRequestDto } from '../job-request/response-job-request.dto';
@@ -52,10 +51,10 @@ export class ResponseJobDto extends ResponseDtoHelper {
   @Expose()
   categoryId: number;
 
-  @ApiProperty({ type: ResponseJobCategoryDto })
+  @ApiProperty({ type: ResponseRefParamDto })
   @Expose()
-  @Type(() => ResponseJobCategoryDto)
-  category: ResponseJobCategoryDto;
+  @Type(() => ResponseRefParamDto)
+  category: ResponseRefParamDto;
 
   @ApiProperty({ type: String, enum: JobStyle })
   @Expose()

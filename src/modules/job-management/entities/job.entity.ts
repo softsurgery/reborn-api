@@ -10,9 +10,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { JobTagEntity } from './job-tag.entity';
 import { JobUploadEntity } from './job-upload.entity';
-import { JobCategoryEntity } from './job-category.entity';
 import { JobStyle } from '../enums/job-style.enum';
 import { JobRequestEntity } from './job-request.entity';
 import { JobDifficulty } from '../enums/job-difficulty.enum';
@@ -54,7 +52,7 @@ export class JobEntity extends EntityHelper {
   @Column({})
   postedById: string;
 
-  @ManyToMany(() => JobTagEntity, (tag) => tag.jobs, {
+  @ManyToMany(() => RefParamEntity, {
     cascade: true,
     eager: true,
   })
@@ -69,14 +67,14 @@ export class JobEntity extends EntityHelper {
       referencedColumnName: 'id',
     },
   })
-  tags: JobTagEntity[];
+  tags: RefParamEntity[];
 
-  @ManyToOne(() => JobCategoryEntity, (category) => category.jobs, {
+  @ManyToOne(() => RefParamEntity, {
     onDelete: 'CASCADE',
     eager: true,
   })
   @JoinColumn({ name: 'categoryId' })
-  category: JobCategoryEntity;
+  category: RefParamEntity;
 
   @Column({ type: 'enum', enum: JobStyle, nullable: false })
   style: JobStyle;

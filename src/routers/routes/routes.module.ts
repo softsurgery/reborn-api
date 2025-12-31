@@ -12,10 +12,8 @@ import { UploadModule } from 'src/shared/uploads/uploads.module';
 import { ClientController } from 'src/modules/user-management/controllers/client.controller';
 import { JobController } from 'src/modules/job-management/controllers/job.controller';
 import { JobManagementModule } from 'src/modules/job-management/job-management.module';
-import { JobTagController } from 'src/modules/job-management/controllers/job-tag.controller';
 import { StoreController } from 'src/shared/store/controllers/store.controller';
 import { StoreModule } from 'src/shared/store/store.module';
-import { JobCategoryController } from 'src/modules/job-management/controllers/job-category.controller';
 import { FollowController } from 'src/modules/user-management/controllers/follow.controller';
 import { JobRequestController } from 'src/modules/job-management/controllers/job-request.controller';
 import { ConversationController } from 'src/modules/chat/controllers/conversation.controller';
@@ -45,8 +43,6 @@ import { ReferenceTypesModule } from 'src/shared/reference-types/reference-types
     BugController,
     //job-management
     JobController,
-    JobTagController,
-    JobCategoryController,
     JobRequestController,
     JobSaveController,
     JobViewController,

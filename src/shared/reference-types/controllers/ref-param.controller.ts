@@ -60,7 +60,7 @@ export class RefParamController {
 
   @Get(':id')
   async findOneById(
-    @Param('id') id: string,
+    @Param('id') id: number,
   ): Promise<ResponseRefParamDto | null> {
     return toDto(
       ResponseRefParamDto,

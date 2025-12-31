@@ -13,7 +13,7 @@ import { RefParamEntity } from '../entities/ref-param.entity';
 export class RefParamService {
   constructor(private readonly refParamRepository: RefParamRepository) {}
 
-  async findOneById(id: string): Promise<RefParamEntity> {
+  async findOneById(id: number): Promise<RefParamEntity> {
     const type = await this.refParamRepository.findOneById(id);
     if (!type) {
       throw new RefParamNotFoundException();
