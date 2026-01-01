@@ -2,11 +2,12 @@ import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
 import { jobTagsSeed } from './data/job-tags.data';
 import { RefParamRepository } from 'src/shared/reference-types/repositories/ref-param.repository';
+import { RefTypeRepository } from 'src/shared/reference-types/repositories/ref-type.repository';
 
 @Injectable()
 export class JobTagsSeedCommand {
   constructor(
-    private readonly refTypeRepository: RefParamRepository,
+    private readonly refTypeRepository: RefTypeRepository,
     private readonly refParamRepository: RefParamRepository,
   ) {}
 

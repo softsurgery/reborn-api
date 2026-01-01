@@ -13,7 +13,7 @@ export class RefParamEntity extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column({})
   label: string;
 
   @Column({ nullable: true, type: 'varchar', length: 255 })
