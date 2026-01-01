@@ -101,13 +101,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
 
+    const beforeDate = data.before ? new Date(data.before) : undefined;
     const messages = await this.messageRepository.findAll({
       where: {
         conversationId: data.conversationId,
-        ...(data.before ? { createdAt: LessThan(data.before) } : {}),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any,
-      take: Number(data.limit ?? MAX_LIMIT.toString()),
+        ...(beforeDate ? { createdAt: LessThan(beforeDate) } : {}),
+      },
+      take: Number(data.limit ?? MAX_LIMIT),
       order: {
         createdAt: 'DESC',
       },
