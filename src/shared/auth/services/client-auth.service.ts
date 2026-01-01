@@ -94,12 +94,18 @@ export class ClientAuthService {
   }
 
   async signup(createUserDto: CreateUserDto): Promise<ResponseClientSignupDto> {
+    const user = await this.userService.saveWithProfile({
+      ...createUserDto,
+      roleId: BasicRoles.User,
+      isActive: true,
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User already exists');
+    }
+
     return {
-      user: await this.userService.saveWithProfile({
-        ...createUserDto,
-        roleId: BasicRoles.User,
-        isActive: true,
-      }),
+      user,
     };
   }
 

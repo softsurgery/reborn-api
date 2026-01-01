@@ -9,16 +9,17 @@ import { PageDto } from 'src/shared/database/dtos/database.page.dto';
 import { PageMetaDto } from 'src/shared/database/dtos/database.page-meta.dto';
 import { CreateUserDto } from '../dtos/user/create-user.dto';
 import { hashPassword } from 'src/shared/helpers/hash.utils';
-import { UserAlreadyExistsException } from '../errors/user/user.alreadyexists.error';
 import { UpdateUserDto } from '../dtos/user/update-user.dto';
 import { UserEntity } from '../entities/user.entity';
 import { ProfileService } from 'src/modules/user-management/services/profile.service';
+import { RoleService } from './role.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly profileService: ProfileService,
+    private readonly roleService: RoleService,
   ) {}
 
   async findOneById(id: string): Promise<UserEntity> {
@@ -91,32 +92,40 @@ export class UserService {
   //Extended Methods ===========================================================================
 
   @Transactional()
-  async saveWithProfile(createUserDto: CreateUserDto): Promise<UserEntity> {
+  async saveWithProfile(
+    createUserDto: CreateUserDto,
+  ): Promise<UserEntity | null> {
     const { profile, ...rest } = createUserDto;
-    const existingUser = await this.userRepository.findOne({
+    let existingUser = await this.userRepository.findOne({
       where: [
         { username: createUserDto.username },
         { email: createUserDto.email },
       ],
     });
 
+    //if user exists, update profile and restore from soft delete
     if (existingUser) {
-      throw new UserAlreadyExistsException();
+      existingUser = await this.userRepository.update(existingUser.id, {
+        ...rest,
+        deletedAt: null,
+      });
+      return existingUser;
     }
 
-    let profileId: number | undefined = undefined;
-
-    if (profile) {
-      const profileEntity = await this.profileService.saveWithUpload(profile);
-      profileId = profileEntity.id;
-    }
+    const newProfile = await this.profileService.saveWithUpload({
+      ...profile,
+      uploads: [],
+    });
 
     const hashedPassword =
       createUserDto.password && (await hashPassword(createUserDto.password));
     createUserDto.password = hashedPassword;
+
+    const standardRole = await this.roleService.findStandardRole();
     return this.userRepository.save({
       ...rest,
-      profileId,
+      profileId: newProfile?.id,
+      roleId: standardRole?.id,
     });
   }
 

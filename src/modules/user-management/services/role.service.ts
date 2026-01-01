@@ -14,6 +14,7 @@ import { UpdateRoleDto } from '../dtos/role/update-role.dto';
 import { RolePermissionEntity } from '../entities/role-permission.entity';
 import { CreateRolePermissionDto } from '../dtos/role-permission/create-role-permission.dto';
 import { RoleEntity } from '../entities/role.entity';
+import { BasicRoles } from '../enums/basic-roles.enum';
 
 @Injectable()
 export class RoleService {
@@ -199,6 +200,12 @@ export class RoleService {
       permissions: role.permissions.map((p) => ({
         permissionId: p.permissionId,
       })),
+    });
+  }
+
+  async findStandardRole(): Promise<RoleEntity | null> {
+    return this.roleRepository.findOne({
+      where: { label: BasicRoles.User },
     });
   }
 }
