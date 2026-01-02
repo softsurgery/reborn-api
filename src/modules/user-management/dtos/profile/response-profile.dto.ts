@@ -6,6 +6,7 @@ import { ResponseUploadDto } from 'src/shared/uploads/dtos/response-upload.dto';
 import { ResponseProfileUploadDto } from '../profile-upload/response-profile-upload.dto';
 import { ResponseRefParamDto } from 'src/shared/reference-types/dtos/ref-param/response-ref-param.dto';
 import { ResponseEducationDto } from '../../modules/profile-management/dtos/education/response-education.dto';
+import { ResponseExperienceDto } from '../../modules/profile-management/dtos/experience/response-experience.dto';
 
 export class ResponseProfileDto {
   @ApiProperty({ type: Number })
@@ -78,10 +79,10 @@ export class ResponseProfileDto {
   @Type(() => ResponseProfileUploadDto)
   uploads: ResponseProfileUploadDto[];
 
-  // @ApiProperty({ type: [ExperienceDto] })
-  // @Expose()
-  // @Type(() => ExperienceDto)
-  // experiences: [];
+  @ApiProperty({ type: [ResponseExperienceDto] })
+  @Expose()
+  @Type(() => ResponseExperienceDto)
+  experiences: ResponseExperienceDto[];
 
   @ApiProperty({ type: [ResponseEducationDto] })
   @Expose()

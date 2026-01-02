@@ -27,6 +27,7 @@ import { RefTypeController } from 'src/shared/reference-types/controllers/ref-ty
 import { RefParamController } from 'src/shared/reference-types/controllers/ref-param.controller';
 import { ReferenceTypesModule } from 'src/shared/reference-types/reference-types.module';
 import { EducationController } from 'src/modules/user-management/modules/profile-management/controllers/education.controller';
+import { ExperienceController } from 'src/modules/user-management/modules/profile-management/controllers/experience.controller';
 
 @Module({
   controllers: [
@@ -40,6 +41,7 @@ import { EducationController } from 'src/modules/user-management/modules/profile
     ClientController,
     FollowController,
     EducationController,
+    ExperienceController,
     //system reports
     FeedbackController,
     BugController,
