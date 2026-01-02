@@ -22,6 +22,12 @@ import { FollowEntity } from './entities/follow.entity';
 import { ProfileUploadRepository } from './repositories/profile-upload.repository';
 import { ProfileUploadService } from './services/profile-upload.service';
 import { ProfileUploadEntity } from './entities/profile-upload.entity';
+import { EducationRepository } from './modules/profile-management/repositories/educations.repository';
+import { EducationService } from './modules/profile-management/services/education.service';
+import { EducationEntity } from './modules/profile-management/entities/education.entity';
+import { ExperienceRepository } from './modules/profile-management/repositories/experience.repository';
+import { ExperienceService } from './modules/profile-management/services/experience.service';
+import { ExperienceEntity } from './modules/profile-management/entities/experience.entity';
 
 @Module({
   controllers: [],
@@ -33,6 +39,8 @@ import { ProfileUploadEntity } from './entities/profile-upload.entity';
     ProfileRepository,
     ProfileUploadRepository,
     FollowRepository,
+    EducationRepository,
+    ExperienceRepository,
 
     UserService,
     RoleService,
@@ -41,6 +49,8 @@ import { ProfileUploadEntity } from './entities/profile-upload.entity';
     ProfileService,
     ProfileUploadService,
     FollowService,
+    EducationService,
+    ExperienceService,
   ],
   exports: [
     UserService,
@@ -49,6 +59,8 @@ import { ProfileUploadEntity } from './entities/profile-upload.entity';
     ProfileService,
     ProfileUploadService,
     FollowService,
+    EducationService,
+    ExperienceService,
 
     UserRepository,
     RoleRepository,
@@ -57,6 +69,8 @@ import { ProfileUploadEntity } from './entities/profile-upload.entity';
     ProfileRepository,
     ProfileUploadRepository,
     FollowRepository,
+    EducationRepository,
+    ExperienceRepository,
   ],
   imports: [
     TypeOrmModule.forFeature([
@@ -67,6 +81,8 @@ import { ProfileUploadEntity } from './entities/profile-upload.entity';
       ProfileEntity,
       ProfileUploadEntity,
       FollowEntity,
+      EducationEntity,
+      ExperienceEntity,
     ]),
     UploadModule,
   ],

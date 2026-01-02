@@ -1,24 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { IsString } from 'class-validator';
 
-export class ExperienceDto {
-  @ApiProperty()
-  @Expose()
+export class CreateExperienceDto {
+  @ApiProperty({ type: String })
+  @IsString()
   title: string;
 
   @ApiProperty()
-  @Expose()
+  @IsString()
   company: string;
 
   @ApiProperty()
-  @Expose()
+  @IsString()
   startDate: string;
 
   @ApiProperty()
-  @Expose()
+  @IsString()
   endDate: string;
 
   @ApiProperty()
-  @Expose()
+  @IsString()
   description: string;
 }

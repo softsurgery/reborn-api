@@ -14,11 +14,9 @@ import {
 import { Gender } from '../enums/gender.enum';
 import { UploadEntity } from 'src/shared/uploads/entities/upload.entity';
 import { ProfileUploadEntity } from './profile-upload.entity';
-import {
-  Education,
-  Experience,
-} from '../modules/profile-management/interfaces/walk-of-life.interface';
 import { RefParamEntity } from 'src/shared/reference-types/entities/ref-param.entity';
+import { ExperienceEntity } from '../modules/profile-management/entities/experience.entity';
+import { EducationEntity } from '../modules/profile-management/entities/education.entity';
 
 @Entity('profiles')
 export class ProfileEntity extends EntityHelper {
@@ -73,10 +71,10 @@ export class ProfileEntity extends EntityHelper {
   uploads: ProfileUploadEntity[];
 
   @Column({ nullable: true, type: 'json' })
-  experiences: Experience[];
+  experiences: ExperienceEntity[];
 
   @Column({ nullable: true, type: 'json' })
-  educations: Education[];
+  educations: EducationEntity[];
 
   @ManyToMany(() => RefParamEntity, {
     cascade: true,

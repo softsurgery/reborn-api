@@ -26,6 +26,8 @@ import { NotificationModule } from 'src/shared/notifications/notifications.modul
 import { RefTypeController } from 'src/shared/reference-types/controllers/ref-type.controller';
 import { RefParamController } from 'src/shared/reference-types/controllers/ref-param.controller';
 import { ReferenceTypesModule } from 'src/shared/reference-types/reference-types.module';
+import { EducationController } from 'src/modules/user-management/modules/profile-management/controllers/education.controller';
+import { ExperienceController } from 'src/modules/user-management/modules/profile-management/controllers/experience.controller';
 
 @Module({
   controllers: [
@@ -38,6 +40,8 @@ import { ReferenceTypesModule } from 'src/shared/reference-types/reference-types
     //user
     ClientController,
     FollowController,
+    EducationController,
+    ExperienceController,
     //system reports
     FeedbackController,
     BugController,
