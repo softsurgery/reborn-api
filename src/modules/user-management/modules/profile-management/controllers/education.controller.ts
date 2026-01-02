@@ -69,7 +69,7 @@ export class EducationController {
   }
 
   @Post()
-  @LogEvent(EventType.ROLE_CREATE)
+  @LogEvent(EventType.EDUCATION_CREATE)
   async create(
     @Body() createEducationDto: CreateEducationDto,
     @Request() req: AdvancedRequest,
@@ -80,7 +80,7 @@ export class EducationController {
   }
 
   @Put(':id')
-  @LogEvent(EventType.ROLE_UPDATE)
+  @LogEvent(EventType.EDUCATION_UPDATE)
   async update(
     @Param('id') id: string,
     @Body() updateEducationDto: UpdateEducationDto,
@@ -95,7 +95,7 @@ export class EducationController {
   }
 
   @Delete(':id')
-  @LogEvent(EventType.ROLE_DELETE)
+  @LogEvent(EventType.EDUCATION_DELETE)
   async delete(
     @Param('id') id: string,
     @Request() req: AdvancedRequest,
