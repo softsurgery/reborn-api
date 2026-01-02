@@ -1,10 +1,11 @@
-import { RegionEntity } from 'src/modules/content/region/entities/region.entity';
 import { UserEntity } from 'src/modules/user-management/entities/user.entity';
 import { EntityHelper } from 'src/shared/database/interfaces/database.entity.interface';
 import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -13,6 +14,11 @@ import {
 import { Gender } from '../enums/gender.enum';
 import { UploadEntity } from 'src/shared/uploads/entities/upload.entity';
 import { ProfileUploadEntity } from './profile-upload.entity';
+import {
+  Education,
+  Experience,
+} from '../modules/profile-management/interfaces/walk-of-life.interface';
+import { RefParamEntity } from 'src/shared/reference-types/entities/ref-param.entity';
 
 @Entity('profiles')
 export class ProfileEntity extends EntityHelper {
@@ -34,13 +40,13 @@ export class ProfileEntity extends EntityHelper {
   @Column({ default: false })
   isPrivate: boolean;
 
-  @ManyToOne(() => RegionEntity, (region) => region.profiles, {
+  @ManyToOne(() => RefParamEntity, {
     onDelete: 'CASCADE',
     eager: true,
     nullable: true,
   })
   @JoinColumn({ name: 'regionId' })
-  region?: RegionEntity;
+  region?: RefParamEntity;
 
   @Column({ nullable: true })
   regionId?: number;
@@ -65,6 +71,22 @@ export class ProfileEntity extends EntityHelper {
     eager: true,
   })
   uploads: ProfileUploadEntity[];
+
+  @Column({ nullable: true, type: 'json' })
+  experiences: Experience[];
+
+  @Column({ nullable: true, type: 'json' })
+  educations: Education[];
+
+  @ManyToMany(() => RefParamEntity, {
+    cascade: true,
+  })
+  @JoinTable({
+    name: 'profile_skills',
+    joinColumn: { name: 'profileId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'skillId', referencedColumnName: 'id' },
+  })
+  skills: RefParamEntity[];
 
   @ManyToOne(() => UploadEntity, {
     onDelete: 'CASCADE',

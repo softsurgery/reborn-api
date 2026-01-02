@@ -16,15 +16,15 @@ import {
 export class EntityHelper extends BaseEntity {
   @CreateDateColumn()
   @Expose({ name: DATABASE_CREATED_AT_FIELD_NAME })
-  [DATABASE_CREATED_AT_FIELD_NAME]?: Date;
+  [DATABASE_CREATED_AT_FIELD_NAME]?: Date | null;
 
   @UpdateDateColumn()
   @Expose({ name: DATABASE_UPDATED_AT_FIELD_NAME })
-  [DATABASE_UPDATED_AT_FIELD_NAME]?: Date;
+  [DATABASE_UPDATED_AT_FIELD_NAME]?: Date | null;
 
   @DeleteDateColumn()
   @Expose({ name: DATABASE_DELETED_AT_FIELD_NAME })
-  [DATABASE_DELETED_AT_FIELD_NAME]?: Date;
+  [DATABASE_DELETED_AT_FIELD_NAME]?: Date | null;
 
   @Column({ type: 'boolean', default: false })
   @Expose({ name: DATABASE_RESTRICT_DELETE_FIELD_NAME })

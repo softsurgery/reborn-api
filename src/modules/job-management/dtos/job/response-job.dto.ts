@@ -3,14 +3,13 @@ import { Expose, Type } from 'class-transformer';
 import { ResponseUserDto } from 'src/modules/user-management/dtos/user/response-user.dto';
 import { ResponseDtoHelper } from 'src/shared/database/dtos/database.response.dto';
 import { ResponseJobTagDto } from '../job-tag/response-job-tag.dto';
-import { ResponseCurrencyDto } from 'src/modules/content/currency/dtos/response-currency.dto';
 import { ResponseJobUploadDto } from '../job-upload/response-job-upload.dto';
-import { ResponseJobCategoryDto } from '../job-category/response-job-category.dto';
 import { JobStyle } from '../../enums/job-style.enum';
 import { JobDifficulty } from '../../enums/job-difficulty.enum';
 import { ResponseJobRequestDto } from '../job-request/response-job-request.dto';
 import { ResponseJobViewDto } from '../job-view/response-job-view.dto';
 import { ResponseJobSaveDto } from '../job-save/response-job-save.dto';
+import { ResponseRefParamDto } from 'src/shared/reference-types/dtos/ref-param/response-ref-param.dto';
 
 export class ResponseJobDto extends ResponseDtoHelper {
   @ApiProperty({ type: String })
@@ -38,10 +37,10 @@ export class ResponseJobDto extends ResponseDtoHelper {
   @Expose()
   currencyId: string;
 
-  @ApiProperty({ type: ResponseCurrencyDto })
+  @ApiProperty({ type: ResponseRefParamDto })
   @Expose()
-  @Type(() => ResponseCurrencyDto)
-  currency: ResponseCurrencyDto;
+  @Type(() => ResponseRefParamDto)
+  currency: ResponseRefParamDto;
 
   @ApiProperty({ type: [ResponseJobTagDto] })
   @Expose()
@@ -52,10 +51,10 @@ export class ResponseJobDto extends ResponseDtoHelper {
   @Expose()
   categoryId: number;
 
-  @ApiProperty({ type: ResponseJobCategoryDto })
+  @ApiProperty({ type: ResponseRefParamDto })
   @Expose()
-  @Type(() => ResponseJobCategoryDto)
-  category: ResponseJobCategoryDto;
+  @Type(() => ResponseRefParamDto)
+  category: ResponseRefParamDto;
 
   @ApiProperty({ type: String, enum: JobStyle })
   @Expose()

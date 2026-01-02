@@ -25,12 +25,14 @@ import { GenericStore } from 'src/shared/store/interfaces/generic-store.interfac
 import { ForgetPasswordTemplateProps } from 'src/assets/templates/forget-password/type';
 import { identifyUser } from 'src/modules/user-management/utils/identify-user';
 import { AuthNotActiveException } from 'src/shared/auth/errors/auth.notactive.error';
+import { RoleService } from 'src/modules/user-management/services/role.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userRepository: UserRepository,
     private userService: UserService,
+    private roleService: RoleService,
     private jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly mailService: MailService,
@@ -183,11 +185,15 @@ export class AuthService {
       );
     }
 
-    const user = await this.userService.save({
+    const user = await this.userService.saveWithProfile({
       email,
       username,
       isApproved: false,
     });
+
+    if (!user) {
+      throw new UnauthorizedException('User already exists');
+    }
 
     const { access_token, refresh_token } = await this.generateTokens(
       user.id,

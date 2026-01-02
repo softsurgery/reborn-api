@@ -1,46 +1,44 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { currenciesSeed } from './data/currencies.data';
 import { RefTypeRepository } from 'src/shared/reference-types/repositories/ref-type.repository';
 import { RefParamRepository } from 'src/shared/reference-types/repositories/ref-param.repository';
+import { skills } from './data/skills.data';
 
 @Injectable()
-export class CurrenciesSeedCommand {
+export class SkillsSeedCommand {
   constructor(
     private readonly refTypeRepository: RefTypeRepository,
     private readonly refParamRepository: RefParamRepository,
   ) {}
 
   @Command({
-    command: 'seed:currencies',
-    describe: 'Seed system currencies',
+    command: 'seed:skills',
+    describe: 'seed skills',
   })
   async seed() {
     const start = new Date();
-    console.log('🚀 Starting seeding of currencies...');
+    console.log('🚀 Starting seeding of skills...');
     //=============================================================================================
-    let currencyRefType = await this.refTypeRepository.findOne({
-      where: { label: 'Currency' },
+
+    let skillRefType = await this.refTypeRepository.findOne({
+      where: { label: 'Skill' },
     });
 
-    if (!currencyRefType) {
-      currencyRefType = await this.refTypeRepository.save({
-        label: 'Currency',
-        description: 'Parent reference type for all currencies',
+    if (!skillRefType) {
+      skillRefType = await this.refTypeRepository.save({
+        label: 'Skill',
+        description: 'Parent reference type for all skills',
       });
-      for (const currency of currenciesSeed) {
+      for (const skill of skills) {
         await this.refParamRepository.save({
-          label: currency.label,
-          description: currency.label,
-          refType: currencyRefType,
-          extras: {
-            code: currency.code,
-            digitsAfterComma: currency.digitsAfterComma,
-            symbol: currency.symbol,
-          },
+          label: skill,
+          description: `This is a ${skill} reference param`,
+          refType: skillRefType,
+          extras: {},
         });
       }
     }
+
     //=============================================================================================
     const end = new Date();
     console.log(

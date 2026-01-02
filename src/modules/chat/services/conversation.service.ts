@@ -11,6 +11,7 @@ import { ConversationNotFoundException } from '../errors/conversation/conversati
 import { CreateConversationDto } from '../dtos/conversation/create-conversation.dto';
 import { UserService } from 'src/modules/user-management/services/user.service';
 import { UserNotFoundException } from 'src/modules/user-management/errors/user/user.notfound.error';
+import { ComposeConversationDto } from '../dtos/conversation/compose-conversation.dto';
 
 @Injectable()
 export class ConversationService {
@@ -166,5 +167,24 @@ export class ConversationService {
       .groupBy('conversation.id')
       .having('COUNT(DISTINCT participant.id) = 2')
       .getOne();
+  }
+
+  async composeConversation(composeConversationDto: ComposeConversationDto) {
+    const participants = await Promise.all(
+      composeConversationDto.participantIds.map(async (participant) => {
+        const user = await this.userService.findOneById(participant);
+
+        if (!user) {
+          throw new BadRequestException('Participant is required');
+        }
+
+        return user;
+      }),
+    );
+
+    return this.conversationRepository.save({
+      participants,
+      messages: [],
+    });
   }
 }

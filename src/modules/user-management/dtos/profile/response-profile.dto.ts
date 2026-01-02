@@ -1,10 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Gender } from '../../enums/gender.enum';
 import { Expose, Type } from 'class-transformer';
-import { ResponseRegionDto } from 'src/modules/content/region/dtos/response-region.dto';
 import { ResponseUserDto } from 'src/modules/user-management/dtos/user/response-user.dto';
 import { ResponseUploadDto } from 'src/shared/uploads/dtos/response-upload.dto';
 import { ResponseProfileUploadDto } from '../profile-upload/response-profile-upload.dto';
+import { ExperienceDto } from '../../modules/profile-management/dtos/walk-of-life/experience.dto';
+import {
+  Education,
+  Experience,
+} from '../../modules/profile-management/interfaces/walk-of-life.interface';
+import { EducationDto } from '../../modules/profile-management/dtos/walk-of-life/education.dto';
+import { ResponseRefParamDto } from 'src/shared/reference-types/dtos/ref-param/response-ref-param.dto';
 
 export class ResponseProfileDto {
   @ApiProperty({ type: Number })
@@ -31,12 +37,12 @@ export class ResponseProfileDto {
   @Expose()
   isPrivate?: boolean;
 
-  @ApiProperty({ type: () => ResponseRegionDto })
+  @ApiProperty({ type: () => ResponseRefParamDto })
   @Expose()
-  @Type(() => ResponseRegionDto)
-  region?: ResponseRegionDto;
+  @Type(() => ResponseRefParamDto)
+  region?: ResponseRefParamDto;
 
-  @ApiProperty({ type: String })
+  @ApiProperty({ type: Number })
   @Expose()
   regionId?: number;
 
@@ -76,4 +82,19 @@ export class ResponseProfileDto {
   @Expose()
   @Type(() => ResponseProfileUploadDto)
   uploads: ResponseProfileUploadDto[];
+
+  @ApiProperty({ type: [ExperienceDto] })
+  @Expose()
+  @Type(() => ExperienceDto)
+  experiences: Experience[];
+
+  @ApiProperty({ type: [EducationDto] })
+  @Expose()
+  @Type(() => EducationDto)
+  educations: Education[];
+
+  @ApiProperty({ type: [ResponseRefParamDto] })
+  @Expose()
+  @Type(() => ResponseRefParamDto)
+  skills: ResponseRefParamDto[];
 }
