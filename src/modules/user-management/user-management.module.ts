@@ -22,6 +22,9 @@ import { FollowEntity } from './entities/follow.entity';
 import { ProfileUploadRepository } from './repositories/profile-upload.repository';
 import { ProfileUploadService } from './services/profile-upload.service';
 import { ProfileUploadEntity } from './entities/profile-upload.entity';
+import { EducationRepository } from './modules/profile-management/repositories/educations.repository';
+import { EducationService } from './modules/profile-management/services/education.service';
+import { EducationEntity } from './modules/profile-management/entities/education.entity';
 
 @Module({
   controllers: [],
@@ -33,6 +36,7 @@ import { ProfileUploadEntity } from './entities/profile-upload.entity';
     ProfileRepository,
     ProfileUploadRepository,
     FollowRepository,
+    EducationRepository,
 
     UserService,
     RoleService,
@@ -41,6 +45,7 @@ import { ProfileUploadEntity } from './entities/profile-upload.entity';
     ProfileService,
     ProfileUploadService,
     FollowService,
+    EducationService,
   ],
   exports: [
     UserService,
@@ -49,6 +54,7 @@ import { ProfileUploadEntity } from './entities/profile-upload.entity';
     ProfileService,
     ProfileUploadService,
     FollowService,
+    EducationService,
 
     UserRepository,
     RoleRepository,
@@ -57,6 +63,7 @@ import { ProfileUploadEntity } from './entities/profile-upload.entity';
     ProfileRepository,
     ProfileUploadRepository,
     FollowRepository,
+    EducationRepository,
   ],
   imports: [
     TypeOrmModule.forFeature([
@@ -67,6 +74,7 @@ import { ProfileUploadEntity } from './entities/profile-upload.entity';
       ProfileEntity,
       ProfileUploadEntity,
       FollowEntity,
+      EducationEntity,
     ]),
     UploadModule,
   ],

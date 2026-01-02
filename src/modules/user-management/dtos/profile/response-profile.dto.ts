@@ -4,13 +4,8 @@ import { Expose, Type } from 'class-transformer';
 import { ResponseUserDto } from 'src/modules/user-management/dtos/user/response-user.dto';
 import { ResponseUploadDto } from 'src/shared/uploads/dtos/response-upload.dto';
 import { ResponseProfileUploadDto } from '../profile-upload/response-profile-upload.dto';
-import { ExperienceDto } from '../../modules/profile-management/dtos/walk-of-life/experience.dto';
-import {
-  Education,
-  Experience,
-} from '../../modules/profile-management/interfaces/walk-of-life.interface';
-import { EducationDto } from '../../modules/profile-management/dtos/walk-of-life/education.dto';
 import { ResponseRefParamDto } from 'src/shared/reference-types/dtos/ref-param/response-ref-param.dto';
+import { ResponseEducationDto } from '../../modules/profile-management/dtos/education/response-education.dto';
 
 export class ResponseProfileDto {
   @ApiProperty({ type: Number })
@@ -83,15 +78,15 @@ export class ResponseProfileDto {
   @Type(() => ResponseProfileUploadDto)
   uploads: ResponseProfileUploadDto[];
 
-  @ApiProperty({ type: [ExperienceDto] })
-  @Expose()
-  @Type(() => ExperienceDto)
-  experiences: Experience[];
+  // @ApiProperty({ type: [ExperienceDto] })
+  // @Expose()
+  // @Type(() => ExperienceDto)
+  // experiences: [];
 
-  @ApiProperty({ type: [EducationDto] })
+  @ApiProperty({ type: [ResponseEducationDto] })
   @Expose()
-  @Type(() => EducationDto)
-  educations: Education[];
+  @Type(() => ResponseEducationDto)
+  educations: ResponseEducationDto[];
 
   @ApiProperty({ type: [ResponseRefParamDto] })
   @Expose()
