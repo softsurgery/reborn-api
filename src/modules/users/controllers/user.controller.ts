@@ -5,6 +5,7 @@ import {
   Delete,
   Get,
   Param,
+  Post,
   Put,
   Query,
   Request,
@@ -22,6 +23,7 @@ import { AdvancedRequest } from 'src/types';
 import { UserService } from '../services/user.service';
 import { ResponseUserDto } from '../dtos/user/response-user.dto';
 import { UpdateUserDto } from '../dtos/user/update-user.dto';
+import { CreateUserDto } from '../dtos/user/create-user.dto';
 
 @ApiTags('user')
 @ApiBearerAuth('access_token')
@@ -87,6 +89,20 @@ export class UserController {
         join: query.join,
       }),
     );
+  }
+
+  @Post()
+  @LogEvent(EventType.USER_CREATE)
+  async create(
+    @Body() createUserDto: CreateUserDto,
+    @Request() req: AdvancedRequest,
+  ): Promise<ResponseUserDto> {
+    const user = toDto(
+      ResponseUserDto,
+      await this.userService.save(createUserDto),
+    );
+    req.logInfo = { id: user.id, firstName: user.firstName };
+    return user;
   }
 
   @Put('/current')
