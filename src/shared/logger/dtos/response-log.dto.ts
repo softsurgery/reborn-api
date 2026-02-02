@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 import { ResponseDtoHelper } from 'src/shared/database/dtos/database.response.dto';
-import { EventType } from '../enums/event-type.enum';
-import { ResponseUserDto } from 'src/modules/user-management/dtos/user/response-user.dto';
+import { EventType } from '../../../app/enums/event-type.enum';
+import { ResponseAbstractUserDto } from 'src/shared/abstract-user-management/dtos/abstract-user/response-abstract-user.dto';
 
 export class ResponseLogDto extends ResponseDtoHelper {
   @ApiProperty({ type: Number, example: 1 })
@@ -25,10 +25,10 @@ export class ResponseLogDto extends ResponseDtoHelper {
   @Expose()
   userId?: string;
 
-  @ApiProperty({ type: ResponseUserDto })
+  @ApiProperty({ type: ResponseAbstractUserDto })
   @Expose()
-  @Type(() => ResponseUserDto)
-  user: ResponseUserDto;
+  @Type(() => ResponseAbstractUserDto)
+  user: ResponseAbstractUserDto;
 
   @ApiProperty({ type: Object })
   @Expose()

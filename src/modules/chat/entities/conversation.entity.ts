@@ -1,4 +1,3 @@
-import { UserEntity } from 'src/modules/user-management/entities/user.entity';
 import { EntityHelper } from 'src/shared/database/interfaces/database.entity.interface';
 import {
   Entity,
@@ -8,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { MessageEntity } from './message.entity';
+import { UserEntity } from 'src/modules/users/entities/user.entity';
 
 @Entity('conversations')
 export class ConversationEntity extends EntityHelper {

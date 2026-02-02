@@ -7,7 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { tap } from 'rxjs';
 import { AdvancedRequest } from 'src/types';
-import { NotificationType } from '../enums/notification-type.enum';
+import { NotificationType } from '../../../app/enums/notification-type.enum';
 import { NotificationGateway } from '../controllers/notification.gateway';
 
 @Injectable()

@@ -11,10 +11,10 @@ import { JobRequestNotFoundException } from '../errors/job-request/job-request.n
 import { CreateJobRequestDto } from '../dtos/job-request/create-job-request.dto';
 import { UpdateJobRequestDto } from '../dtos/job-request/update-job-request.dto';
 import { JobRepository } from '../repositories/job.repository';
-import { UserNotFoundException } from 'src/modules/user-management/errors/user/user.notfound.error';
 import { JobRequestStatus } from '../enums/job-request-status.enum';
 import { JobRequestCannotRequestOwnJobException } from '../errors/job-request/job-request.cannotrequestownjob.error';
 import { ConversationService } from 'src/modules/chat/services/conversation.service';
+import { UserNotFoundException } from 'src/shared/abstract-user-management/errors/user/user.notfound.error';
 
 @Injectable()
 export class JobRequestService {

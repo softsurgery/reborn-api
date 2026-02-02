@@ -18,7 +18,7 @@ import { ResponseFeedbackDto } from '../dtos/feedback/response-feedback.dto';
 import { PageDto } from 'src/shared/database/dtos/database.page.dto';
 import { toDto, toDtoArray } from 'src/shared/database/utils/dtos';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
-import { EventType } from 'src/shared/logger/enums/event-type.enum';
+import { EventType } from 'src/app/enums/event-type.enum';
 import { CreateFeedbackDto } from '../dtos/feedback/create-feedback.dto';
 import { AdvancedRequest } from 'src/types';
 

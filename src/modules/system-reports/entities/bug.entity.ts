@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { BugVariant } from '../enums/bug-variant.enum';
 import { DeviceInfoEntity } from './device-info.entity';
-import { UserEntity } from 'src/modules/user-management/entities/user.entity';
+import { UserEntity } from 'src/modules/users/entities/user.entity';
 
 @Entity('bugs')
 export class BugEntity extends EntityHelper {

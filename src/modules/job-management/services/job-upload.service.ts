@@ -9,14 +9,14 @@ import { JobUploadRepository } from '../repositories/job-upload.repository';
 import { JobUploadEntity } from '../entities/job-upload.entity';
 import { JobUploadNotFoundException } from '../errors/job-upload/job-upload.notfound.error';
 import { CreateJobUploadDto } from '../dtos/job-upload/create-job-upload.dto';
-import { UploadService } from 'src/shared/uploads/services/upload.service';
 import { UpdateJobUploadDto } from '../dtos/job-upload/update-job-upload.dto';
+import { StorageService } from 'src/shared/storage/services/storage.service';
 
 @Injectable()
 export class JobUploadService {
   constructor(
     private readonly jobUploadRepository: JobUploadRepository,
-    private readonly uploadService: UploadService,
+    private readonly storageService: StorageService,
   ) {}
 
   async findOneById(id: number): Promise<JobUploadEntity> {
@@ -80,7 +80,7 @@ export class JobUploadService {
   @Transactional()
   async save(createJobUploadDto: CreateJobUploadDto) {
     if (createJobUploadDto.uploadId)
-      await this.uploadService.confirm(createJobUploadDto.uploadId);
+      await this.storageService.confirm(createJobUploadDto.uploadId);
     return this.jobUploadRepository.save(createJobUploadDto);
   }
 
@@ -88,7 +88,7 @@ export class JobUploadService {
   async saveMany(createJobUploadDto: CreateJobUploadDto[]) {
     await Promise.all(
       createJobUploadDto.map(async (dto) => {
-        if (dto.uploadId) await this.uploadService.confirm(dto.uploadId);
+        if (dto.uploadId) await this.storageService.confirm(dto.uploadId);
       }),
     );
     return this.jobUploadRepository.saveMany(createJobUploadDto);

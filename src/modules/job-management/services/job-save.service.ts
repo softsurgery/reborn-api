@@ -9,7 +9,7 @@ import { JobSaveEntity } from '../entities/job-save.entity';
 import { JobSaveRepository } from '../repositories/job-save.repository';
 import { JobSaveNotFoundException } from '../errors/job-save/job-save.notfound.error';
 import { CreateJobSaveDto } from '../dtos/job-save/create-job-save.dto';
-import { UserNotFoundException } from 'src/modules/user-management/errors/user/user.notfound.error';
+import { UserNotFoundException } from 'src/shared/abstract-user-management/errors/user/user.notfound.error';
 
 @Injectable()
 export class JobSaveService {

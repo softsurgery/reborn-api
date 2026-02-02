@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { ResponseUserDto } from 'src/modules/user-management/dtos/user/response-user.dto';
+import { ResponseAbstractUserDto } from 'src/shared/abstract-user-management/dtos/abstract-user/response-abstract-user.dto';
 
 export class ResponseClientSignupDto {
-  @ApiProperty({ type: ResponseUserDto })
+  @ApiProperty({ type: ResponseAbstractUserDto })
   @Expose()
-  @Type(() => ResponseUserDto)
-  user: ResponseUserDto;
+  @Type(() => ResponseAbstractUserDto)
+  user?: ResponseAbstractUserDto;
 }

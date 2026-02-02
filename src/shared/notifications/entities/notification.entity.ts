@@ -6,8 +6,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { NotificationType } from '../enums/notification-type.enum';
-import { UserEntity } from 'src/modules/user-management/entities/user.entity';
+import { NotificationType } from '../../../app/enums/notification-type.enum';
+import { AbstractUserEntity } from 'src/shared/abstract-user-management/entities/abstract-user.entity';
 
 @Entity('notification')
 export class NotificationEntity extends EntityHelper {
@@ -17,11 +17,11 @@ export class NotificationEntity extends EntityHelper {
   @Column({ type: 'enum', enum: NotificationType, nullable: true })
   type: NotificationType;
 
-  @ManyToOne(() => UserEntity, (user) => user.notifications, {
+  @ManyToOne(() => AbstractUserEntity, (user) => user.notifications, {
     nullable: true,
   })
   @JoinColumn({ name: 'userId' })
-  user: UserEntity;
+  user: AbstractUserEntity;
 
   @Column({ nullable: true })
   userId?: string;

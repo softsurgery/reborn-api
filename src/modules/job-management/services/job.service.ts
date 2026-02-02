@@ -16,10 +16,10 @@ import { CreateJobUploadDto } from '../dtos/job-upload/create-job-upload.dto';
 import { UpdateJobUploadDto } from '../dtos/job-upload/update-job-upload.dto';
 import { ResponseJobMetadataDto } from '../dtos/job/response-job-metadata.dto';
 import { JobRequestService } from './job-request.service';
-import { UserNotFoundException } from 'src/modules/user-management/errors/user/user.notfound.error';
-import { FollowService } from 'src/modules/user-management/services/follow.service';
 import { RefParamService } from 'src/shared/reference-types/services/ref-param.service';
 import { RefParamEntity } from 'src/shared/reference-types/entities/ref-param.entity';
+import { FollowService } from 'src/shared/abstract-user-management/services/follow.service';
+import { UserNotFoundException } from 'src/shared/abstract-user-management/errors/user/user.notfound.error';
 
 @Injectable()
 export class JobService {

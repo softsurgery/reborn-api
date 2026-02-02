@@ -5,9 +5,9 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserEntity } from 'src/modules/user-management/entities/user.entity';
 import { EntityHelper } from 'src/shared/database/interfaces/database.entity.interface';
-import { EventType } from '../enums/event-type.enum';
+import { EventType } from '../../../app/enums/event-type.enum';
+import { AbstractUserEntity } from 'src/shared/abstract-user-management/entities/abstract-user.entity';
 
 @Entity('log')
 export class LogEntity extends EntityHelper {
@@ -23,12 +23,12 @@ export class LogEntity extends EntityHelper {
   @Column({ nullable: true })
   method?: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.logs, {
+  @ManyToOne(() => AbstractUserEntity, (user) => user.logs, {
     nullable: true,
     eager: true,
   })
   @JoinColumn({ name: 'userId' })
-  user: UserEntity;
+  user: AbstractUserEntity;
 
   @Column({ nullable: true })
   userId?: string;

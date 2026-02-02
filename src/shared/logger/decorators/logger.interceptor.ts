@@ -4,7 +4,7 @@ import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
 import { tap } from 'rxjs';
 import { AdvancedRequest } from 'src/types';
 import { LoggerService } from '../services/logger.service';
-import { EventType } from '../enums/event-type.enum';
+import { EventType } from '../../../app/enums/event-type.enum';
 import { AccessTokenPayload } from 'src/shared/auth/interfaces/access-token-payload.interface';
 import { getTokenPayload } from 'src/shared/auth/utils/token-payload';
 

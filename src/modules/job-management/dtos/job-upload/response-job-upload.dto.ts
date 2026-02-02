@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ResponseDtoHelper } from 'src/shared/database/dtos/database.response.dto';
 import { Expose, Type } from 'class-transformer';
 import { ResponseJobDto } from '../job/response-job.dto';
-import { ResponseUploadDto } from 'src/shared/uploads/dtos/response-upload.dto';
+import { ResponseStorageDto } from 'src/shared/storage/dtos/response-storage.dto';
 
 export class ResponseJobUploadDto extends ResponseDtoHelper {
   @ApiProperty({ type: Number })
@@ -22,10 +22,10 @@ export class ResponseJobUploadDto extends ResponseDtoHelper {
   @Expose()
   uploadId: number;
 
-  @ApiProperty({ type: () => ResponseUploadDto })
+  @ApiProperty({ type: () => ResponseStorageDto })
   @Expose()
-  @Type(() => ResponseUploadDto)
-  upload?: ResponseUploadDto;
+  @Type(() => ResponseStorageDto)
+  upload?: ResponseStorageDto;
 
   @ApiProperty({ type: Number })
   @Expose()
