@@ -25,12 +25,16 @@ import { StorageController } from 'src/shared/storage/controllers/storage.contro
 import { FollowController } from 'src/shared/abstract-user-management/controllers/follow.controller';
 import { UserManagementModule } from 'src/modules/users/user-management.module';
 import { StorageModule } from 'src/shared/storage/storage.module';
+import { EducationController } from 'src/modules/users/controllers/education.controller';
+import { ExperienceController } from 'src/modules/users/controllers/experience.controller';
 
 @Module({
   controllers: [
     //auth
     AuthController,
     ClientAuthController,
+    ExperienceController,
+    EducationController,
     //common
     StorageController,
     StoreController,
