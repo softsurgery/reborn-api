@@ -27,6 +27,8 @@ import { UserManagementModule } from 'src/modules/users/user-management.module';
 import { StorageModule } from 'src/shared/storage/storage.module';
 import { EducationController } from 'src/modules/users/controllers/education.controller';
 import { ExperienceController } from 'src/modules/users/controllers/experience.controller';
+import { RefImplementationController } from 'src/modules/reference-impl/reference-impl.controller';
+import { ReferenceImplModule } from 'src/modules/reference-impl/reference-impl.module';
 
 @Module({
   controllers: [
@@ -55,6 +57,8 @@ import { ExperienceController } from 'src/modules/users/controllers/experience.c
     NotificationController,
     RefTypeController,
     RefParamController,
+    //reference-impl
+    RefImplementationController,
   ],
   providers: [],
   exports: [],
@@ -69,6 +73,7 @@ import { ExperienceController } from 'src/modules/users/controllers/experience.c
     ChatModule,
     NotificationModule,
     ReferenceTypesModule,
+    ReferenceImplModule,
   ],
 })
 export class RoutesModule {}

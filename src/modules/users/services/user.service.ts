@@ -172,28 +172,30 @@ export class UserService extends AbstractUserService {
       };
     });
 
-    await this.userRepository.updateJunctionAssociations<
-      Pick<UserUploadEntity, 'id' | 'userId' | 'uploadId' | 'order'>
-    >({
-      existingItems: existingUploads || [],
-      updatedItems:
-        uploads?.map((upload, index) => ({
-          id: upload.id,
-          userId: id,
-          uploadId: upload.uploadId,
-          order: index,
-        })) || [],
-      keys: ['userId', 'uploadId'],
-      onDelete: async (id: number) => this.userUploadService.softDelete(id),
-      onCreate: async (j: CreateUserUploadDto) =>
-        this.userUploadService.save({
-          userId: id,
-          uploadId: j.uploadId,
-          order: j.order,
-        }),
-      onUpdate: async (id: number, item: UpdateUserUploadDto) =>
-        this.userUploadService.update(id, item),
-    });
+    if (updateUserDto.uploads) {
+      await this.userRepository.updateJunctionAssociations<
+        Pick<UserUploadEntity, 'id' | 'userId' | 'uploadId' | 'order'>
+      >({
+        existingItems: existingUploads || [],
+        updatedItems:
+          uploads?.map((upload, index) => ({
+            id: upload.id,
+            userId: id,
+            uploadId: upload.uploadId,
+            order: index,
+          })) || [],
+        keys: ['userId', 'uploadId'],
+        onDelete: async (id: number) => this.userUploadService.softDelete(id),
+        onCreate: async (j: CreateUserUploadDto) =>
+          this.userUploadService.save({
+            userId: id,
+            uploadId: j.uploadId,
+            order: j.order,
+          }),
+        onUpdate: async (id: number, item: UpdateUserUploadDto) =>
+          this.userUploadService.update(id, item),
+      });
+    }
 
     return updatedUser;
   }
