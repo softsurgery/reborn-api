@@ -62,5 +62,6 @@ export class UpdateUserDto extends UpdateAbstractUserDto {
 
   @ApiProperty({ isArray: true, description: 'ID of uploaded file' })
   @IsArray()
+  @IsOptional()
   declare uploads: Pick<UserUploadEntity, 'id' | 'order' | 'uploadId'>[];
 }

@@ -1,8 +1,8 @@
 {
   "name": "reborn-api",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "1.0.1-T",
+  "description": "this repository contains the API for the reborn project",
+  "author": "softsurgery",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
