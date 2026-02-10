@@ -28,7 +28,9 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
         infer: true,
       }),
       keepConnectionAlive: true,
-      logging: false,
+      logging: this.configService.get<string>('database.logging', {
+        infer: true,
+      }),
       entities: [
         __dirname + '/../../**/*.entity{.ts,.js}',
         __dirname + '/../../../modules/**/*.entity{.ts,.js}',

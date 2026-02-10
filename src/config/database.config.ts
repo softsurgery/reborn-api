@@ -54,6 +54,10 @@ class EnvironmentVariablesValidator {
   @IsOptional()
   DATABASE_DROP_SCHEMA: boolean;
 
+  @IsBoolean()
+  @IsOptional()
+  DATABASE_LOGGING: boolean;
+
   @IsInt()
   @IsOptional()
   DATABASE_MAX_CONNECTIONS: number;
@@ -93,6 +97,7 @@ export default registerAs('database', (): Record<string, unknown> => {
     username: process.env.DATABASE_USERNAME,
     synchronize: process.env.DATABASE_SYNCHRONIZE === 'true',
     dropSchema: process.env.DATABASE_DROP_SCHEMA === 'true',
+    logging: process.env.DATABASE_LOGGING === 'true',
     sslEnabled: process.env.DATABASE_SSL_ENABLED === 'true',
     rejectUnauthorized: process.env.DATABASE_REJECT_UNAUTHORIZED === 'true',
     ca: process.env.DATABASE_CA,

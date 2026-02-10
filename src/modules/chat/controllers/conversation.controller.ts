@@ -20,7 +20,7 @@ import { ResponseConversationDto } from '../dtos/conversation/response-conversat
 import { AdvancedRequest } from 'src/types';
 import { ComposeConversationDto } from '../dtos/conversation/compose-conversation.dto';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
-import { EventType } from 'src/shared/logger/enums/event-type.enum';
+import { EventType } from 'src/app/enums/event-type.enum';
 
 @ApiTags('conversation')
 @ApiBearerAuth('access_token')

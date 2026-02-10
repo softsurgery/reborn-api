@@ -7,8 +7,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { JobEntity } from './job.entity';
-import { UserEntity } from 'src/modules/user-management/entities/user.entity';
 import { JobRequestStatus } from '../enums/job-request-status.enum';
+import { UserEntity } from 'src/modules/users/entities/user.entity';
 
 @Entity('job-requests')
 export class JobRequestEntity extends EntityHelper {

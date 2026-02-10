@@ -15,15 +15,15 @@ import { ResponseSigninDto } from '../dtos/web/response-signin.dto';
 import { RequestSignInDto } from '../dtos/web/request-signin.dto';
 import { OAuthRequestDto } from '../dtos/web/response-oauth.dto';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
-import { EventType } from 'src/shared/logger/enums/event-type.enum';
+import { EventType } from 'src/app/enums/event-type.enum';
 import { AdvancedRequest } from 'src/types';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
 import { RequestResetTokenDto } from '../dtos/web/request-reset-token.dto';
 import { ResponseResetTokenDto } from '../dtos/web/response-reset-token.dto';
 import { RequestCheckResetTokenDto } from '../dtos/web/request-check-reset-token.dto';
 import { ResponseCheckResetTokenDto } from '../dtos/web/response-check-reset-token.dto';
-import { identifyUser } from 'src/modules/user-management/utils/identify-user';
-import { UserEntity } from 'src/modules/user-management/entities/user.entity';
+import { AbstractUserEntity } from 'src/shared/abstract-user-management/entities/abstract-user.entity';
+import { identifyUser } from 'src/shared/abstract-user-management/utils/identify-user';
 
 @ApiTags('auth')
 @Controller({ version: '1', path: '/auth' })
@@ -54,8 +54,8 @@ export class AuthController {
       signInDto.password,
     );
     req.logInfo = {
-      userId: result.user.id,
-      fullname: identifyUser(result?.user as UserEntity),
+      userId: result.user?.id,
+      fullname: identifyUser(result?.user as AbstractUserEntity),
     };
     return result;
   }

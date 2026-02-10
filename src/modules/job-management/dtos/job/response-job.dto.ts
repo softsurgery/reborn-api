@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { ResponseUserDto } from 'src/modules/user-management/dtos/user/response-user.dto';
 import { ResponseDtoHelper } from 'src/shared/database/dtos/database.response.dto';
 import { ResponseJobTagDto } from '../job-tag/response-job-tag.dto';
 import { ResponseJobUploadDto } from '../job-upload/response-job-upload.dto';
@@ -10,6 +9,7 @@ import { ResponseJobRequestDto } from '../job-request/response-job-request.dto';
 import { ResponseJobViewDto } from '../job-view/response-job-view.dto';
 import { ResponseJobSaveDto } from '../job-save/response-job-save.dto';
 import { ResponseRefParamDto } from 'src/shared/reference-types/dtos/ref-param/response-ref-param.dto';
+import { ResponseUserDto } from 'src/modules/users/dtos/user/response-user.dto';
 
 export class ResponseJobDto extends ResponseDtoHelper {
   @ApiProperty({ type: String })

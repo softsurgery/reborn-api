@@ -5,16 +5,11 @@ import { SystemReportsModule } from 'src/modules/system-reports/system-reports.m
 import { AuthModule } from 'src/shared/auth/auth.module';
 import { AuthController } from 'src/shared/auth/controllers/auth.controller';
 import { LoggerModule } from 'src/shared/logger/logger.module';
-import { UserManagementModule } from 'src/modules/user-management/user-management.module';
 import { ClientAuthController } from 'src/shared/auth/controllers/client-auth.controller';
-import { UploadController } from 'src/shared/uploads/controllers/upload.controller';
-import { UploadModule } from 'src/shared/uploads/uploads.module';
-import { ClientController } from 'src/modules/user-management/controllers/client.controller';
 import { JobController } from 'src/modules/job-management/controllers/job.controller';
 import { JobManagementModule } from 'src/modules/job-management/job-management.module';
 import { StoreController } from 'src/shared/store/controllers/store.controller';
 import { StoreModule } from 'src/shared/store/store.module';
-import { FollowController } from 'src/modules/user-management/controllers/follow.controller';
 import { JobRequestController } from 'src/modules/job-management/controllers/job-request.controller';
 import { ConversationController } from 'src/modules/chat/controllers/conversation.controller';
 import { ChatModule } from 'src/modules/chat/chat.module';
@@ -26,17 +21,24 @@ import { NotificationModule } from 'src/shared/notifications/notifications.modul
 import { RefTypeController } from 'src/shared/reference-types/controllers/ref-type.controller';
 import { RefParamController } from 'src/shared/reference-types/controllers/ref-param.controller';
 import { ReferenceTypesModule } from 'src/shared/reference-types/reference-types.module';
+import { StorageController } from 'src/shared/storage/controllers/storage.controller';
+import { FollowController } from 'src/shared/abstract-user-management/controllers/follow.controller';
+import { UserManagementModule } from 'src/modules/users/user-management.module';
+import { StorageModule } from 'src/shared/storage/storage.module';
+import { EducationController } from 'src/modules/users/controllers/education.controller';
+import { ExperienceController } from 'src/modules/users/controllers/experience.controller';
 
 @Module({
   controllers: [
     //auth
     AuthController,
     ClientAuthController,
+    ExperienceController,
+    EducationController,
     //common
-    UploadController,
+    StorageController,
     StoreController,
     //user
-    ClientController,
     FollowController,
     //system reports
     FeedbackController,
@@ -62,7 +64,7 @@ import { ReferenceTypesModule } from 'src/shared/reference-types/reference-types
     LoggerModule,
     SystemReportsModule,
     UserManagementModule,
-    UploadModule,
+    StorageModule,
     JobManagementModule,
     ChatModule,
     NotificationModule,

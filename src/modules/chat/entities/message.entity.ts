@@ -1,4 +1,3 @@
-import { UserEntity } from 'src/modules/user-management/entities/user.entity';
 import { EntityHelper } from 'src/shared/database/interfaces/database.entity.interface';
 import {
   Column,
@@ -11,6 +10,7 @@ import {
 import { ConversationEntity } from './conversation.entity';
 import { MessageVariant } from '../enums/message-variant.enum';
 import { MessageUploadEntity } from './message-upload.entity';
+import { UserEntity } from 'src/modules/users/entities/user.entity';
 
 @Entity('messages')
 export class MessageEntity extends EntityHelper {

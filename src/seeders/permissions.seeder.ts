@@ -1,10 +1,10 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { PermissionService } from 'src/modules/user-management/services/permission.service';
 import {
   permissionActionsSeed,
   permissionEntitiesSeed,
 } from './data/permissions.data';
+import { PermissionService } from 'src/shared/abstract-user-management/services/permission.service';
 
 @Injectable()
 export class PermissionsSeedCommand {

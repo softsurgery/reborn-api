@@ -1,17 +1,11 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from 'src/modules/user-management/repositories/user.repository';
-import { ProfileRepository } from 'src/modules/user-management/repositories/profile.repository';
-import { UserService } from 'src/modules/user-management/services/user.service';
 import { mockUsersSeed } from '../data/playground-users.data';
+import { UserService } from 'src/modules/users/services/user.service';
 
 @Injectable()
 export class PlaygroundUsersSeedCommand {
-  constructor(
-    private readonly userservice: UserService,
-    private readonly userRepository: UserRepository,
-    private readonly profileRepository: ProfileRepository,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @Command({
     command: 'seed:playground-users',
@@ -23,17 +17,15 @@ export class PlaygroundUsersSeedCommand {
     //=============================================================================================
 
     for (const user of mockUsersSeed) {
-      const exists = await this.userRepository.findOne({
-        where: { username: user.core.username },
-      });
+      const exists = await this.userService.findOneByUsername(
+        user.core.username,
+      );
 
       if (!exists) {
-        const profile = await this.profileRepository.save(user.profile);
-        await this.userservice.save({
+        await this.userService.extendedSave({
           ...user.core,
-          profileId: profile.id,
+          ...user.profile,
         });
-
         console.log(`✅ Created user: ${user.core.username}`);
       } else {
         console.log(`⚠️ User already exists: ${user.core.username}`);

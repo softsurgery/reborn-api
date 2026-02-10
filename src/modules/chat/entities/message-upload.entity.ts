@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { MessageEntity } from './message.entity';
-import { UploadEntity } from 'src/shared/uploads/entities/upload.entity';
+import { StorageEntity } from 'src/shared/storage/entities/storage.entity';
 
 @Entity('message_uploads')
 export class MessageUploadEntity extends EntityHelper {
@@ -26,11 +26,11 @@ export class MessageUploadEntity extends EntityHelper {
   @JoinColumn({ name: 'messageId' })
   message: MessageEntity;
 
-  @ManyToOne(() => UploadEntity, {
+  @ManyToOne(() => StorageEntity, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'uploadId' })
-  upload?: UploadEntity;
+  upload?: StorageEntity;
 
   @Column({ nullable: false })
   order: number;

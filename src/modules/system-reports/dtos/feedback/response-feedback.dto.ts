@@ -3,6 +3,7 @@ import { ResponseDtoHelper } from 'src/shared/database/dtos/database.response.dt
 import { Expose, Type } from 'class-transformer';
 import { FeedbackCategory } from '../../enums/feedback-category.enum';
 import { ResponseDeviceInfoDto } from '../device-info/response-device-info.dto';
+import { ResponseUserDto } from 'src/modules/users/dtos/user/response-user.dto';
 
 export class ResponseFeedbackDto extends ResponseDtoHelper {
   @ApiProperty({ type: Number })
@@ -29,4 +30,13 @@ export class ResponseFeedbackDto extends ResponseDtoHelper {
   @ApiProperty({ type: Number })
   @Expose()
   deviceId: number;
+
+  @ApiProperty({ type: String })
+  @Expose()
+  userId: string;
+
+  @ApiProperty({ type: ResponseUserDto })
+  @Expose()
+  @Type(() => ResponseUserDto)
+  user?: ResponseUserDto;
 }

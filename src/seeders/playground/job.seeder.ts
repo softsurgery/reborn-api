@@ -2,10 +2,10 @@ import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
 import { JobService } from 'src/modules/job-management/services/job.service';
 import { mockJobsSeed } from '../data/playground-jobs.data';
-import { UserService } from 'src/modules/user-management/services/user.service';
 import { JobStyle } from 'src/modules/job-management/enums/job-style.enum';
 import { JobDifficulty } from 'src/modules/job-management/enums/job-difficulty.enum';
 import { RefParamRepository } from 'src/shared/reference-types/repositories/ref-param.repository';
+import { UserService } from 'src/modules/users/services/user.service';
 
 @Injectable()
 export class PlaygroundJobsSeedCommand {

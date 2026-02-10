@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { CommandModule } from 'nestjs-command';
-import { UserManagementModule } from 'src/modules/user-management/user-management.module';
 import { PermissionsSeedCommand } from './permissions.seeder';
 import { RolesSeedCommand } from './roles.seeder';
 import { AdminSeedCommand } from './admin.seeder';
@@ -17,16 +16,9 @@ import { PlaygroundJobsSeedCommand } from './playground/job.seeder';
 import { JobTagsSeedCommand } from './job-tags.seeder';
 import { ReferenceTypesModule } from 'src/shared/reference-types/reference-types.module';
 import { SkillsSeedCommand } from './skills.seeder';
+import { UserManagementModule } from 'src/modules/users/user-management.module';
 
 @Module({
-  imports: [
-    CommandModule,
-    UserManagementModule,
-    TemplateModule,
-    StoreModule,
-    JobManagementModule,
-    ReferenceTypesModule,
-  ],
   providers: [
     //seeders
     PermissionsSeedCommand,
@@ -42,6 +34,14 @@ import { SkillsSeedCommand } from './skills.seeder';
     //playground
     PlaygroundUsersSeedCommand,
     PlaygroundJobsSeedCommand,
+  ],
+  imports: [
+    CommandModule,
+    UserManagementModule,
+    TemplateModule,
+    StoreModule,
+    JobManagementModule,
+    ReferenceTypesModule,
   ],
 })
 export class SeedersModule {}

@@ -3,7 +3,7 @@ import { BugVariant } from '../../enums/bug-variant.enum';
 import { ResponseDtoHelper } from 'src/shared/database/dtos/database.response.dto';
 import { Expose, Type } from 'class-transformer';
 import { ResponseDeviceInfoDto } from '../device-info/response-device-info.dto';
-import { ResponseUserDto } from 'src/modules/user-management/dtos/user/response-user.dto';
+import { ResponseUserDto } from 'src/modules/users/dtos/user/response-user.dto';
 
 export class ResponseBugDto extends ResponseDtoHelper {
   @ApiProperty({ type: Number })

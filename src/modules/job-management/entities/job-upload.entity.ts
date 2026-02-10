@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { JobEntity } from './job.entity';
-import { UploadEntity } from 'src/shared/uploads/entities/upload.entity';
+import { StorageEntity } from 'src/shared/storage/entities/storage.entity';
 
 @Entity('job_uploads')
 export class JobUploadEntity extends EntityHelper {
@@ -26,11 +26,11 @@ export class JobUploadEntity extends EntityHelper {
   @JoinColumn({ name: 'jobId' })
   job: JobEntity;
 
-  @ManyToOne(() => UploadEntity, {
+  @ManyToOne(() => StorageEntity, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'uploadId' })
-  upload?: UploadEntity;
+  upload?: StorageEntity;
 
   @Column({ nullable: false })
   order: number;

@@ -6,7 +6,6 @@ import { JobEntity } from './entities/job.entity';
 import { JobUploadRepository } from './repositories/job-upload.repository';
 import { JobUploadService } from './services/job-upload.service';
 import { JobUploadEntity } from './entities/job-upload.entity';
-import { UploadModule } from 'src/shared/uploads/uploads.module';
 import { JobRequestEntity } from './entities/job-request.entity';
 import { JobRequestRepository } from './repositories/job-request.repository';
 import { JobRequestService } from './services/job-request.service';
@@ -17,8 +16,9 @@ import { JobSaveService } from './services/job-save.service';
 import { JobViewService } from './services/job-view.service';
 import { JobSaveEntity } from './entities/job-save.entity';
 import { JobViewEntity } from './entities/job-view.entity';
-import { UserManagementModule } from '../user-management/user-management.module';
 import { ReferenceTypesModule } from 'src/shared/reference-types/reference-types.module';
+import { UserManagementModule } from '../users/user-management.module';
+import { StorageModule } from 'src/shared/storage/storage.module';
 
 @Module({
   controllers: [],
@@ -57,7 +57,7 @@ import { ReferenceTypesModule } from 'src/shared/reference-types/reference-types
       JobViewEntity,
     ]),
     UserManagementModule,
-    UploadModule,
+    StorageModule,
     ChatModule,
     ReferenceTypesModule,
   ],

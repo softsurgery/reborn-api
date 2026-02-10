@@ -5,7 +5,7 @@ import { ApiPaginatedResponse } from 'src/shared/database/decorators/api-paginat
 import { toDto, toDtoArray } from 'src/shared/database/utils/dtos';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
-import { EventType } from 'src/shared/logger/enums/event-type.enum';
+import { EventType } from 'src/app/enums/event-type.enum';
 import { AdvancedRequest } from 'src/types';
 import {
   Body,
@@ -26,10 +26,10 @@ import { CreateJobRequestDto } from '../dtos/job-request/create-job-request.dto'
 import { UpdateJobRequestDto } from '../dtos/job-request/update-job-request.dto';
 import { NotificationInterceptor } from 'src/shared/notifications/decorators/notification.interceptor';
 import { Notify } from 'src/shared/notifications/decorators/notify.decorator';
-import { NotificationType } from 'src/shared/notifications/enums/notification-type.enum';
+import { NotificationType } from 'src/app/enums/notification-type.enum';
 import { JobService } from '../services/job.service';
-import { identifyUser } from 'src/modules/user-management/utils/identify-user';
-import { UserEntity } from 'src/modules/user-management/entities/user.entity';
+import { identifyUser } from 'src/shared/abstract-user-management/utils/identify-user';
+import { UserEntity } from 'src/modules/users/entities/user.entity';
 
 @ApiTags('job-request')
 @ApiBearerAuth('access_token')

@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { JobEntity } from './job.entity';
-import { UserEntity } from 'src/modules/user-management/entities/user.entity';
+import { UserEntity } from 'src/modules/users/entities/user.entity';
 
 @Entity('job_views')
 export class JobViewEntity extends EntityHelper {

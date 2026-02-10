@@ -19,7 +19,7 @@ import { ResponseDeviceInfoDto } from '../dtos/device-info/response-device-info.
 import { CreateDeviceInfoDto } from '../dtos/device-info/create-device-info.dto';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
-import { EventType } from 'src/shared/logger/enums/event-type.enum';
+import { EventType } from 'src/app/enums/event-type.enum';
 import { AdvancedRequest } from 'src/types';
 
 @ApiTags('device-info')

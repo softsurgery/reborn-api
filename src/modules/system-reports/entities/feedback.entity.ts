@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { DeviceInfoEntity } from './device-info.entity';
 import { FeedbackCategory } from '../enums/feedback-category.enum';
-import { UserEntity } from 'src/modules/user-management/entities/user.entity';
+import { UserEntity } from 'src/modules/users/entities/user.entity';
 
 @Entity('feedback')
 export class FeedbackEntity extends EntityHelper {

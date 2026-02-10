@@ -18,7 +18,7 @@ import { AdvancedRequest } from 'src/types';
 import { NotificationService } from '../services/notification.service';
 import { ResponseNotificationDto } from '../dtos/response-notification.dto';
 import { NotificationGateway } from './notification.gateway';
-import { NotificationType } from '../enums/notification-type.enum';
+import { NotificationType } from '../../../app/enums/notification-type.enum';
 
 @ApiTags('notification')
 @ApiBearerAuth('access_token')

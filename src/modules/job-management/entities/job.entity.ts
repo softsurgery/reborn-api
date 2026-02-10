@@ -1,4 +1,3 @@
-import { UserEntity } from 'src/modules/user-management/entities/user.entity';
 import { EntityHelper } from 'src/shared/database/interfaces/database.entity.interface';
 import {
   Column,
@@ -17,6 +16,7 @@ import { JobDifficulty } from '../enums/job-difficulty.enum';
 import { JobViewEntity } from './job-view.entity';
 import { JobSaveEntity } from './job-save.entity';
 import { RefParamEntity } from 'src/shared/reference-types/entities/ref-param.entity';
+import { UserEntity } from 'src/modules/users/entities/user.entity';
 
 @Entity('jobs')
 export class JobEntity extends EntityHelper {

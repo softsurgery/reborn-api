@@ -10,7 +10,7 @@ import { AdvancedSocket } from 'src/types';
 import { Injectable, Logger } from '@nestjs/common';
 import { NotificationService } from '../services/notification.service';
 import { NotificationEntity } from '../entities/notification.entity';
-import { NotificationType } from '../enums/notification-type.enum';
+import { NotificationType } from '../../../app/enums/notification-type.enum';
 
 @WebSocketGateway({
   cors: { origin: '*' },

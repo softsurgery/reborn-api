@@ -2,8 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ResponseDtoHelper } from 'src/shared/database/dtos/database.response.dto';
 import { Expose, Type } from 'class-transformer';
 import { ResponseJobDto } from '../job/response-job.dto';
-import { ResponseUserDto } from 'src/modules/user-management/dtos/user/response-user.dto';
 import { JobRequestStatus } from '../../enums/job-request-status.enum';
+import { ResponseUserDto } from 'src/modules/users/dtos/user/response-user.dto';
 
 export class ResponseJobRequestDto extends ResponseDtoHelper {
   @ApiProperty({ type: Number })

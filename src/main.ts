@@ -10,6 +10,7 @@ import { useContainer } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { MigrationService } from './shared/database/services/database-migration.service';
+import { branding } from './utils/branding';
 
 async function bootstrap() {
   const app: NestApplication = await NestFactory.create(AppModule);
@@ -22,7 +23,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
-  const logger = new Logger('Bootstrap');
+  const logger: Logger = new Logger('Bootstrap');
 
   // Config Variables =====================================================
   const configService = app.get(ConfigService);
@@ -78,16 +79,11 @@ async function bootstrap() {
 
   await app.listen(port);
 
-  logger.log(`
-██████╗ ███████╗██████╗  ██████╗ ██████╗ ███╗   ██╗
-██╔══██╗██╔════╝██╔══██╗██╔═══██╗██╔══██╗████╗  ██║
-██████╔╝█████╗  ██████╔╝██║   ██║██████╔╝██╔██╗ ██║
-██╔══██╗██╔══╝  ██╔══██╗██║   ██║██╔══██╗██║╚██╗██║
-██║  ██║███████╗██████╔╝╚██████╔╝██║  ██║██║ ╚████║
-╚═╝  ╚═╝╚══════╝╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝`);
+  branding(logger);
   logger.log(`==========================================================`);
   logger.log(`Http Server running on ${await app.getUrl()}`, 'NestApplication');
   logger.log(`Timezone set to ${process.env.TZ}`);
+  logger.log(`Storage driver set to ${process.env.STORAGE_DRIVER}`);
   logger.log(`==========================================================`);
 
   //Migrations ==========================================================
