@@ -51,28 +51,46 @@ import { ChatModule } from 'src/modules/chat/chat.module';
     ScheduleModule.forRoot(),
     MailerModule.forRootAsync({
       useFactory: async () => {
-        const email = process.env.SMTP_USER;
-        if (!email) throw new Error('SMTP_USER is not set');
+        try {
+          const email = process.env.SMTP_USER;
+          if (!email) throw new Error('SMTP_USER is not set');
 
-        const domain = email.split('@')[1];
-        if (!domain) throw new Error(`Invalid SMTP_USER: ${email}`);
+          const domain = email.split('@')[1];
+          if (!domain) throw new Error(`Invalid SMTP_USER: ${email}`);
 
-        const { host, port } = await resolveMX(domain);
+          const { host, port } = await resolveMX(domain);
 
-        return {
-          transport: {
-            host,
-            port,
-            secure: port === 465, // Use secure for 465, STARTTLS for 587
-            auth: {
-              user: process.env.SMTP_USER,
-              pass: process.env.SMTP_PASS,
+          return {
+            transport: {
+              host,
+              port,
+              secure: port === 465, // Use secure for 465, STARTTLS for 587
+              auth: {
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_PASS,
+              },
+              tls: {
+                rejectUnauthorized: false,
+              },
             },
-            tls: {
-              rejectUnauthorized: false,
+            defaults: {
+              from: `"No Reply" <${process.env.SMTP_USER}>`,
             },
-          },
-        };
+          };
+        } catch (error: unknown) {
+          const errMsg = error instanceof Error ? error.message : String(error);
+          console.error('⚠️ Failed to configure mailer:', errMsg);
+
+          // Return a "disabled" mailer config to prevent startup crash
+          return {
+            transport: {
+              jsonTransport: true, // mailer will just log messages instead of sending
+            },
+            defaults: {
+              from: '"Mail Disabled" <noreply@example.com>',
+            },
+          };
+        }
       },
     }),
     MailModule,
