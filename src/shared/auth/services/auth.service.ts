@@ -23,8 +23,8 @@ import {
   GithubUserResponse,
 } from '../interfaces/github.interface';
 import { UserRepository } from 'src/modules/users/repositories/user.repository';
-import { Core } from 'src/app/interface/core.interface';
 import { UserService } from 'src/modules/users/services/user.service';
+import { Core } from 'src/app/interface/core.interface';
 
 @Injectable()
 export class AuthService {
@@ -98,7 +98,7 @@ export class AuthService {
     try {
       const payload: { sub: string; email: string } =
         await this.jwtService.verifyAsync(refreshToken, {
-          secret: this.configService.get('app.jwtRefreshTokenSecret'),
+          secret: this.configService.get('app.jwt.secret'),
         });
 
       const user = await this.userRepository.findOneById(payload.sub);
@@ -186,7 +186,6 @@ export class AuthService {
     const user = await this.userService.save({
       email,
       username,
-      isApproved: false,
     });
 
     const { access_token, refresh_token } = await this.generateTokens(

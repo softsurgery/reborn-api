@@ -18,6 +18,8 @@ import { ClientAuthService } from '../services/client-auth.service';
 import { RequestClientSignUpDto } from '../dtos/client/request-client-signup.dto';
 import { ResponseClientSignupDto } from '../dtos/client/response-client-signup.dto';
 import { RequestClientSignInDto } from '../dtos/client/request-client-signin.dto';
+import { ResponseClientSigninDto } from '../dtos/client/response-client-signin.dto';
+import { RefreshTokenDto } from '../dtos/web/response-refresh-token';
 import { Notify } from 'src/shared/notifications/decorators/notify.decorator';
 import { NotificationType } from 'src/app/enums/notification-type.enum';
 import { NotificationInterceptor } from 'src/shared/notifications/decorators/notification.interceptor';
@@ -93,5 +95,27 @@ export class ClientAuthController {
     } catch (error) {
       throw new BadRequestException(`User registration failed: ${error}`);
     }
+  }
+
+  @Public()
+  @Post('refresh-token')
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Refresh access token',
+    description: 'Obtain a new access token using a valid refresh token.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Token successfully refreshed.',
+    type: ResponseClientSigninDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Invalid or expired refresh token.',
+  })
+  async refreshToken(
+    @Body() body: RefreshTokenDto,
+  ): Promise<ResponseClientSigninDto> {
+    return this.clientAuthService.refreshToken(body.refresh_token);
   }
 }

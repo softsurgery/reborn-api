@@ -100,7 +100,6 @@ export class ClientAuthService {
       user: await this.userService.save({
         ...createUserDto,
         roleId: BasicRoles.User,
-        isActive: true,
       }),
     };
   }
@@ -109,7 +108,7 @@ export class ClientAuthService {
     try {
       const payload: { sub: string; email: string } =
         await this.jwtService.verifyAsync(refreshToken, {
-          secret: this.configService.get('app.jwtRefreshTokenSecret'),
+          secret: this.configService.get('app.jwt.secret'),
         });
 
       const user = await this.userRepository.findOneById(payload.sub);
@@ -197,7 +196,6 @@ export class ClientAuthService {
     const user = await this.userService.save({
       email,
       username,
-      isApproved: false,
     });
 
     const { access_token, refresh_token } = await this.generateTokens(
