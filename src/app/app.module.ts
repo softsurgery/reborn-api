@@ -18,6 +18,7 @@ import { MailModule } from 'src/shared/mail/mail.module';
 import { SeedersModule } from 'src/seeders/seeders.module';
 import { RouterModule } from 'src/routers/router.module';
 import { ChatModule } from 'src/shared/chat/chat.module';
+import { StorageModule } from 'src/shared/storage/storage.module';
 
 @Module({
   imports: [
@@ -97,6 +98,7 @@ import { ChatModule } from 'src/shared/chat/chat.module';
     SeedersModule,
     RouterModule.forRoot(),
     ChatModule,
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
