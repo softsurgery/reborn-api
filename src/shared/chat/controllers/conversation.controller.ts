@@ -5,15 +5,23 @@ import { ApiPaginatedResponse } from 'src/shared/database/decorators/api-paginat
 import { toDto, toDtoArray } from 'src/shared/database/utils/dtos';
 import { LogInterceptor } from 'src/shared/logger/decorators/logger.interceptor';
 import {
+  BadRequestException,
+  Body,
   ClassSerializerInterceptor,
   Controller,
   Get,
   Param,
+  Post,
   Query,
+  Request,
   UseInterceptors,
 } from '@nestjs/common';
 import { ConversationService } from '../services/conversation.service';
 import { ResponseConversationDto } from '../dtos/conversation/response-conversation.dto';
+import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
+import { EventType } from 'src/app/enums/event-type.enum';
+import { ComposeConversationDto } from '../dtos/conversation/compose-conversation.dto';
+import { AdvancedRequest } from 'src/types';
 
 @ApiTags('conversation')
 @ApiBearerAuth('access_token')
@@ -60,6 +68,30 @@ export class ConversationController {
     return toDto(
       ResponseConversationDto,
       await this.conversationService.findOneById(id),
+    );
+  }
+
+  @Post('/compose')
+  @LogEvent(EventType.CONVERSATION_COMPOSE)
+  async composeConversation(
+    @Body() data: ComposeConversationDto,
+    @Request() req: AdvancedRequest,
+  ): Promise<ResponseConversationDto> {
+    if (!req?.user?.sub) {
+      throw new BadRequestException('User id is required');
+    }
+    req.logInfo = {
+      participantIds: data.participantIds,
+      composerId: req?.user?.sub,
+    };
+    return toDto(
+      ResponseConversationDto,
+      await this.conversationService.createGroupedConversation(
+        {
+          users: data.participantIds,
+        },
+        req.user?.sub,
+      ),
     );
   }
 }
