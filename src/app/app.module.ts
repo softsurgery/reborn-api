@@ -17,7 +17,7 @@ import { resolveMX } from 'src/shared/mail/utils/mx-resolve.util';
 import { MailModule } from 'src/shared/mail/mail.module';
 import { SeedersModule } from 'src/seeders/seeders.module';
 import { RouterModule } from 'src/routers/router.module';
-import { ChatModule } from 'src/modules/chat/chat.module';
+import { ChatModule } from 'src/shared/chat/chat.module';
 
 @Module({
   imports: [

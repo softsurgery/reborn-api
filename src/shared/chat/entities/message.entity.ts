@@ -9,8 +9,8 @@ import {
 } from 'typeorm';
 import { ConversationEntity } from './conversation.entity';
 import { MessageVariant } from '../enums/message-variant.enum';
-import { MessageUploadEntity } from './message-upload.entity';
-import { UserEntity } from 'src/modules/users/entities/user.entity';
+import { MessageUploadEntity } from './message-storage.entity';
+import { AbstractUserEntity } from 'src/shared/abstract-user-management/entities/abstract-user.entity';
 
 @Entity('messages')
 export class MessageEntity extends EntityHelper {
@@ -20,9 +20,9 @@ export class MessageEntity extends EntityHelper {
   @Column({ type: 'text', nullable: false })
   content: string;
 
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => AbstractUserEntity)
   @JoinColumn({ name: 'userId' })
-  user: UserEntity;
+  user: AbstractUserEntity;
 
   @Column({})
   userId: string;

@@ -7,18 +7,18 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { MessageEntity } from './message.entity';
-import { UserEntity } from 'src/modules/users/entities/user.entity';
+import { AbstractUserEntity } from 'src/shared/abstract-user-management/entities/abstract-user.entity';
 
 @Entity('conversations')
 export class ConversationEntity extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToMany(() => UserEntity, {
+  @ManyToMany(() => AbstractUserEntity, {
     eager: true,
   })
   @JoinTable()
-  participants: UserEntity[];
+  participants: AbstractUserEntity[];
 
   @OneToMany(() => MessageEntity, (message) => message.conversation)
   messages: MessageEntity[];

@@ -2,9 +2,9 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { ConversationService } from './conversation.service';
 import { ConversationNotFoundException } from '../errors/conversation/conversation.notfound.error';
+import { UserNotFoundException } from 'src/shared/abstract-user-management/errors/user/user.notfound.error';
 import { MessageEntity } from '../entities/message.entity';
 import { UserService } from 'src/modules/users/services/user.service';
-import { UserNotFoundException } from 'src/shared/abstract-user-management/errors/user/user.notfound.error';
 
 @Injectable()
 export class ChatService {
@@ -37,7 +37,7 @@ export class ChatService {
       throw new UserNotFoundException();
     }
 
-    return this.messageService.save(createMessage, user.id);
+    return this.messageService.saveMessage(createMessage, user.id);
   }
 
   async isUserInConversation(

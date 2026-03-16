@@ -13,7 +13,6 @@ import { getTokenPayloadForWebSocket } from 'src/shared/auth/utils/token-payload
 import { AdvancedSocket } from 'src/types';
 import { MessageService } from '../services/message.service';
 import { MessageRepository } from '../repositories/message.repository';
-import { LessThan } from 'typeorm';
 import { CreateMessageDto } from '../dtos/message/create-message.dto';
 
 const MAX_LIMIT = 20;
@@ -86,7 +85,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async getConversationMessages(
     @ConnectedSocket() client: AdvancedSocket,
     @MessageBody()
-    data: { conversationId: number; limit?: number; before?: string },
+    data: { conversationId: number; page?: string; limit?: number },
   ) {
     const payload = getTokenPayloadForWebSocket(client);
     const userId = payload?.sub;
@@ -101,19 +100,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
 
-    const beforeDate = data.before ? new Date(data.before) : undefined;
-    const messages = await this.messageRepository.findAll({
-      where: {
-        conversationId: data.conversationId,
-        ...(beforeDate ? { createdAt: LessThan(beforeDate) } : {}),
-      },
-      take: Number(data.limit ?? MAX_LIMIT),
-      order: {
-        createdAt: 'DESC',
-      },
-    });
+    const messages =
+      await this.messageService.findPaginatedConversationMessages(
+        {
+          sort: 'createdAt,DESC',
+          limit: MAX_LIMIT.toString(),
+          page: data.page ?? '1',
+        },
+        data.conversationId,
+      );
 
-    client.emit('conversationMessages', messages);
+    client.emit('conversationMessages', messages.data);
   }
 
   @SubscribeMessage('message')

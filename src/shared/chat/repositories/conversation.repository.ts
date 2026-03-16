@@ -15,4 +15,13 @@ export class ConversationRepository extends DatabaseAbstractRepository<Conversat
   ) {
     super(conversationRepository, txHost);
   }
+
+  async getUsersConversations(Ids: string[]): Promise<ConversationEntity[]> {
+    return this.createQueryBuilder('conversation')
+      .leftJoin('conversation.participants', 'participant')
+      .where('participant.id IN (:...userIds)', { userIds: Ids })
+      .groupBy('conversation.id')
+      .having('COUNT(DISTINCT participant.id) = 2')
+      .getMany();
+  }
 }

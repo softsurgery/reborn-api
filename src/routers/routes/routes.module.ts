@@ -11,9 +11,9 @@ import { JobManagementModule } from 'src/modules/job-management/job-management.m
 import { StoreController } from 'src/shared/store/controllers/store.controller';
 import { StoreModule } from 'src/shared/store/store.module';
 import { JobRequestController } from 'src/modules/job-management/controllers/job-request.controller';
-import { ConversationController } from 'src/modules/chat/controllers/conversation.controller';
-import { ChatModule } from 'src/modules/chat/chat.module';
-import { MessageController } from 'src/modules/chat/controllers/message.controller';
+import { ConversationController } from 'src/shared/chat/controllers/conversation.controller';
+import { ChatModule } from 'src/shared/chat/chat.module';
+import { MessageController } from 'src/shared/chat/controllers/message.controller';
 import { JobSaveController } from 'src/modules/job-management/controllers/job-save.controller';
 import { JobViewController } from 'src/modules/job-management/controllers/job-view.controller';
 import { NotificationController } from 'src/shared/notifications/controllers/notification.controller';
@@ -29,6 +29,7 @@ import { EducationController } from 'src/modules/users/controllers/education.con
 import { ExperienceController } from 'src/modules/users/controllers/experience.controller';
 import { RefImplementationController } from 'src/modules/reference-impl/reference-impl.controller';
 import { ReferenceImplModule } from 'src/modules/reference-impl/reference-impl.module';
+import { CurrentConversationController } from 'src/shared/chat/controllers/user-conversation.controller';
 
 @Module({
   controllers: [
@@ -53,6 +54,7 @@ import { ReferenceImplModule } from 'src/modules/reference-impl/reference-impl.m
     //chat
     ConversationController,
     MessageController,
+    CurrentConversationController,
     //notifications
     NotificationController,
     RefTypeController,

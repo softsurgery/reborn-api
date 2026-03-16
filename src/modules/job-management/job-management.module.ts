@@ -9,7 +9,7 @@ import { JobUploadEntity } from './entities/job-upload.entity';
 import { JobRequestEntity } from './entities/job-request.entity';
 import { JobRequestRepository } from './repositories/job-request.repository';
 import { JobRequestService } from './services/job-request.service';
-import { ChatModule } from '../chat/chat.module';
+import { ChatModule } from '../../shared/chat/chat.module';
 import { JobSaveRepository } from './repositories/job-save.repository';
 import { JobViewRepository } from './repositories/job-view.repository';
 import { JobSaveService } from './services/job-save.service';
