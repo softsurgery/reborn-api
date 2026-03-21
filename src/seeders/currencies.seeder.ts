@@ -19,12 +19,11 @@ export class CurrenciesSeedCommand {
     const start = new Date();
     console.log('🚀 Starting seeding of currencies...');
     //=============================================================================================
-    let currencyRefType = await this.refTypeRepository.findOne({
-      where: { label: 'Currency' },
-    });
+    let currencyRefType = await this.refTypeRepository.findOneById('currency');
 
     if (!currencyRefType) {
       currencyRefType = await this.refTypeRepository.save({
+        id: 'currency',
         label: 'Currency',
         description: 'Parent reference type for all currencies',
       });

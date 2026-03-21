@@ -19,11 +19,10 @@ export class JobTagsSeedCommand {
     const start = new Date();
     console.log('🚀 Starting seeding of job tags...');
     //=============================================================================================
-    let jobTagsRefType = await this.refTypeRepository.findOne({
-      where: { label: 'Job Tag' },
-    });
+    let jobTagsRefType = await this.refTypeRepository.findOneById('job-tag');
     if (!jobTagsRefType) {
       jobTagsRefType = await this.refTypeRepository.save({
+        id: 'job-tag',
         label: 'Job Tag',
         description: 'Parent reference type for job tags',
       });

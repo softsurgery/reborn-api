@@ -20,12 +20,11 @@ export class SkillsSeedCommand {
     console.log('🚀 Starting seeding of skills...');
     //=============================================================================================
 
-    let skillRefType = await this.refTypeRepository.findOne({
-      where: { label: 'Skill' },
-    });
+    let skillRefType = await this.refTypeRepository.findOneById('skill');
 
     if (!skillRefType) {
       skillRefType = await this.refTypeRepository.save({
+        id: 'skill',
         label: 'Skill',
         description: 'Parent reference type for all skills',
       });

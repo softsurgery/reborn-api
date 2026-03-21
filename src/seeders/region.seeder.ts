@@ -19,12 +19,11 @@ export class RegionsSeedCommand {
     const start = new Date();
     console.log('🚀 Starting seeding of regions...');
     //=============================================================================================
-    let regionRefType = await this.refTypeRepository.findOne({
-      where: { label: 'Region' },
-    });
+    let regionRefType = await this.refTypeRepository.findOneById('region');
 
     if (!regionRefType) {
       regionRefType = await this.refTypeRepository.save({
+        id: 'region',
         label: 'Region',
         description: 'Parent reference type for all regions',
       });

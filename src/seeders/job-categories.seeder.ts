@@ -19,11 +19,11 @@ export class JobCategoriesSeedCommand {
     const start = new Date();
     console.log('🚀 Starting seeding of job categories...');
     //=============================================================================================
-    let jobCategoryRefType = await this.refTypeRepository.findOne({
-      where: { label: 'Job Category' },
-    });
+    let jobCategoryRefType =
+      await this.refTypeRepository.findOneById('job-category');
     if (!jobCategoryRefType) {
       jobCategoryRefType = await this.refTypeRepository.save({
+        id: 'job-category',
         label: 'Job Category',
         description: 'Parent reference type for all job categories',
       });
