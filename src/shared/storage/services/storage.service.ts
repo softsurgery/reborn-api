@@ -1,4 +1,3 @@
-// storage.interface.ts
 import { ReadStream } from 'fs';
 import { StorageEntity } from '../entities/storage.entity';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
