@@ -1,17 +1,11 @@
 import { Transactional } from '@nestjs-cls/transactional';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { FindManyOptions, FindOneOptions } from 'typeorm';
-import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
-import { QueryBuilder } from 'src/shared/database/utils/database-query-builder';
-import { PageDto } from 'src/shared/database/dtos/database.page.dto';
-import { PageMetaDto } from 'src/shared/database/dtos/database.page-meta.dto';
 import { UserUploadService } from './user-upload.service';
 import { UserEntity } from '../entities/user.entity';
 import { UserNotFoundException } from 'src/shared/abstract-user-management/errors/user/user.notfound.error';
 import { UserUploadEntity } from '../entities/user-upload.entity';
 import { AbstractUserService } from 'src/shared/abstract-user-management/services/abstract-user.service';
 import { hashPassword } from 'src/shared/helpers/hash.utils';
-import { RefParamRepository } from 'src/shared/reference-types/repositories/ref-param.repository';
 import { StorageService } from 'src/shared/storage/services/storage.service';
 import { UserRepository } from '../repositories/user.repository';
 import { CreateUserDto } from '../dtos/user/create-user.dto';
@@ -25,89 +19,8 @@ export class UserService extends AbstractUserService {
     private readonly userRepository: UserRepository,
     private readonly userUploadService: UserUploadService,
     private readonly storageService: StorageService,
-    private readonly refParamRepository: RefParamRepository,
   ) {
     super(userRepository);
-  }
-
-  async findOneById(id: string): Promise<UserEntity> {
-    const user = await this.userRepository.findOneById(id);
-    if (!user) {
-      throw new UserNotFoundException();
-    }
-    return user;
-  }
-
-  async findOneByCondition(
-    query: IQueryObject = {},
-  ): Promise<UserEntity | null> {
-    const queryBuilder = new QueryBuilder(this.userRepository.getMetadata());
-    const queryOptions = queryBuilder.build(query);
-    const user = await this.userRepository.findOne(
-      queryOptions as FindOneOptions<UserEntity>,
-    );
-    return user;
-  }
-
-  async findAll(query: IQueryObject): Promise<UserEntity[]> {
-    const queryBuilder = new QueryBuilder(this.userRepository.getMetadata());
-    const queryOptions = queryBuilder.build(query);
-    const users = await this.userRepository.findAll(
-      queryOptions as FindManyOptions<UserEntity>,
-    );
-    return users;
-  }
-
-  async findAllPaginated(query: IQueryObject): Promise<PageDto<UserEntity>> {
-    const queryBuilder = new QueryBuilder(this.userRepository.getMetadata());
-    const queryOptions = queryBuilder.build(query);
-    const count = await this.userRepository.getTotalCount({
-      where: queryOptions.where,
-    });
-
-    const entities = await this.userRepository.findAll(
-      queryOptions as FindManyOptions<UserEntity>,
-    );
-
-    const pageMetaDto = new PageMetaDto({
-      pageOptionsDto: {
-        page: Number(query.page),
-        take: Number(query.limit),
-      },
-      itemCount: count,
-    });
-
-    return new PageDto(entities, pageMetaDto);
-  }
-
-  @Transactional()
-  async save(createProfileDto: CreateUserDto): Promise<UserEntity> {
-    return await this.userRepository.save(createProfileDto);
-  }
-
-  @Transactional()
-  async saveMany(createProfileDto: CreateUserDto[]): Promise<UserEntity[]> {
-    return Promise.all(createProfileDto.map((dto) => this.save(dto)));
-  }
-
-  @Transactional()
-  async update(
-    id: string,
-    updateProfileDto: UpdateUserDto,
-  ): Promise<UserEntity | null> {
-    return this.userRepository.update(id, updateProfileDto);
-  }
-
-  async softDelete(id: string): Promise<UserEntity | null> {
-    return this.userRepository.softDelete(id);
-  }
-
-  async delete(id: number): Promise<UserEntity | null> {
-    const user = await this.userRepository.findOneById(id);
-    if (!user) {
-      throw new UserNotFoundException();
-    }
-    return this.userRepository.remove(user);
   }
 
   //Extended Methods ===========================================================================
@@ -142,7 +55,7 @@ export class UserService extends AbstractUserService {
     updateUserDto: UpdateUserDto,
   ): Promise<UserEntity | null> {
     const { uploads, ...rest } = updateUserDto;
-    const existingUser = await this.findOneById(id);
+    const existingUser = (await this.findOneById(id)) as UserEntity;
     if (!existingUser) throw new UserNotFoundException();
 
     await this.userRepository.update(id, rest);
