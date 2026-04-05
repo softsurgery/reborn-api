@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Req,
+  Request,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -58,6 +59,30 @@ export class ExperienceController {
       experienceId: experience.id,
       title: experience.title,
     };
+    return toDto(ResponseExperienceDto, experience);
+  }
+
+  @Post('/current')
+  @LogEvent(EventType.USER_ADD_EXPERIENCE)
+  async createExperienceCurrentUser(
+    @Body() createExperienceDto: CreateExperienceDto,
+    @Request() req: AdvancedRequest,
+  ): Promise<ResponseExperienceDto | null> {
+    if (!req?.user?.sub) {
+      return null;
+    }
+
+    const experience = await this.experienceService.addExperience(
+      req.user.sub,
+      createExperienceDto,
+    );
+
+    req.logInfo = {
+      userId: req.user.sub,
+      experienceId: experience.id,
+      title: experience.title,
+    };
+
     return toDto(ResponseExperienceDto, experience);
   }
 

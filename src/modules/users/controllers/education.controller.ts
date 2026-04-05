@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Req,
+  Request,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -58,6 +59,32 @@ export class EducationController {
       educationId: education.id,
       title: education.title,
     };
+    return toDto(ResponseEducationDto, education);
+  }
+
+  @Post('/current')
+  @LogEvent(EventType.USER_ADD_EDUCATION)
+  async createEducationCurrentUser(
+    @Body() createEducationDto: CreateEducationDto,
+    @Request() req: AdvancedRequest,
+  ): Promise<ResponseEducationDto | null> {
+    if (!req?.user?.sub) {
+      return null;
+    }
+
+    const education = await this.educationService.addEducation(
+      req.user.sub,
+      createEducationDto,
+    );
+
+    console.log('education', education);
+
+    req.logInfo = {
+      userId: req.user.sub,
+      educationId: education.id,
+      title: education.title,
+    };
+
     return toDto(ResponseEducationDto, education);
   }
 
