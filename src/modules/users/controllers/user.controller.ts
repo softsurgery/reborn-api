@@ -62,18 +62,23 @@ export class UserController {
   @Get('/email/:email')
   async findOneByEmail(
     @Param('email') email: string,
+    @Query() query: Pick<IQueryObject, 'join'>,
   ): Promise<ResponseUserDto | null> {
-    return toDto(ResponseUserDto, await this.userService.findOneByEmail(email));
+    return toDto(
+      ResponseUserDto,
+      await this.userService.findOneByEmail(email, query),
+    );
   }
 
   @Get('/current')
   async findCurrentUser(
     @Request() req: AdvancedRequest,
+    @Query() query: Pick<IQueryObject, 'join'>,
   ): Promise<ResponseUserDto | null> {
     if (!req?.user?.sub) {
       return null;
     }
-    const user = await this.userService.findOneById(req?.user?.sub);
+    const user = await this.userService.findOneById(req?.user?.sub, query);
     return toDto(ResponseUserDto, user);
   }
 
