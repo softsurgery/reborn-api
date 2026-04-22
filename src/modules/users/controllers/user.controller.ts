@@ -24,6 +24,7 @@ import { UserService } from '../services/user.service';
 import { ResponseUserDto } from '../dtos/user/response-user.dto';
 import { UpdateUserDto } from '../dtos/user/update-user.dto';
 import { CreateUserDto } from '../dtos/user/create-user.dto';
+import { UpdateUserCoverDto } from '../dtos/user/update-user-cover.dto';
 
 @ApiTags('user')
 @ApiBearerAuth('access_token')
@@ -125,18 +126,6 @@ export class UserController {
     );
   }
 
-  @Put(':id')
-  @LogEvent(EventType.USER_UPDATE)
-  async update(
-    @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
-    @Request() req: AdvancedRequest,
-  ): Promise<ResponseUserDto | null> {
-    const user = await this.userService.extendedUpdate(id, updateUserDto);
-    req.logInfo = { id: user?.id, firstName: user?.firstName };
-    return toDto(ResponseUserDto, user);
-  }
-
   @Put('/activate/:id')
   @LogEvent(EventType.USER_ACTIVATE)
   async activate(
@@ -176,6 +165,35 @@ export class UserController {
     @Request() req: AdvancedRequest,
   ): Promise<ResponseUserDto | null> {
     const user = await this.userService.disapprove(id);
+    req.logInfo = { id: user?.id, firstName: user?.firstName };
+    return toDto(ResponseUserDto, user);
+  }
+
+  @Put('/cover')
+  @LogEvent(EventType.USER_UPDATE_COVER)
+  async updateCurrentUserCover(
+    @Body() updateUserCoverDto: UpdateUserCoverDto,
+    @Request() req: AdvancedRequest,
+  ): Promise<ResponseUserDto | null> {
+    if (!req?.user?.sub) {
+      return null;
+    }
+    const user = await this.userService.updateCover(
+      req?.user?.sub,
+      updateUserCoverDto.coverId,
+    );
+    req.logInfo = { id: user?.id, firstName: user?.firstName };
+    return toDto(ResponseUserDto, user);
+  }
+
+  @Put(':id')
+  @LogEvent(EventType.USER_UPDATE)
+  async update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @Request() req: AdvancedRequest,
+  ): Promise<ResponseUserDto | null> {
+    const user = await this.userService.extendedUpdate(id, updateUserDto);
     req.logInfo = { id: user?.id, firstName: user?.firstName };
     return toDto(ResponseUserDto, user);
   }

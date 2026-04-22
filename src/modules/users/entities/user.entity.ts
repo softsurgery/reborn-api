@@ -41,7 +41,6 @@ export class UserEntity extends AbstractUserEntity {
 
   @ManyToOne(() => StorageEntity, {
     onDelete: 'CASCADE',
-    eager: true,
     nullable: true,
   })
   @JoinColumn({ name: 'pictureId' })
@@ -49,6 +48,16 @@ export class UserEntity extends AbstractUserEntity {
 
   @Column({ nullable: true })
   pictureId?: number;
+
+  @ManyToOne(() => StorageEntity, {
+    onDelete: 'CASCADE',
+    nullable: true,
+  })
+  @JoinColumn({ name: 'coverId' })
+  cover?: StorageEntity;
+
+  @Column({ nullable: true })
+  coverId?: number;
 
   @OneToMany(() => UserUploadEntity, (upload) => upload.user, {
     eager: true,
