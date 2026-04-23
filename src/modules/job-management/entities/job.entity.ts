@@ -34,12 +34,12 @@ export class JobEntity extends EntityHelper {
 
   @ManyToOne(() => RefParamEntity, {
     onDelete: 'CASCADE',
-    eager: true,
+    nullable: true,
   })
   @JoinColumn({ name: 'currencyId' })
   currency: RefParamEntity;
 
-  @Column({})
+  @Column({ nullable: true })
   currencyId: number;
 
   @ManyToOne(() => UserEntity, (user) => user.postedJobs, {
@@ -89,6 +89,12 @@ export class JobEntity extends EntityHelper {
     eager: true,
   })
   uploads: JobUploadEntity[];
+
+  @Column({ default: 0, nullable: true })
+  latitude: number;
+
+  @Column({ default: 0, nullable: true })
+  longitude: number;
 
   @OneToMany(() => JobRequestEntity, (request) => request.job)
   requests: JobRequestEntity[];
