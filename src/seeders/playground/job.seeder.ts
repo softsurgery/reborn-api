@@ -80,6 +80,8 @@ export class PlaygroundJobsSeedCommand {
                 Math.floor(Math.random() * Object.keys(JobDifficulty).length)
               ]
             ],
+          latitude: 0,
+          longitude: 0,
         },
         users[Math.floor(Math.random() * users.length)].id,
       );

@@ -3,6 +3,7 @@ import {
   IsArray,
   IsEnum,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
   Length,
@@ -27,8 +28,9 @@ export class CreateJobDto {
   price: number;
 
   @ApiProperty({ type: Number })
-  @IsString()
-  currencyId: number;
+  @IsNumber()
+  @IsOptional()
+  currencyId?: number;
 
   @ApiProperty({ type: [Number], description: 'IDs of job tags to attach' })
   @IsArray()
@@ -39,6 +41,16 @@ export class CreateJobDto {
   @IsNumber()
   @IsPositive()
   categoryId: number;
+
+  @ApiProperty({ type: Number })
+  @IsNumber()
+  @IsOptional()
+  longitude: number;
+
+  @ApiProperty({ type: Number })
+  @IsNumber()
+  @IsOptional()
+  latitude: number;
 
   @ApiProperty({ type: String, enum: JobStyle })
   @IsEnum(JobStyle)

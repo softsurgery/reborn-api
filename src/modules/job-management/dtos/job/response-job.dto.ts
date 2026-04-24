@@ -28,6 +28,14 @@ export class ResponseJobDto extends ResponseDtoHelper {
   @Expose()
   price: number;
 
+  @ApiProperty({ type: Number })
+  @Expose()
+  latitude: number;
+
+  @ApiProperty({ type: Number })
+  @Expose()
+  longitude: number;
+
   @ApiProperty({ type: ResponseUserDto })
   @Expose()
   @Type(() => ResponseUserDto)
