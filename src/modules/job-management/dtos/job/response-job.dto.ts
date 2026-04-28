@@ -10,11 +10,16 @@ import { ResponseJobViewDto } from '../job-view/response-job-view.dto';
 import { ResponseJobSaveDto } from '../job-save/response-job-save.dto';
 import { ResponseRefParamDto } from 'src/shared/reference-types/dtos/ref-param/response-ref-param.dto';
 import { ResponseUserDto } from 'src/modules/users/dtos/user/response-user.dto';
+import { JobPricingType } from '../../enums/job-pricing-type.enum';
 
 export class ResponseJobDto extends ResponseDtoHelper {
   @ApiProperty({ type: String })
   @Expose()
   id: string;
+
+  @ApiProperty({ type: String })
+  @Expose()
+  status: string;
 
   @ApiProperty({ type: String })
   @Expose()
@@ -27,6 +32,10 @@ export class ResponseJobDto extends ResponseDtoHelper {
   @ApiProperty({ type: Number })
   @Expose()
   price: number;
+
+  @ApiProperty({ enum: JobPricingType })
+  @Expose()
+  pricingType: JobPricingType;
 
   @ApiProperty({ type: Number })
   @Expose()

@@ -17,11 +17,15 @@ import { JobViewEntity } from './job-view.entity';
 import { JobSaveEntity } from './job-save.entity';
 import { RefParamEntity } from 'src/shared/reference-types/entities/ref-param.entity';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
+import { JobPricingType } from '../enums/job-pricing-type.enum';
 
 @Entity('jobs')
 export class JobEntity extends EntityHelper {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ default: 'draft' })
+  status: string;
 
   @Column({ nullable: false })
   title: string;
@@ -31,6 +35,9 @@ export class JobEntity extends EntityHelper {
 
   @Column({ type: 'float', nullable: false })
   price: number;
+
+  @Column({ type: 'enum', enum: JobPricingType, default: JobPricingType.FIXED })
+  pricingType: JobPricingType;
 
   @ManyToOne(() => RefParamEntity, {
     onDelete: 'CASCADE',
