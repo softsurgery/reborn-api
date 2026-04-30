@@ -23,6 +23,7 @@
     "seed:job-tags": "npx nestjs-command seed:job-tags",
     "seed:playground-users": "npx nestjs-command seed:playground-users",
     "seed:playground-jobs": "npx nestjs-command seed:playground-jobs",
+    "seed:reset": "npx nestjs-command seed:reset",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",

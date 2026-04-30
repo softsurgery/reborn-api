@@ -17,6 +17,8 @@ import { JobTagsSeedCommand } from './job-tags.seeder';
 import { ReferenceTypesModule } from 'src/shared/reference-types/reference-types.module';
 import { SkillsSeedCommand } from './skills.seeder';
 import { UserManagementModule } from 'src/modules/users/user-management.module';
+import { DatabaseModule } from 'src/shared/database/database.module';
+import { ResetProjectSeedCommand } from './reset.seeder';
 
 @Module({
   providers: [
@@ -31,6 +33,7 @@ import { UserManagementModule } from 'src/modules/users/user-management.module';
     JobCategoriesSeedCommand,
     JobTagsSeedCommand,
     SkillsSeedCommand,
+    ResetProjectSeedCommand,
     //playground
     PlaygroundUsersSeedCommand,
     PlaygroundJobsSeedCommand,
@@ -42,6 +45,7 @@ import { UserManagementModule } from 'src/modules/users/user-management.module';
     StoreModule,
     JobManagementModule,
     ReferenceTypesModule,
+    DatabaseModule,
   ],
 })
 export class SeedersModule {}
