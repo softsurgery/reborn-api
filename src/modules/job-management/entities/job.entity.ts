@@ -25,7 +25,7 @@ export class JobEntity extends EntityHelper {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ default: JobStatus.DRAFT, enum: JobStatus })
+  @Column({ type: 'enum', default: JobStatus.DRAFT, enum: JobStatus })
   status: JobStatus;
 
   @Column({ nullable: false })
