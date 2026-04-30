@@ -28,6 +28,7 @@ import { StorageModule } from 'src/shared/storage/storage.module';
 import { EducationController } from 'src/modules/users/controllers/education.controller';
 import { ExperienceController } from 'src/modules/users/controllers/experience.controller';
 import { CurrentConversationController } from 'src/shared/chat/controllers/user-conversation.controller';
+import { CurrentJobController } from 'src/modules/job-management/controllers/current-job.controller';
 
 @Module({
   controllers: [
@@ -45,6 +46,7 @@ import { CurrentConversationController } from 'src/shared/chat/controllers/user-
     FeedbackController,
     BugController,
     //job-management
+    CurrentJobController,
     JobController,
     JobRequestController,
     JobSaveController,
