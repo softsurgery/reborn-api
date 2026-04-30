@@ -27,6 +27,19 @@ import { ResponseJobDto } from '../dtos/job/response-job.dto';
 export class CurrentJobController {
   constructor(private readonly jobService: JobService) {}
 
+  @Get('/list')
+  @ApiPaginatedResponse(ResponseJobDto)
+  async findPaginated(
+    @Query() query: IQueryObject,
+    @Request() req: AdvancedRequest,
+  ): Promise<PageDto<ResponseJobDto>> {
+    const paginated = await this.jobService.findJobsByUserId(
+      query,
+      req.user?.sub,
+    );
+    return { ...paginated, data: toDtoArray(ResponseJobDto, paginated.data) };
+  }
+
   @Get('/list-followed')
   @ApiPaginatedResponse(ResponseJobDto)
   async findAllFollowedPaginated(
