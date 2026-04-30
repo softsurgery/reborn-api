@@ -1,6 +1,6 @@
 import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
-import { FindManyOptions, FindOneOptions, In } from 'typeorm';
+import { FindManyOptions, In } from 'typeorm';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
 import { QueryBuilder } from 'src/shared/database/utils/database-query-builder';
 import { PageDto } from 'src/shared/database/dtos/database.page.dto';
@@ -20,114 +20,20 @@ import { RefParamService } from 'src/shared/reference-types/services/ref-param.s
 import { RefParamEntity } from 'src/shared/reference-types/entities/ref-param.entity';
 import { FollowService } from 'src/shared/abstract-user-management/services/follow.service';
 import { UserNotFoundException } from 'src/shared/abstract-user-management/errors/user/user.notfound.error';
+import { AbstractCrudService } from 'src/shared/database/services/abstract-crud.service';
 
 @Injectable()
-export class JobService {
+export class JobService extends AbstractCrudService<JobEntity> {
   constructor(
     private readonly jobRepository: JobRepository,
     private readonly jobRequestService: JobRequestService,
     private readonly refParamService: RefParamService,
     private readonly jobUploadService: JobUploadService,
     private readonly followService: FollowService,
-  ) {}
-
-  async findOneById(id: string): Promise<JobEntity> {
-    const job = await this.jobRepository.findOneById(id);
-    if (!job) {
-      throw new JobNotFoundException();
-    }
-    return job;
+  ) {
+    super(jobRepository);
   }
 
-  async findOneByCondition(
-    query: IQueryObject = {},
-  ): Promise<JobEntity | null> {
-    const queryBuilder = new QueryBuilder(this.jobRepository.getMetadata());
-    const queryOptions = queryBuilder.build(query);
-    const job = await this.jobRepository.findOne(
-      queryOptions as FindOneOptions<JobEntity>,
-    );
-    return job;
-  }
-
-  async findAll(query: IQueryObject): Promise<JobEntity[]> {
-    const queryBuilder = new QueryBuilder(this.jobRepository.getMetadata());
-    const queryOptions = queryBuilder.build(query);
-    const jobs = await this.jobRepository.findAll(
-      queryOptions as FindManyOptions<JobEntity>,
-    );
-    return jobs;
-  }
-
-  async findAllPaginated(query: IQueryObject): Promise<PageDto<JobEntity>> {
-    const queryBuilder = new QueryBuilder(this.jobRepository.getMetadata());
-    const queryOptions = queryBuilder.build(query);
-    const count = await this.jobRepository.getTotalCount({
-      where: queryOptions.where,
-    });
-
-    const entities = await this.jobRepository.findAll(
-      queryOptions as FindManyOptions<JobEntity>,
-    );
-
-    const pageMetaDto = new PageMetaDto({
-      pageOptionsDto: {
-        page: Number(query.page),
-        take: Number(query.limit),
-      },
-      itemCount: count,
-    });
-
-    return new PageDto(entities, pageMetaDto);
-  }
-
-  @Transactional()
-  async save(createJobDto: CreateJobDto): Promise<JobEntity> {
-    return await this.jobRepository.save(createJobDto);
-  }
-
-  @Transactional()
-  async saveMany(createJobDto: CreateJobDto[]): Promise<JobEntity[]> {
-    return Promise.all(createJobDto.map((dto) => this.save(dto)));
-  }
-
-  @Transactional()
-  async update(
-    id: string,
-    updateJobDto: UpdateJobDto,
-  ): Promise<JobEntity | null> {
-    const job = await this.jobRepository.findOne({ where: { id } });
-    if (!job) return null;
-
-    Object.assign(job, updateJobDto);
-
-    if (updateJobDto.tagIds && Array.isArray(updateJobDto.tagIds)) {
-      const tags = await Promise.all(
-        updateJobDto.tagIds.map((tagId) =>
-          this.refParamService.findOneByCondition({
-            filter: `id||$eq||${tagId}`,
-          }),
-        ),
-      );
-      job.tags = tags.filter(Boolean) as RefParamEntity[];
-    }
-
-    return this.jobRepository.save(job);
-  }
-
-  async softDelete(id: string): Promise<JobEntity | null> {
-    return this.jobRepository.softDelete(id);
-  }
-
-  async delete(id: string): Promise<JobEntity | null> {
-    const job = await this.jobRepository.findOneById(id);
-    if (!job) {
-      throw new JobNotFoundException();
-    }
-    return this.jobRepository.remove(job);
-  }
-
-  //Extended Methods ===========================================================================
   async findAllFollowedPaginated(
     query: IQueryObject,
     userId?: string,

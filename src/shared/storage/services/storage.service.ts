@@ -125,7 +125,7 @@ export abstract class StorageService {
     return this.storageRepository.getTotalCount();
   }
 
-  @Cron(CronExpression.EVERY_2_HOURS)
+  @Cron(CronExpression.EVERY_QUARTER)
   async cleanTemporary(): Promise<void> {
     this.logger.log('Cleaning temporary uploads');
     const uploads = await this.findTemporary();

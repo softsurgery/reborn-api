@@ -18,14 +18,15 @@ import { JobSaveEntity } from './job-save.entity';
 import { RefParamEntity } from 'src/shared/reference-types/entities/ref-param.entity';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
 import { JobPricingType } from '../enums/job-pricing-type.enum';
+import { JobStatus } from '../enums/workflow/job-status.enum';
 
 @Entity('jobs')
 export class JobEntity extends EntityHelper {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ default: 'draft' })
-  status: string;
+  @Column({ default: JobStatus.DRAFT, enum: JobStatus })
+  status: JobStatus;
 
   @Column({ nullable: false })
   title: string;
