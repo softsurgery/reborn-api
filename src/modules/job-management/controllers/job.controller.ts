@@ -85,7 +85,12 @@ export class JobController {
     @Body() createJobDto: CreateJobDto,
     @Request() req: AdvancedRequest,
   ): Promise<ResponseJobDto> {
-    const job = await this.jobService.saveJob(createJobDto, req?.user?.sub);
+    const { tagIds, ...rest } = createJobDto;
+    const job = await this.jobService.extendedSave(
+      rest,
+      tagIds,
+      req?.user?.sub,
+    );
     req.logInfo = { id: job.id, title: job.title };
     return toDto(ResponseJobDto, job);
   }
@@ -97,7 +102,8 @@ export class JobController {
     @Body() updateJobDto: UpdateJobDto,
     @Request() req: AdvancedRequest,
   ): Promise<ResponseJobDto | null> {
-    const job = await this.jobService.updateJob(id, updateJobDto);
+    const { tagIds, ...rest } = updateJobDto;
+    const job = await this.jobService.extendedUpdate(id, rest, tagIds);
     req.logInfo = { id, title: job?.title };
     return toDto(ResponseJobDto, job);
   }

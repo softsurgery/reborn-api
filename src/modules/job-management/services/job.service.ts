@@ -1,6 +1,6 @@
 import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
-import { FindManyOptions, In } from 'typeorm';
+import { DeepPartial, FindManyOptions, In } from 'typeorm';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
 import { QueryBuilder } from 'src/shared/database/utils/database-query-builder';
 import { PageDto } from 'src/shared/database/dtos/database.page.dto';
@@ -8,8 +8,6 @@ import { PageMetaDto } from 'src/shared/database/dtos/database.page-meta.dto';
 import { JobRepository } from '../repositories/job.repository';
 import { JobEntity } from '../entities/job.entity';
 import { JobNotFoundException } from '../errors/job/job.notfound.error';
-import { CreateJobDto } from '../dtos/job/create-job.dto';
-import { UpdateJobDto } from '../dtos/job/update-job.dto';
 import { JobUploadService } from './job-upload.service';
 import { JobUploadEntity } from '../entities/job-upload.entity';
 import { CreateJobUploadDto } from '../dtos/job-upload/create-job-upload.dto';
@@ -85,11 +83,12 @@ export class JobService extends AbstractCrudService<JobEntity> {
   }
 
   @Transactional()
-  async saveJob(
-    createJobDto: CreateJobDto,
+  async extendedSave(
+    dto: DeepPartial<JobEntity>,
+    tagIds?: number[],
     postedBy?: string,
   ): Promise<JobEntity> {
-    const { uploads, tagIds, ...rest } = createJobDto;
+    const { uploads, ...rest } = dto;
     let tags: RefParamEntity[] = [];
 
     if (tagIds && Array.isArray(tagIds)) {
@@ -105,22 +104,23 @@ export class JobService extends AbstractCrudService<JobEntity> {
     });
 
     await this.jobUploadService.saveMany(
-      uploads.map((upload, index) => ({
+      uploads?.map((upload: DeepPartial<JobUploadEntity>, index: number) => ({
         jobId: job.id,
         uploadId: upload.uploadId,
         order: index,
-      })),
+      })) || [],
     );
 
     return job;
   }
 
   @Transactional()
-  async updateJob(
+  async extendedUpdate(
     id: string,
-    updateJobDto: UpdateJobDto,
+    updateJobDto: DeepPartial<JobEntity>,
+    tagIds?: number[],
   ): Promise<JobEntity | null> {
-    const { uploads, tagIds, ...rest } = updateJobDto;
+    const { uploads, ...rest } = updateJobDto;
     let tags: RefParamEntity[] = [];
 
     if (tagIds && Array.isArray(tagIds)) {
@@ -157,10 +157,10 @@ export class JobService extends AbstractCrudService<JobEntity> {
     >({
       existingItems: existingUploads || [],
       updatedItems:
-        uploads?.map((upload, index) => ({
-          id: upload.id,
+        uploads?.map((upload: DeepPartial<JobUploadEntity>, index: number) => ({
+          id: upload.id as number,
           jobId: id,
-          uploadId: upload.uploadId,
+          uploadId: upload.uploadId as number,
           order: index,
         })) || [],
       keys: ['jobId', 'uploadId'],

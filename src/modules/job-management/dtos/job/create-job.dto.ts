@@ -12,6 +12,7 @@ import { JobUploadEntity } from '../../entities/job-upload.entity';
 import { JobStyle } from '../../enums/job-style.enum';
 import { JobDifficulty } from '../../enums/job-difficulty.enum';
 import { JobPricingType } from '../../enums/job-pricing-type.enum';
+import { JobStatus } from '../../enums/workflow/job-status.enum';
 
 export class CreateJobDto {
   @ApiProperty({ type: String })
@@ -22,6 +23,11 @@ export class CreateJobDto {
   @ApiProperty({ type: String })
   @IsString()
   description: string;
+
+  @ApiProperty({ type: String, enum: ['Draft', 'Posted'] })
+  @IsEnum(['Draft', 'Posted'])
+  @IsOptional()
+  status?: JobStatus;
 
   @ApiProperty({ type: Number })
   @IsNumber()

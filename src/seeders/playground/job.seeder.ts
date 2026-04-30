@@ -55,7 +55,7 @@ export class PlaygroundJobsSeedCommand {
       const selectedTags = shuffledTags.slice(0, tagsCount);
       const tagIds = selectedTags.map((t) => t.id);
 
-      await this.jobService.saveJob(
+      await this.jobService.extendedSave(
         {
           title: job.title,
           description: job.description,
@@ -67,7 +67,6 @@ export class PlaygroundJobsSeedCommand {
             jobCategories[
               jobCategories.findIndex((cat) => cat.label === job.category)
             ]?.id,
-          tagIds,
           style:
             JobStyle[
               Object.keys(JobStyle)[
@@ -83,6 +82,7 @@ export class PlaygroundJobsSeedCommand {
           latitude: 0,
           longitude: 0,
         },
+        tagIds,
         users[Math.floor(Math.random() * users.length)].id,
       );
     }
