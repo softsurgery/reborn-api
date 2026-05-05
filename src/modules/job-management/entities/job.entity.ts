@@ -94,7 +94,7 @@ export class JobEntity extends EntityHelper {
   categoryId: number;
 
   @OneToMany(() => JobUploadEntity, (jobUpload) => jobUpload.job, {
-    eager: true,
+    onDelete: 'CASCADE',
   })
   uploads: JobUploadEntity[];
 
