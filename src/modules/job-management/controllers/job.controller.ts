@@ -52,8 +52,14 @@ export class JobController {
   }
 
   @Get(':id')
-  async findOneById(@Param('id') id: string): Promise<ResponseJobDto | null> {
-    return toDto(ResponseJobDto, await this.jobService.findOneById(id));
+  async findOneById(
+    @Param('id') id: string,
+    @Query() query: IQueryObject,
+  ): Promise<ResponseJobDto | null> {
+    return toDto(
+      ResponseJobDto,
+      await this.jobService.findOneById(id, query.join),
+    );
   }
 
   @Get(':id/metadata')
