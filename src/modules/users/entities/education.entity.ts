@@ -16,11 +16,11 @@ export class EducationEntity extends EntityHelper {
   @Column()
   title: string;
 
-  @Column()
-  startDate: Date;
+  @Column({ nullable: true })
+  startDate?: Date;
 
   @Column({ nullable: true })
-  endDate: Date;
+  endDate?: Date;
 
   @Column()
   institution: string;

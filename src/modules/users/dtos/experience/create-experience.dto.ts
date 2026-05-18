@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsOptional, IsString, Length } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
+import { WorkTypes } from '../../enums/experience.work-type.enum';
+import { LocationTypes } from '../../enums/experience.location-type.enum';
 
 export class CreateExperienceDto {
   @ApiProperty({ type: String })
@@ -21,6 +29,19 @@ export class CreateExperienceDto {
   @IsString()
   @Length(2, 50)
   company?: string;
+
+  @ApiProperty({ type: String })
+  @IsString()
+  @IsOptional()
+  location?: string;
+
+  @ApiProperty()
+  @IsEnum(WorkTypes)
+  workType?: WorkTypes;
+
+  @ApiProperty()
+  @IsEnum(LocationTypes)
+  locationType?: LocationTypes;
 
   @ApiProperty({ type: String })
   @IsString()

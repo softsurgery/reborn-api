@@ -8,13 +8,13 @@ export class CreateEducationDto {
   title?: string;
 
   @ApiProperty({ type: Date })
-  @IsOptional()
   @IsDateString()
+  @IsOptional()
   startDate?: Date;
 
   @ApiProperty({ type: Date })
-  @IsOptional()
   @IsDateString()
+  @IsOptional()
   endDate?: Date;
 
   @ApiProperty({ type: String })

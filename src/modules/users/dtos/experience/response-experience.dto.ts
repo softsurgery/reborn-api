@@ -2,11 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 import { ResponseDtoHelper } from 'src/shared/database/dtos/database.response.dto';
 import { ResponseUserDto } from '../user/response-user.dto';
+import { WorkTypes } from '../../enums/experience.work-type.enum';
+import { LocationTypes } from '../../enums/experience.location-type.enum';
 
 export class ResponseExperienceDto extends ResponseDtoHelper {
-  @ApiProperty({ type: Number })
+  @ApiProperty({ type: String })
   @Expose()
-  id: number;
+  id: string;
 
   @ApiProperty({ type: String })
   @Expose()
@@ -23,6 +25,18 @@ export class ResponseExperienceDto extends ResponseDtoHelper {
   @ApiProperty({ type: String })
   @Expose()
   company?: string;
+
+  @ApiProperty({ type: String })
+  @Expose()
+  location?: string;
+
+  @ApiProperty({ type: String })
+  @Expose()
+  workType?: WorkTypes;
+
+  @ApiProperty({ type: String })
+  @Expose()
+  locationType?: LocationTypes;
 
   @ApiProperty({ type: String })
   @Expose()

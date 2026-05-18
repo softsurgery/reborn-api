@@ -7,6 +7,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
+import { WorkTypes } from '../enums/experience.work-type.enum';
+import { LocationTypes } from '../enums/experience.location-type.enum';
 
 @Entity('experiences')
 export class ExperienceEntity extends EntityHelper {
@@ -24,6 +26,15 @@ export class ExperienceEntity extends EntityHelper {
 
   @Column()
   company: string;
+
+  @Column({ nullable: true })
+  location?: string;
+
+  @Column()
+  workType?: WorkTypes;
+
+  @Column()
+  locationType?: LocationTypes;
 
   @Column({ type: 'text', nullable: true })
   description: string;
