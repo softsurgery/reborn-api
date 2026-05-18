@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { FindManyOptions } from 'typeorm';
+import { Transactional } from '@nestjs-cls/transactional';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { DeepPartial, FindManyOptions } from 'typeorm';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
 import { QueryBuilder } from 'src/shared/database/utils/database-query-builder';
 import { PageDto } from 'src/shared/database/dtos/database.page.dto';
@@ -7,20 +8,11 @@ import { PageMetaDto } from 'src/shared/database/dtos/database.page-meta.dto';
 import { MessageRepository } from '../repositories/message.repository';
 import { MessageEntity } from '../entities/message.entity';
 import { AbstractCrudService } from 'src/shared/database/services/abstract-crud.service';
-import { Transactional } from '@nestjs-cls/transactional';
 
 @Injectable()
 export class MessageService extends AbstractCrudService<MessageEntity> {
   constructor(private readonly messageRepository: MessageRepository) {
     super(messageRepository);
-  }
-
-  @Transactional()
-  async saveMessage(
-    createMessageDto: Partial<MessageEntity>,
-    userId?: string,
-  ): Promise<MessageEntity> {
-    return await this.messageRepository.save({ ...createMessageDto, userId });
   }
 
   async findPaginatedConversationMessages(
@@ -68,5 +60,20 @@ export class MessageService extends AbstractCrudService<MessageEntity> {
     });
 
     return messages.length > 0 ? messages[0] : null;
+  }
+
+  @Transactional()
+  async createMessage(
+    createMessage: DeepPartial<MessageEntity>,
+    userId?: string,
+  ): Promise<MessageEntity> {
+    if (!userId) {
+      throw new BadRequestException('User id is required');
+    }
+    if (!createMessage.conversationId) {
+      throw new BadRequestException('Conversation id is required');
+    }
+
+    return this.save({ ...createMessage, userId });
   }
 }

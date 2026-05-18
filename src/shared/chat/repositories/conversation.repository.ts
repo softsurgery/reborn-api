@@ -19,9 +19,9 @@ export class ConversationRepository extends DatabaseAbstractRepository<Conversat
   async getUsersConversations(Ids: string[]): Promise<ConversationEntity[]> {
     return this.createQueryBuilder('conversation')
       .leftJoin('conversation.participants', 'participant')
-      .where('participant.id IN (:...userIds)', { userIds: Ids })
+      .where('participant.userId IN (:...userIds)', { userIds: Ids })
       .groupBy('conversation.id')
-      .having('COUNT(DISTINCT participant.id) = 2')
+      .having('COUNT(DISTINCT participant.userId) = 2')
       .getMany();
   }
 }

@@ -1,21 +1,29 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, Type } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
 import { ResponseDtoHelper } from 'src/shared/database/dtos/database.response.dto';
 import { ResponseMessageDto } from '../message/response-message.dto';
-import { ResponseUserDto } from 'src/modules/users/dtos/user/response-user.dto';
+import { ResponseConversationUserDto } from '../conversation-user/response-conversation-user.dto';
 
 export class ResponseConversationDto extends ResponseDtoHelper {
   @ApiProperty({ type: Number })
   @Expose()
   id: number;
 
-  @ApiProperty({ type: [ResponseUserDto] })
+  @ApiProperty({ type: [ResponseConversationUserDto] })
   @Expose()
-  @Type(() => ResponseUserDto)
-  participants: ResponseUserDto[];
+  @Type(() => ResponseConversationUserDto)
+  participants: ResponseConversationUserDto[];
 
   @ApiProperty({ type: [ResponseMessageDto] })
   @Expose()
   @Type(() => ResponseMessageDto)
   messages: ResponseMessageDto[];
+
+  @ApiProperty({ type: ResponseMessageDto, nullable: true })
+  @Expose()
+  @Type(() => ResponseMessageDto)
+  lastMessage: ResponseMessageDto;
+
+  @Exclude()
+  participantsIdentifiers: string;
 }

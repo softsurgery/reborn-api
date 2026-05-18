@@ -11,35 +11,52 @@ import { CreateConversationDto } from '../dtos/conversation/create-conversation.
 import { UserNotFoundException } from 'src/shared/abstract-user-management/errors/user/user.notfound.error';
 import { UserService } from 'src/modules/users/services/user.service';
 import { AbstractCrudService } from 'src/shared/database/services/abstract-crud.service';
-import { AbstractUserEntity } from 'src/shared/abstract-user-management/entities/abstract-user.entity';
 import { MessageService } from './message.service';
+import { ConversationNotFoundException } from '../errors/conversation/conversation.notfound.error';
+import { ConversationUserEntity } from '../entities/conversation-user.entity';
+import { ConversationUserService } from './conversation-user.service';
 
 @Injectable()
 export class ConversationService extends AbstractCrudService<ConversationEntity> {
   constructor(
     private readonly conversationRepository: ConversationRepository,
+    private readonly conversationUserService: ConversationUserService,
     private readonly messageService: MessageService,
     private readonly userService: UserService,
   ) {
     super(conversationRepository);
   }
 
+  async isUserInConversation(
+    conversationId: number,
+    userId?: string,
+  ): Promise<boolean> {
+    const conversation = await this.conversationRepository.findOne({
+      where: { id: conversationId },
+      relations: ['participants'],
+    } as FindManyOptions<ConversationEntity>);
+
+    if (!conversation) return false;
+    return conversation.participants.some((p) => p.userId === userId);
+  }
+
   async findPaginatedUserConversations(
     query: IQueryObject,
     userId?: string,
   ): Promise<PageDto<ConversationEntity>> {
+    const userConversations =
+      await this.conversationUserService.findByUserId(userId);
+
+    const conversationIds = userConversations.map((uc) => uc.conversationId);
+    query.filter = query.filter
+      ? `${query.filter},id||$in||${conversationIds.join(',')}`
+      : `id||$in||${conversationIds.join(',')}`;
+
     const queryBuilder = new QueryBuilder(
       this.conversationRepository.getMetadata(),
     );
 
     const queryOptions = queryBuilder.build(query);
-
-    queryOptions.where = {
-      ...(queryOptions.where || {}),
-      participants: {
-        id: userId,
-      },
-    };
 
     const count = await this.conversationRepository.getTotalCount({
       where: queryOptions.where,
@@ -92,7 +109,6 @@ export class ConversationService extends AbstractCrudService<ConversationEntity>
     if (!userId) {
       throw new BadRequestException('User id is required');
     }
-    const user = await this.userService.findOneById(userId);
     const targetUser = await this.userService.findOneById(targetUserId);
     if (!targetUser) {
       throw new UserNotFoundException();
@@ -105,9 +121,20 @@ export class ConversationService extends AbstractCrudService<ConversationEntity>
 
     if (duplicateCheck && existingConversation) return existingConversation;
 
-    const conversation = new ConversationEntity();
-    conversation.participants = [user, targetUser];
-    return this.conversationRepository.save(conversation);
+    const conversation = await this.conversationRepository.save(
+      new ConversationEntity(),
+    );
+
+    const participantEntries = [userId, targetUserId].map((uid) => {
+      const cu = new ConversationUserEntity();
+      cu.userId = uid;
+      cu.conversationId = conversation.id;
+      return cu;
+    });
+    conversation.participants =
+      await this.conversationUserService.saveMany(participantEntries);
+
+    return conversation;
   }
 
   @Transactional()
@@ -118,28 +145,63 @@ export class ConversationService extends AbstractCrudService<ConversationEntity>
     if (!userId) {
       throw new BadRequestException('User id is required');
     }
-    const user = await this.userService.findOneById(userId);
-    const targets: AbstractUserEntity[] = [];
     for (const targetUserId of createConversationDto.users) {
       const targetUser = await this.userService.findOneById(targetUserId);
       if (!targetUser) {
         throw new UserNotFoundException();
       }
-      targets.push(targetUser);
     }
 
-    const conversation = new ConversationEntity();
-    conversation.participants = [user, ...targets];
-    return this.conversationRepository.save(conversation);
+    const conversation = await this.conversationRepository.save(
+      new ConversationEntity(),
+    );
+
+    const participantEntries = [userId, ...createConversationDto.users].map(
+      (uid) => {
+        const cu = new ConversationUserEntity();
+        cu.userId = uid;
+        cu.conversationId = conversation.id;
+        return cu;
+      },
+    );
+    conversation.participants =
+      await this.conversationUserService.saveMany(participantEntries);
+
+    return conversation;
   }
 
   async findConversationByUsers(
     userIds: string[],
   ): Promise<ConversationEntity | null> {
-    return this.conversationRepository
-      .getUsersConversations(userIds)
-      .then((conversations) => {
-        return conversations.length > 0 ? conversations[0] : null;
-      });
+    const conversations =
+      await this.conversationRepository.getUsersConversations(userIds);
+    return conversations.length > 0 ? conversations[0] : null;
+  }
+
+  async markConversationAsSeen(
+    conversationId: number,
+    userId?: string,
+    date = new Date(),
+  ): Promise<ConversationEntity | null> {
+    const join = ['participants', 'participants.user', 'lastMessage'].join(',');
+
+    const conversation = await this.findOneById(conversationId, join);
+
+    if (!conversation) {
+      throw new ConversationNotFoundException();
+    }
+    const participant = conversation?.participants.find(
+      (p) => p.userId === userId,
+    );
+    if (!participant) {
+      throw new BadRequestException(
+        'User is not a participant of the conversation',
+      );
+    }
+    await this.conversationUserService.update(participant.id, {
+      lastCheck: date,
+    });
+
+    return this.findOneById(conversationId, join);
   }
 }

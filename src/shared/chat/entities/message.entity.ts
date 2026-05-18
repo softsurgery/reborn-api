@@ -9,8 +9,8 @@ import {
 } from 'typeorm';
 import { ConversationEntity } from './conversation.entity';
 import { MessageVariant } from '../enums/message-variant.enum';
-import { MessageUploadEntity } from './message-storage.entity';
-import { AbstractUserEntity } from 'src/shared/abstract-user-management/entities/abstract-user.entity';
+import { MessageUploadEntity } from './message-upload.entity';
+import { UserEntity } from 'src/modules/users/entities/user.entity';
 
 @Entity('messages')
 export class MessageEntity extends EntityHelper {
@@ -20,18 +20,18 @@ export class MessageEntity extends EntityHelper {
   @Column({ type: 'text', nullable: false })
   content: string;
 
-  @ManyToOne(() => AbstractUserEntity)
+  @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'userId' })
-  user: AbstractUserEntity;
+  user: UserEntity;
 
-  @Column({})
+  @Column({ nullable: false })
   userId: string;
 
   @ManyToOne(() => ConversationEntity, (conversation) => conversation.messages)
   @JoinColumn({ name: 'conversationId' })
   conversation: ConversationEntity;
 
-  @Column({})
+  @Column({ nullable: false })
   conversationId: number;
 
   @Column({ type: 'enum', enum: MessageVariant, default: MessageVariant.TEXT })
@@ -41,7 +41,6 @@ export class MessageEntity extends EntityHelper {
     () => MessageUploadEntity,
     (messageUpload) => messageUpload.message,
     {
-      eager: true,
       nullable: true,
     },
   )

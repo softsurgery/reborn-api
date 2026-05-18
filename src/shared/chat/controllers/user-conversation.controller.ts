@@ -51,10 +51,11 @@ export class CurrentConversationController {
   @Get(':id')
   async findOneById(
     @Param('id') id: number,
+    @Query() query: IQueryObject,
   ): Promise<ResponseConversationDto | null> {
     return toDto(
       ResponseConversationDto,
-      await this.conversationService.findOneById(id),
+      await this.conversationService.findOneById(id, query?.join),
     );
   }
 
