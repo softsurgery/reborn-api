@@ -6,9 +6,9 @@ import { WorkTypes } from '../../enums/experience.work-type.enum';
 import { LocationTypes } from '../../enums/experience.location-type.enum';
 
 export class ResponseExperienceDto extends ResponseDtoHelper {
-  @ApiProperty({ type: String })
+  @ApiProperty({ type: Number })
   @Expose()
-  id: string;
+  id: number;
 
   @ApiProperty({ type: String })
   @Expose()
