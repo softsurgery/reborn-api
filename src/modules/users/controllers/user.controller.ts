@@ -25,6 +25,7 @@ import { ResponseUserDto } from '../dtos/user/response-user.dto';
 import { UpdateUserDto } from '../dtos/user/update-user.dto';
 import { CreateUserDto } from '../dtos/user/create-user.dto';
 import { UpdateUserCoverDto } from '../dtos/user/update-user-cover.dto';
+import { Public } from 'src/shared/auth/utils/public-strategy';
 
 @ApiTags('user')
 @ApiBearerAuth('access_token')
@@ -45,6 +46,30 @@ export class UserController {
     );
   }
 
+  @Public()
+  @Get('/email/:email')
+  async findOneByEmail(
+    @Param('email') email: string,
+    @Query() query: Pick<IQueryObject, 'join'>,
+  ): Promise<ResponseUserDto | null> {
+    return toDto(
+      ResponseUserDto,
+      await this.userService.findOneByEmail(email, query),
+    );
+  }
+
+  @Public()
+  @Get('/username/:username')
+  async findOneByUsername(
+    @Param('username') username: string,
+    @Query() query: Pick<IQueryObject, 'join'>,
+  ): Promise<ResponseUserDto | null> {
+    return toDto(
+      ResponseUserDto,
+      await this.userService.findOneByUsername(username, query),
+    );
+  }
+
   @Get('/list')
   @ApiPaginatedResponse(ResponseUserDto)
   async findAllPaginated(
@@ -58,17 +83,6 @@ export class UserController {
   async findAll(@Query() options: IQueryObject): Promise<ResponseUserDto[]> {
     const users = await this.userService.findAll(options);
     return toDtoArray(ResponseUserDto, users);
-  }
-
-  @Get('/email/:email')
-  async findOneByEmail(
-    @Param('email') email: string,
-    @Query() query: Pick<IQueryObject, 'join'>,
-  ): Promise<ResponseUserDto | null> {
-    return toDto(
-      ResponseUserDto,
-      await this.userService.findOneByEmail(email, query),
-    );
   }
 
   @Get('/current')
@@ -90,10 +104,7 @@ export class UserController {
   ): Promise<ResponseUserDto | null> {
     return toDto(
       ResponseUserDto,
-      await this.userService.findOneByCondition({
-        filter: `id||$eq||${id}`,
-        join: query.join,
-      }),
+      await this.userService.findOneById(id, query),
     );
   }
 

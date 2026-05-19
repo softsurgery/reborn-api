@@ -21,23 +21,21 @@ export abstract class AbstractUserService {
 
   async findOneById(
     id: string,
-    query: Pick<IQueryObject, 'join'> = { join: '' },
-  ): Promise<AbstractUserEntity> {
+    query?: Pick<IQueryObject, 'join'>,
+  ): Promise<AbstractUserEntity | null> {
     const queryBuilder = new QueryBuilder(
       this.abstractUserRepository.getMetadata(),
     );
-
-    const queryOptions = queryBuilder.build(query);
+    const queryOptions = query ? queryBuilder.build(query) : {};
     const user = await this.abstractUserRepository.findOne({
-      ...queryOptions,
       where: { id },
-    } as FindOneOptions<AbstractUserEntity>);
+      relations: queryOptions.relations,
+    });
     if (!user) {
       throw new UserNotFoundException();
     }
     return user;
   }
-
   async findOneByCondition(
     query: IQueryObject,
   ): Promise<AbstractUserEntity | null | undefined> {
@@ -121,49 +119,50 @@ export abstract class AbstractUserService {
 
   async findOneByEmail(
     email: string,
-    query: Pick<IQueryObject, 'join'> = { join: '' },
+    query?: Pick<IQueryObject, 'join'>,
   ): Promise<AbstractUserEntity | null | undefined> {
     const queryBuilder = new QueryBuilder(
       this.abstractUserRepository.getMetadata(),
     );
-    const queryOptions = queryBuilder.build(query);
+    const queryOptions = query ? queryBuilder.build(query) : {};
     return this.abstractUserRepository.findOne({
-      ...queryOptions,
       where: { email },
-    } as FindOneOptions<AbstractUserEntity>);
+      relations: queryOptions.relations,
+    });
   }
 
-  async findOneByUsername(username) {
+  async findOneByUsername(
+    username: string,
+    query?: Pick<IQueryObject, 'join'>,
+  ): Promise<AbstractUserEntity | null | undefined> {
+    const queryBuilder = new QueryBuilder(
+      this.abstractUserRepository.getMetadata(),
+    );
+    const queryOptions = query ? queryBuilder.build(query) : {};
     return this.abstractUserRepository.findOne({
       where: { username },
+      relations: queryOptions.relations,
     });
   }
 
   async activate(id: string): Promise<AbstractUserEntity | null | undefined> {
-    const user = await this.findOneById(id);
-    return this.abstractUserRepository.update(id, { ...user, isActive: true });
+    return this.abstractUserRepository.update(id, { isActive: true });
   }
 
   async deactivate(id: string): Promise<AbstractUserEntity | null | undefined> {
-    const user = await this.findOneById(id);
     return this.abstractUserRepository.update(id, {
-      ...user,
       isActive: false,
     });
   }
 
   async approve(id: string): Promise<AbstractUserEntity | null | undefined> {
-    const user = await this.findOneById(id);
     return this.abstractUserRepository.update(id, {
-      ...user,
       isApproved: true,
     });
   }
 
   async disapprove(id: string): Promise<AbstractUserEntity | null | undefined> {
-    const user = await this.findOneById(id);
     return this.abstractUserRepository.update(id, {
-      ...user,
       isApproved: false,
     });
   }
