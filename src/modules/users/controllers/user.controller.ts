@@ -38,14 +38,6 @@ import { Public } from 'src/shared/auth/utils/public-strategy';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
-  async findOne(@Query() query: IQueryObject): Promise<ResponseUserDto | null> {
-    return toDto(
-      ResponseUserDto,
-      await this.userService.findOneByCondition(query),
-    );
-  }
-
   @Public()
   @Get('/email/:email')
   async findOneByEmail(
