@@ -99,6 +99,7 @@ export class ClientAuthService {
     return {
       user: await this.userService.save({
         ...createUserDto,
+        isActive: true,
         roleId: BasicRoles.User,
       }),
     };
