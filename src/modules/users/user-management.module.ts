@@ -26,6 +26,7 @@ import { ExperienceRepository } from './repositories/experience.repository';
 import { EducationRepository } from './repositories/education.repository';
 import { ExperienceEntity } from './entities/experience.entity';
 import { EducationEntity } from './entities/education.entity';
+import { ConfigurationsModule } from 'src/shared/configurations/configurations.module';
 
 @Module({
   controllers: [],
@@ -92,6 +93,7 @@ import { EducationEntity } from './entities/education.entity';
     ]),
     StorageModule,
     ReferenceTypesModule,
+    ConfigurationsModule,
   ],
 })
 export class UserManagementModule {}

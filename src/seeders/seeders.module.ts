@@ -6,8 +6,6 @@ import { AdminSeedCommand } from './admin.seeder';
 import { TemplateModule } from 'src/shared/templates/template.module';
 import { TemplatesSeedCommand } from './templates.seeder';
 import { RegionsSeedCommand } from './region.seeder';
-import { PropertiesSeedCommand } from './properties.seeder';
-import { StoreModule } from 'src/shared/store/store.module';
 import { CurrenciesSeedCommand } from './currencies.seeder';
 import { PlaygroundUsersSeedCommand } from './playground/users.seeder';
 import { JobCategoriesSeedCommand } from './job-categories.seeder';
@@ -19,6 +17,10 @@ import { SkillsSeedCommand } from './skills.seeder';
 import { UserManagementModule } from 'src/modules/users/user-management.module';
 import { DatabaseModule } from 'src/shared/database/database.module';
 import { ResetProjectSeedCommand } from './reset.seeder';
+import { PublicResourceSeedCommand } from './public-resource.seeder';
+import { StorageModule } from 'src/shared/storage/storage.module';
+import { ConfigurationSeedCommand } from './configuration.seeder';
+import { ConfigurationsModule } from 'src/shared/configurations/configurations.module';
 
 @Module({
   providers: [
@@ -28,12 +30,13 @@ import { ResetProjectSeedCommand } from './reset.seeder';
     AdminSeedCommand,
     TemplatesSeedCommand,
     RegionsSeedCommand,
-    PropertiesSeedCommand,
     CurrenciesSeedCommand,
     JobCategoriesSeedCommand,
     JobTagsSeedCommand,
     SkillsSeedCommand,
     ResetProjectSeedCommand,
+    PublicResourceSeedCommand,
+    ConfigurationSeedCommand,
     //playground
     PlaygroundUsersSeedCommand,
     PlaygroundJobsSeedCommand,
@@ -42,10 +45,11 @@ import { ResetProjectSeedCommand } from './reset.seeder';
     CommandModule,
     UserManagementModule,
     TemplateModule,
-    StoreModule,
     JobManagementModule,
     ReferenceTypesModule,
     DatabaseModule,
+    StorageModule,
+    ConfigurationsModule,
   ],
 })
 export class SeedersModule {}
