@@ -14,10 +14,8 @@ import { UserNotFoundException } from 'src/shared/abstract-user-management/error
 import { ResponseResetTokenDto } from '../dtos/web/response-reset-token.dto';
 import { ResponseCheckResetTokenDto } from '../dtos/web/response-check-reset-token.dto';
 import { RequestCheckResetTokenDto } from '../dtos/web/request-check-reset-token.dto';
-import { StoreService } from 'src/shared/store/services/store.service';
-import { StoreIDs } from 'src/app/enums/store.enum';
-import { GenericStore } from 'src/shared/store/interfaces/generic-store.interface';
 import { ForgetPasswordTemplateProps } from 'src/assets/templates/forget-password/type';
+import { VerifyEmailTemplateProps } from 'src/assets/templates/verify-email/type';
 import { identifyUser } from 'src/shared/abstract-user-management/utils/identify-user';
 import { ResponseClientSigninDto } from '../dtos/client/response-client-signin.dto';
 import { ResponseClientSignupDto } from '../dtos/client/response-client-signup.dto';
@@ -27,17 +25,22 @@ import { CreateAbstractUserDto } from 'src/shared/abstract-user-management/dtos/
 import { ResponseAbstractUserDto } from 'src/shared/abstract-user-management/dtos/abstract-user/response-abstract-user.dto';
 import { UserRepository } from 'src/modules/users/repositories/user.repository';
 import { UserService } from 'src/modules/users/services/user.service';
-import { Core } from 'src/app/interface/core.interface';
+import { ConfigurationNamespaceService } from 'src/shared/configurations/services/configuration-namespace.service';
+import { ConfigurationNamespaces } from 'src/app/enums/configuration-namespaces.enum';
+import { StorageService } from 'src/shared/storage/services/storage.service';
+import { buildStaticUrl } from 'src/shared/helpers/url.utils';
+import { STORAGE_SYSTEMATICS } from 'src/app/constants/storage-systematics.constants';
 
 @Injectable()
 export class ClientAuthService {
   constructor(
-    private userRepository: UserRepository,
-    private userService: UserService,
-    private jwtService: JwtService,
-    private readonly configService: ConfigService,
-    private readonly mailService: MailService,
-    private readonly storeService: StoreService,
+    protected readonly userRepository: UserRepository,
+    protected readonly userService: UserService,
+    protected readonly jwtService: JwtService,
+    protected readonly configService: ConfigService,
+    protected readonly mailService: MailService,
+    protected readonly storageService: StorageService,
+    protected readonly configurationNamespaceService: ConfigurationNamespaceService,
   ) {}
 
   private async generateTokens(id?: string, email?: string) {
@@ -99,7 +102,6 @@ export class ClientAuthService {
     return {
       user: await this.userService.save({
         ...createUserDto,
-        isActive: true,
         roleId: BasicRoles.User,
       }),
     };
@@ -211,6 +213,108 @@ export class ClientAuthService {
     };
   }
 
+  async sendEmailVerification(email: string) {
+    const user = await this.userService.findOneByEmail(email);
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+
+    try {
+      const verifyToken = await this.jwtService.signAsync(
+        { sub: user.id, email: user.email },
+        {
+          secret: this.configService.get('app.jwt.secret'),
+          expiresIn: '15m',
+        },
+      );
+
+      const host = this.configService.get<string | null>('app.http.host') || '';
+      const port = this.configService.get<number>('app.http.port') || 80;
+      const secure = this.configService.get<boolean>('app.http.secure');
+      const url = buildStaticUrl(host, port, secure);
+      const verifyLink = `${url}/api/client-auth/verify-email?token=${verifyToken}`;
+
+      const name =
+        ((await this.configurationNamespaceService.getSpecificParam(
+          ConfigurationNamespaces.CORE,
+          'company.name',
+        )) as string) || 'Our App';
+      const address =
+        ((await this.configurationNamespaceService.getSpecificParam(
+          ConfigurationNamespaces.CORE,
+          'company.address',
+        )) as string) || 'N/A';
+      const support =
+        ((await this.configurationNamespaceService.getSpecificParam(
+          ConfigurationNamespaces.CORE,
+          'company.support',
+        )) as string) || 'N/A';
+
+      const applicationLogo = await this.storageService.findBySystematicName(
+        STORAGE_SYSTEMATICS.APPLICATION_LOGO,
+      );
+
+      await this.mailService.sendTemplate<VerifyEmailTemplateProps>(
+        user.email,
+        `Verify your email address - ${name}`,
+        'verify-email',
+        {
+          name,
+          address,
+          support,
+          logo: `${url}/api/storage/resource/${applicationLogo?.slug}`,
+          client: identifyUser(user),
+          email: user.email,
+          url: verifyLink,
+        },
+      );
+
+      return { email: user.email, success: true };
+    } catch (error) {
+      console.error('Error sending verify email:', error);
+      return { email: user.email, success: false };
+    }
+  }
+
+  async verifyEmail(token: string) {
+    try {
+      const payload: { sub: string; email: string } =
+        await this.jwtService.verifyAsync(token, {
+          secret: this.configService.get('app.jwt.secret'),
+        });
+
+      const user = await this.userRepository.findOne({
+        where: [{ id: payload.sub }],
+      });
+      if (!user) {
+        throw new UnauthorizedException('User does not exist');
+      }
+
+      await this.userRepository.update(user.id, { emailVerified: new Date() });
+
+      let url: string;
+      const mobileScheme = this.configService.get('app.mobile.scheme');
+
+      if (mobileScheme === 'exp') {
+        const mobileHost = this.configService.get('app.mobile.host');
+        const mobilePort = this.configService.get('app.mobile.port');
+        url = `exp://${mobileHost}:${mobilePort}/--/main/profile/email-success?verifyToken=${encodeURIComponent(
+          token,
+        )}`;
+      } else {
+        url = `${mobileScheme}/--/main/profile/email-success?verifyToken=${encodeURIComponent(
+          token,
+        )}`;
+      }
+
+      return url;
+    } catch (error) {
+      throw new UnauthorizedException(
+        'Invalid or expired verify token ' + error,
+      );
+    }
+  }
+
   async requestResetToken(
     requestResetTokenDto: RequestResetTokenDto,
   ): Promise<ResponseResetTokenDto> {
@@ -233,18 +337,27 @@ export class ClientAuthService {
       const resetLink = `${webAppUrl}?token=${resetToken}`;
 
       //gather informations
-      const core = (await this.storeService.findOneById(
-        StoreIDs.CORE,
-      )) as GenericStore<Core>;
 
       await this.mailService.sendTemplate<ForgetPasswordTemplateProps>(
         user.email,
         'Password Reset Request',
         'forget-password',
         {
-          name: core.value.name,
-          address: core.value.address,
-          support: core.value.support,
+          name:
+            ((await this.configurationNamespaceService.getSpecificParam(
+              ConfigurationNamespaces.CORE,
+              'company.name',
+            )) as string) || 'Our App',
+          address:
+            ((await this.configurationNamespaceService.getSpecificParam(
+              ConfigurationNamespaces.CORE,
+              'company.address',
+            )) as string) || 'N/A',
+          support:
+            ((await this.configurationNamespaceService.getSpecificParam(
+              ConfigurationNamespaces.CORE,
+              'company.support',
+            )) as string) || 'N/A',
           logo: `${this.configService.get<string>('app.webAppUrl')}/logo.png`,
           client: identifyUser(user),
           email: user.email,

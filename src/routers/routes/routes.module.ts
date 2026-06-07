@@ -8,8 +8,6 @@ import { LoggerModule } from 'src/shared/logger/logger.module';
 import { ClientAuthController } from 'src/shared/auth/controllers/client-auth.controller';
 import { JobController } from 'src/modules/job-management/controllers/job.controller';
 import { JobManagementModule } from 'src/modules/job-management/job-management.module';
-import { StoreController } from 'src/shared/store/controllers/store.controller';
-import { StoreModule } from 'src/shared/store/store.module';
 import { JobRequestController } from 'src/modules/job-management/controllers/job-request.controller';
 import { ConversationController } from 'src/shared/chat/controllers/conversation.controller';
 import { ChatModule } from 'src/shared/chat/chat.module';
@@ -29,6 +27,8 @@ import { EducationController } from 'src/modules/users/controllers/education.con
 import { ExperienceController } from 'src/modules/users/controllers/experience.controller';
 import { CurrentConversationController } from 'src/shared/chat/controllers/user-conversation.controller';
 import { CurrentJobController } from 'src/modules/job-management/controllers/current-job.controller';
+import { ConfigurationController } from 'src/shared/configurations/controllers/configuration.controller';
+import { ConfigurationsModule } from 'src/shared/configurations/configurations.module';
 
 @Module({
   controllers: [
@@ -39,7 +39,6 @@ import { CurrentJobController } from 'src/modules/job-management/controllers/cur
     EducationController,
     //common
     StorageController,
-    StoreController,
     //user
     FollowController,
     //system reports
@@ -59,12 +58,12 @@ import { CurrentJobController } from 'src/modules/job-management/controllers/cur
     NotificationController,
     RefTypeController,
     RefParamController,
+    ConfigurationController,
   ],
   providers: [],
   exports: [],
   imports: [
     AuthModule,
-    StoreModule,
     LoggerModule,
     SystemReportsModule,
     UserManagementModule,
@@ -73,6 +72,7 @@ import { CurrentJobController } from 'src/modules/job-management/controllers/cur
     ChatModule,
     NotificationModule,
     ReferenceTypesModule,
+    ConfigurationsModule,
   ],
 })
 export class RoutesModule {}
