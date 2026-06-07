@@ -71,8 +71,9 @@ export class MinioStorageService extends StorageService {
 
   async store(
     file: Express.Multer.File,
-    isTemporary = false,
-    isPrivate = false,
+    isTemporary = true,
+    isPrivate = true,
+    systematicName?: string,
   ): Promise<StorageEntity> {
     const slug = uuidv4();
     const filename = file.originalname;
@@ -89,6 +90,7 @@ export class MinioStorageService extends StorageService {
       relativePath: key,
       isTemporary,
       isPrivate,
+      systematicName,
     });
 
     try {
@@ -127,8 +129,8 @@ export class MinioStorageService extends StorageService {
   // Store multiple files
   async storeMultipleFiles(
     files: Express.Multer.File[],
-    isTemporary = false,
-    isPrivate = false,
+    isTemporary = true,
+    isPrivate = true,
   ): Promise<StorageEntity[]> {
     return Promise.all(
       files.map((file) => this.store(file, isTemporary, isPrivate)),

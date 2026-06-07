@@ -30,8 +30,9 @@ export class LocalStorageService extends StorageService {
 
   async store(
     file: Express.Multer.File,
-    isTemporary = false,
-    isPrivate = false,
+    isTemporary = true,
+    isPrivate = true,
+    systematicName?: string,
   ): Promise<StorageEntity> {
     const slug = uuidv4();
     const filename = file.originalname;
@@ -53,6 +54,7 @@ export class LocalStorageService extends StorageService {
       relativePath,
       isTemporary,
       isPrivate,
+      systematicName,
     });
 
     const destinationFile = join(this.rootLocation, relativePath);
@@ -72,8 +74,8 @@ export class LocalStorageService extends StorageService {
 
   async storeMultipleFiles(
     files: Express.Multer.File[],
-    isTemporary = false,
-    isPrivate = false,
+    isTemporary = true,
+    isPrivate = true,
   ) {
     const uploads = await Promise.all(
       files.map(async (file) => {

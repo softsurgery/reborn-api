@@ -12,6 +12,9 @@ export class StorageEntity extends EntityHelper {
   @Column({})
   filename: string;
 
+  @Column({ nullable: true })
+  systematicName: string;
+
   @Column({})
   relativePath: string;
 
