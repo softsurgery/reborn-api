@@ -12,6 +12,7 @@ import { RoleEntity } from './role.entity';
 import { LogEntity } from 'src/shared/logger/entities/log.entity';
 import { NotificationEntity } from 'src/shared/notifications/entities/notification.entity';
 import { SessionEntity } from 'src/shared/sessions/entities/session.entity';
+import { OAuthProvider } from '../../auth/enums/oauth.enum';
 
 @Entity('users')
 @TableInheritance({ column: { type: 'varchar', name: 'type' } })
@@ -45,6 +46,14 @@ export class AbstractUserEntity extends EntityHelper {
 
   @Column({ type: 'timestamp', nullable: true })
   emailVerified?: Date;
+
+  @Column({
+    type: 'enum',
+    enum: OAuthProvider,
+    nullable: true,
+    default: OAuthProvider.EMAIL,
+  })
+  source?: OAuthProvider;
 
   @Column({ nullable: true })
   image?: string;

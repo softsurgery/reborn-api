@@ -8,6 +8,7 @@ import { MailModule } from '../mail/mail.module';
 import { ClientAuthService } from './services/client-auth.service';
 import { StorageModule } from '../storage/storage.module';
 import { ConfigurationsModule } from '../configurations/configurations.module';
+import { AuthProvidersService } from './services/auth-provider.service';
 
 @Module({
   controllers: [],
@@ -18,8 +19,9 @@ import { ConfigurationsModule } from '../configurations/configurations.module';
     },
     AuthService,
     ClientAuthService,
+    AuthProvidersService,
   ],
-  exports: [AuthService, ClientAuthService],
+  exports: [AuthService, ClientAuthService, AuthProvidersService],
   imports: [
     UserManagementModule,
     ConfigModule,

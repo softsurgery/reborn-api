@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsArray,
   IsBoolean,
   IsEnum,
   IsNumber,
@@ -10,7 +9,6 @@ import {
 } from 'class-validator';
 import { CreateAbstractUserDto } from 'src/shared/abstract-user-management/dtos/abstract-user/create-abstract-user.dto';
 import { Gender } from 'src/shared/abstract-user-management/enums/gender.enum';
-import { UserUploadEntity } from '../../entities/user-upload.entity';
 
 export class CreateUserDto extends CreateAbstractUserDto {
   @ApiProperty({ type: String })
@@ -49,8 +47,4 @@ export class CreateUserDto extends CreateAbstractUserDto {
   @IsNumber()
   @IsOptional()
   pictureId?: number;
-
-  @ApiProperty({ isArray: true, description: 'ID of uploaded file' })
-  @IsArray()
-  uploads?: Pick<UserUploadEntity, 'uploadId'>[];
 }

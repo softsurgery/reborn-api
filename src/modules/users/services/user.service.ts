@@ -1,5 +1,5 @@
 import { Transactional } from '@nestjs-cls/transactional';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UserUploadService } from './user-upload.service';
 import { UserEntity } from '../entities/user.entity';
 import { UserNotFoundException } from 'src/shared/abstract-user-management/errors/user/user.notfound.error';
@@ -8,10 +8,10 @@ import { AbstractUserService } from 'src/shared/abstract-user-management/service
 import { hashPassword } from 'src/shared/helpers/hash.utils';
 import { StorageService } from 'src/shared/storage/services/storage.service';
 import { UserRepository } from '../repositories/user.repository';
-import { CreateUserDto } from '../dtos/user/create-user.dto';
 import { UpdateUserDto } from '../dtos/user/update-user.dto';
 import { CreateUserUploadDto } from '../dtos/user-upload/create-user-upload.dto';
 import { UpdateUserUploadDto } from '../dtos/user-upload/update-user-upload.dto';
+import { DeepPartial } from 'typeorm';
 
 @Injectable()
 export class UserService extends AbstractUserService {
@@ -26,25 +26,17 @@ export class UserService extends AbstractUserService {
   //Extended Methods ===========================================================================
 
   @Transactional()
-  async extendedSave(createUserDto: CreateUserDto): Promise<UserEntity> {
-    const { uploads, ...rest } = createUserDto;
+  async extendedSave(
+    createUserDto: DeepPartial<UserEntity>,
+  ): Promise<UserEntity> {
+    const { ...rest } = createUserDto;
     if (createUserDto.pictureId)
       await this.storageService.confirm(createUserDto.pictureId);
 
-    if (!rest.password) throw new BadRequestException('Password is required');
-
     const user = await this.userRepository.save({
       ...rest,
-      password: await hashPassword(rest.password),
+      password: rest.password ? await hashPassword(rest.password) : undefined,
     });
-
-    await this.userUploadService.saveMany(
-      uploads?.map((upload, index) => ({
-        userId: user.id,
-        uploadId: upload.uploadId,
-        order: index,
-      })) || [],
-    );
 
     return user;
   }

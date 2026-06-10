@@ -2,11 +2,6 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
-import { OAuth2Client } from 'google-auth-library';
-import {
-  GithubEmail,
-  GithubUserResponse,
-} from '../interfaces/github.interface';
 import { OAuthProvider } from '../enums/oauth.enum';
 import { RequestResetTokenDto } from '../dtos/web/request-reset-token.dto';
 import { MailService } from 'src/shared/mail/services/mail.service';
@@ -30,6 +25,9 @@ import { ConfigurationNamespaces } from 'src/app/enums/configuration-namespaces.
 import { StorageService } from 'src/shared/storage/services/storage.service';
 import { buildStaticUrl } from 'src/shared/helpers/url.utils';
 import { STORAGE_SYSTEMATICS } from 'src/app/constants/storage-systematics.constants';
+import { DeepPartial } from 'typeorm';
+import { UserEntity } from 'src/modules/users/entities/user.entity';
+import { AuthProvidersService } from './auth-provider.service';
 
 @Injectable()
 export class ClientAuthService {
@@ -41,6 +39,7 @@ export class ClientAuthService {
     protected readonly mailService: MailService,
     protected readonly storageService: StorageService,
     protected readonly configurationNamespaceService: ConfigurationNamespaceService,
+    protected readonly authProviderService?: AuthProvidersService,
   ) {}
 
   private async generateTokens(id?: string, email?: string) {
@@ -139,75 +138,79 @@ export class ClientAuthService {
   async handleOAuth(
     provider: OAuthProvider,
     idToken: string,
+    redirectUri?: string,
+    codeVerifier?: string,
   ): Promise<{
     user?: ResponseAbstractUserDto;
     access_token: string;
     refresh_token: string;
   }> {
-    let email: string | undefined | null;
-    let username: string | undefined;
+    let newUser: DeepPartial<UserEntity> = {};
 
-    if (provider == OAuthProvider.GOOGLE) {
-      const client = new OAuth2Client(process.env.GOOGLE_ID);
-      const ticket = await client.verifyIdToken({
+    if (provider === OAuthProvider.GOOGLE) {
+      const data = await this.authProviderService?.googleOAuth(
         idToken,
-        audience: process.env.GOOGLE_ID,
-      });
-      const payload = ticket.getPayload();
-      email = payload?.email;
-      username = payload?.name || payload?.email?.split('@')[0];
+        codeVerifier,
+        redirectUri,
+      );
+      newUser.email = data?.email as string;
+      newUser.firstName = data?.given_name;
+      newUser.lastName = data?.family_name;
+      newUser.username = data?.email?.split('@')[0];
     } else if (provider == OAuthProvider.GITHUB) {
-      const userResponse: GithubUserResponse = await fetch(
-        'https://api.github.com/user',
-        {
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
-        },
-      ).then((res) => res.json());
-
-      email = userResponse.email;
-      username = userResponse.login;
-
-      email = userResponse.email;
-      username = userResponse.login;
-
-      if (!email) {
-        const emails: GithubEmail[] = await fetch(
-          'https://api.github.com/user/emails',
-          {
-            headers: {
-              Authorization: `Bearer ${idToken}`,
-            },
-          },
-        ).then((res) => res.json());
-
-        // Find the primary & verified email
-        const primary = emails.find((e) => e.primary && e.verified);
-        email = primary?.email || undefined;
-      }
+      const data = await this.authProviderService?.githubOAuth(idToken);
+      newUser.email = data?.email as string;
+      newUser.username = data?.username.toLowerCase();
+    } else if (provider == OAuthProvider.LINKEDIN) {
+      const data = await this.authProviderService?.linkedinOauth(
+        idToken,
+        redirectUri,
+      );
+      newUser.email = data?.email as string;
+      newUser.username = data?.username;
+    } else if (provider == OAuthProvider.APPLE) {
+      const decoded: { email?: string; sub?: string } | null =
+        this.jwtService.decode(idToken);
+      newUser.email = decoded?.email;
+      newUser.username = decoded?.email?.split('@')[0] || decoded?.sub;
     } else {
       throw new UnauthorizedException('Unsupported OAuth provider');
     }
 
-    if (!email || !username) {
+    if (!newUser.email || !newUser.username) {
       throw new UnauthorizedException(
         'Could not retrieve valid email or username from provider',
       );
     }
 
-    const user = await this.userService.save({
-      email,
-      username,
-    });
+    const userByEmail = await this.userService.findOneByEmail(newUser.email);
+    const userByUsername = await this.userService.findOneByUsername(
+      newUser.username,
+    );
+
+    if (!userByEmail && !userByUsername) {
+      newUser = await this.userService.extendedSave({
+        email: newUser.email,
+        username: newUser.username.toLowerCase().replace(/\s/g, '_'),
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        roleId: BasicRoles.User,
+        isActive: true,
+        source: provider,
+      });
+    } else if (userByEmail) {
+      newUser = userByEmail as UserEntity;
+    } else {
+      newUser = userByUsername as UserEntity;
+    }
 
     const { access_token, refresh_token } = await this.generateTokens(
-      user?.id,
-      user?.email,
+      newUser?.id,
+      newUser?.email,
     );
 
     return {
-      user,
+      user: newUser as ResponseAbstractUserDto,
       access_token,
       refresh_token,
     };
