@@ -5,10 +5,20 @@ export default registerAs(
   (): Record<string, unknown> => ({
     name: process.env.APP_NAME ?? 'Reborn API Server',
     globalPrefix: '/api',
+
     http: {
       enable: process.env.HTTP_ENABLE === 'true',
       host: process.env.APP_HOST ?? 'localhost',
-      port: process.env.APP_PORT ? Number.parseInt(process.env.APP_PORT) : 5000,
+      port: process.env.APP_PORT ? Number.parseInt(process.env.APP_PORT) : 80,
+      secure: process.env.APP_SECURE === 'true',
+    },
+
+    mobile: {
+      scheme: process.env.APP_MOBILE_SCHEME ?? 'exp',
+      host: process.env.APP_DEBUG_MOBILE_HOST ?? 'localhost',
+      port: process.env.APP_DEBUG_MOBILE_PORT
+        ? Number.parseInt(process.env.APP_DEBUG_MOBILE_PORT)
+        : 8081,
     },
 
     jobEnable: process.env.JOB_ENABLE === 'true',

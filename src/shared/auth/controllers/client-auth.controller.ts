@@ -2,9 +2,12 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   HttpCode,
   Post,
+  Query,
   Request,
+  Res,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -25,6 +28,7 @@ import { NotificationType } from 'src/app/enums/notification-type.enum';
 import { NotificationInterceptor } from 'src/shared/notifications/decorators/notification.interceptor';
 import { identifyUser } from 'src/shared/abstract-user-management/utils/identify-user';
 import { AbstractUserEntity } from 'src/shared/abstract-user-management/entities/abstract-user.entity';
+import { Response } from 'express';
 
 @ApiTags('client-auth')
 @Controller({ version: '1', path: '/client-auth' })
@@ -117,5 +121,35 @@ export class ClientAuthController {
     @Body() body: RefreshTokenDto,
   ): Promise<ResponseClientSigninDto> {
     return this.clientAuthService.refreshToken(body.refresh_token);
+  }
+
+  @Public()
+  @Post('send-verify-email')
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Send verification email',
+    description: 'Send an email with a verification link.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Email sent successfully.',
+  })
+  async sendVerifyEmail(@Body() body: { email: string }) {
+    return this.clientAuthService.sendEmailVerification(body.email);
+  }
+
+  @Public()
+  @Get('verify-email')
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Verify email',
+    description: 'Verify user email with the provided token.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Email verified successfully.',
+  })
+  async verifyEmail(@Query('token') token: string, @Res() res: Response) {
+    return res.redirect(await this.clientAuthService.verifyEmail(token));
   }
 }

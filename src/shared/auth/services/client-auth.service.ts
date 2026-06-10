@@ -298,11 +298,11 @@ export class ClientAuthService {
       if (mobileScheme === 'exp') {
         const mobileHost = this.configService.get('app.mobile.host');
         const mobilePort = this.configService.get('app.mobile.port');
-        url = `exp://${mobileHost}:${mobilePort}/--/main/profile/email-success?verifyToken=${encodeURIComponent(
+        url = `exp://${mobileHost}:${mobilePort}/--/main/account/email-success?verifyToken=${encodeURIComponent(
           token,
         )}`;
       } else {
-        url = `${mobileScheme}/--/main/profile/email-success?verifyToken=${encodeURIComponent(
+        url = `${mobileScheme}/--/main/account/email-success?verifyToken=${encodeURIComponent(
           token,
         )}`;
       }
