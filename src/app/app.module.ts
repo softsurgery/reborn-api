@@ -56,22 +56,26 @@ import { StorageModule } from 'src/shared/storage/storage.module';
           const email = process.env.SMTP_USER;
           if (!email) throw new Error('SMTP_USER is not set');
 
-          const domain = email.split('@')[1];
-          if (!domain) throw new Error(`Invalid SMTP_USER: ${email}`);
-
-          const { host, port } = await resolveMX(domain);
-
+          let host = process.env.SMTP_HOST;
+          let port = Number(process.env.SMTP_PORT);
+          const domain = process.env.SMTP_HOST || '';
+          if (!host) {
+            const resolvedMx = await resolveMX(domain);
+            host = resolvedMx.host;
+            port = resolvedMx.port;
+          }
           return {
             transport: {
               host,
               port,
-              secure: port === 465, // Use secure for 465, STARTTLS for 587
+              secure: process.env.SMTP_SECURE === 'true',
               auth: {
                 user: process.env.SMTP_USER,
                 pass: process.env.SMTP_PASS,
               },
               tls: {
-                rejectUnauthorized: false,
+                rejectUnauthorized:
+                  process.env.SMTP_REJECT_UNAUTHORIZED === 'true',
               },
             },
             defaults: {
