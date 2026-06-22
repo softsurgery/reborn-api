@@ -135,7 +135,7 @@ export class ClientAuthController {
       const mobilePort = this.configService.get('app.mobile.port');
       url = `exp://${mobileHost}:${mobilePort}/--/oauth?${queryString}`;
     } else {
-      url = `${mobileScheme}/--/oauth?${queryString}`;
+      url = `${mobileScheme}://oauth?${queryString}`;
     }
 
     return res.redirect(url);
