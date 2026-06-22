@@ -1,31 +1,25 @@
 import { setup } from 'xstate';
 
-export const machine = setup({
+export const jobMachine = setup({
   types: {
-    context: {} as {
-      isUpdatable: boolean;
-    },
+    context: {} as object,
     events: {} as
+      | { type: 'Hold' }
       | { type: 'Post' }
-      | { type: 'Cancel' }
-      | { type: 'Choose Candidate' }
-      | { type: 'Refuse Candidate' }
-      | { type: 'Review' }
-      | { type: 'Accept Candidate' }
       | { type: 'Start' }
       | { type: 'Finish' }
-      | { type: 'Worker Review' }
-      | { type: 'Client Review' }
-      | { type: 'Mark Successful' }
-      | { type: 'Hold' }
-      | { type: 'Repost' }
       | { type: 'Stop Hold' }
-      | { type: 'Mark Failed' },
+      | { type: 'Mark Failed' }
+      | { type: 'Client Review' }
+      | { type: 'Worker Review' }
+      | { type: 'Mark Successful' }
+      | { type: 'Accept Candidate' }
+      | { type: 'Choose Candidate' }
+      | { type: 'Refuse Candidate' }
+      | { type: 'Unpublish' },
   },
 }).createMachine({
-  context: {
-    isUpdatable: true,
-  },
+  context: {},
   id: 'Reborn - Job Flow',
   initial: 'Draft',
   states: {
@@ -41,8 +35,8 @@ export const machine = setup({
         'Choose Candidate': {
           target: 'Candidate Pending',
         },
-        Cancel: {
-          target: 'Canceled',
+        Unpublish: {
+          target: 'Draft',
         },
       },
     },
@@ -53,16 +47,6 @@ export const machine = setup({
         },
         'Accept Candidate': {
           target: 'Not Started',
-        },
-      },
-    },
-    Canceled: {
-      on: {
-        Repost: {
-          target: 'Posted',
-        },
-        Review: {
-          target: 'Draft',
         },
       },
     },

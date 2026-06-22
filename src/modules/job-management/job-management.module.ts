@@ -19,6 +19,7 @@ import { JobViewEntity } from './entities/job-view.entity';
 import { ReferenceTypesModule } from 'src/shared/reference-types/reference-types.module';
 import { UserManagementModule } from '../users/user-management.module';
 import { StorageModule } from 'src/shared/storage/storage.module';
+import { JobWorkflowService } from './services/job-workflow.service';
 
 @Module({
   controllers: [],
@@ -34,6 +35,7 @@ import { StorageModule } from 'src/shared/storage/storage.module';
     JobRequestService,
     JobSaveService,
     JobViewService,
+    JobWorkflowService,
   ],
   exports: [
     JobRepository,
@@ -47,6 +49,7 @@ import { StorageModule } from 'src/shared/storage/storage.module';
     JobRequestService,
     JobSaveService,
     JobViewService,
+    JobWorkflowService,
   ],
   imports: [
     TypeOrmModule.forFeature([

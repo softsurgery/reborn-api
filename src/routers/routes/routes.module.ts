@@ -29,6 +29,7 @@ import { CurrentConversationController } from 'src/shared/chat/controllers/user-
 import { CurrentJobController } from 'src/modules/job-management/controllers/current-job.controller';
 import { ConfigurationController } from 'src/shared/configurations/controllers/configuration.controller';
 import { ConfigurationsModule } from 'src/shared/configurations/configurations.module';
+import { JobWorkflowController } from 'src/modules/job-management/controllers/job-workflow.controller';
 
 @Module({
   controllers: [
@@ -47,6 +48,7 @@ import { ConfigurationsModule } from 'src/shared/configurations/configurations.m
     //job-management
     CurrentJobController,
     JobController,
+    JobWorkflowController,
     JobRequestController,
     JobSaveController,
     JobViewController,

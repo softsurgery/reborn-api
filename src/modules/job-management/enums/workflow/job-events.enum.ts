@@ -1,9 +1,8 @@
 export enum JobEvents {
   POST = 'Post',
-  CANCEL = 'Cancel',
+  UNPUBLISH = 'Unpublish',
   CHOOSE_CANDIDATE = 'Choose Candidate',
   REFUSE_CANDIDATE = 'Refuse Candidate',
-  REVIEW = 'Review',
   ACCEPT_CANDIDATE = 'Accept Candidate',
   START = 'Start',
   FINISH = 'Finish',
@@ -11,7 +10,6 @@ export enum JobEvents {
   CLIENT_REVIEW = 'Client Review',
   MARK_SUCCESSFUL = 'Mark Successful',
   HOLD = 'Hold',
-  REPOST = 'Repost',
   STOP_HOLD = 'Stop Hold',
   MARK_FAILED = 'Mark Failed',
 }

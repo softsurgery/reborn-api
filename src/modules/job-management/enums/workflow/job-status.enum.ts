@@ -2,7 +2,6 @@ export enum JobStatus {
   DRAFT = 'Draft',
   POSTED = 'Posted',
   CANDIDATE_PENDING = 'Candidate Pending',
-  CANCELED = 'Canceled',
   NOT_STARTED = 'Not Started',
   PENDING = 'Pending',
   FINISHED = 'Finished',
