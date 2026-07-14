@@ -26,9 +26,9 @@ export class ResponseRefTypeDto extends ResponseDtoHelper {
   @Type(() => ResponseRefParamDto)
   parent?: ResponseRefTypeDto;
 
-  @ApiProperty({ type: Number, example: 1 })
+  @ApiProperty({ type: String })
   @Expose()
-  parentId?: number;
+  parentId?: string;
 
   @ApiProperty({ type: [ResponseRefTypeDto] })
   @Expose()

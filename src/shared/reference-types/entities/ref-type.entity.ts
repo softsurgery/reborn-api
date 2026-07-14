@@ -31,7 +31,7 @@ export class RefTypeEntity extends EntityHelper {
   parent?: RefTypeEntity;
 
   @Column({ nullable: true })
-  parentId: number;
+  parentId: string;
 
   @OneToMany(() => RefTypeEntity, (user) => user.parent)
   children: RefTypeEntity[];

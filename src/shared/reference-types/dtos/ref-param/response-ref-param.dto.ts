@@ -23,7 +23,7 @@ export class ResponseRefParamDto extends ResponseDtoHelper {
 
   @ApiProperty({ type: String })
   @Expose()
-  refTypeId: number;
+  refTypeId: string;
 
   @ApiProperty({ type: Object })
   @Expose()

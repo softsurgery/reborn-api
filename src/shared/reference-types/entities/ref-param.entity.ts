@@ -27,7 +27,7 @@ export class RefParamEntity extends EntityHelper {
   refType: RefTypeEntity;
 
   @Column({})
-  refTypeId: number;
+  refTypeId: string;
 
   @Column({ type: 'json', nullable: true })
   extras: object;

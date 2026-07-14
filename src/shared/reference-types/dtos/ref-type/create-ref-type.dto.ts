@@ -1,11 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsNumber,
-  IsOptional,
-  IsString,
-  Length,
-  MaxLength,
-} from 'class-validator';
+import { IsOptional, IsString, Length, MaxLength } from 'class-validator';
 
 export class CreateRefTypeDto {
   @ApiProperty({ type: String })
@@ -19,7 +13,7 @@ export class CreateRefTypeDto {
   description: string;
 
   @ApiProperty({ type: String })
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  parentId?: number;
+  parentId?: string;
 }

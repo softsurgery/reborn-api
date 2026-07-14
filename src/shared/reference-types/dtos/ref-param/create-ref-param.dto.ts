@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsObject, IsString, Length } from 'class-validator';
+import { IsObject, IsString, Length } from 'class-validator';
 
 export class CreateRefParamDto {
   @ApiProperty({ type: String })
@@ -7,9 +7,9 @@ export class CreateRefParamDto {
   @Length(3, 50)
   label: string;
 
-  @ApiProperty({ type: Number })
-  @IsNumber()
-  refTypeId: number;
+  @ApiProperty({ type: String })
+  @IsString()
+  refTypeId: string;
 
   @ApiProperty({ type: Object })
   @IsObject()
