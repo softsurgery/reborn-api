@@ -182,5 +182,190 @@ export const mockJobsSeed = [
     price: 80,
     currency: 'USD',
     category: 'Driver',
+    latitude: 37.6213,
+    longitude: -122.379,
+  },
+  {
+    title: 'Home network setup and Wi-Fi troubleshooting',
+    description:
+      'Need an IT professional to configure mesh routers and fix dead zones across our home office. Should bring network testing equipment and ensure secure setup.',
+    price: 130,
+    currency: 'USD',
+    category: 'IT Support',
+    latitude: 37.7749,
+    longitude: -122.4194,
+  },
+  {
+    title: '1-on-1 personal fitness and stamina coaching',
+    description:
+      'Looking for a certified fitness trainer for personalized strength training and conditioning sessions 3 times a week at a local gym or home studio.',
+    price: 65,
+    currency: 'USD',
+    category: 'Fitness Trainer',
+    latitude: 34.0522,
+    longitude: -118.2437,
+  },
+  {
+    title: 'Professional outdoor family photo shoot',
+    description:
+      'Looking for an experienced photographer for a 2-hour golden hour family portrait session in the park. Includes editing and high-res digital delivery.',
+    price: 220,
+    currency: 'EUR',
+    category: 'Photographer',
+    latitude: 48.8566,
+    longitude: 2.3522,
+  },
+  {
+    title: 'Modern responsive landing page for boutique coffee shop',
+    description:
+      'Need a web developer to build a clean, fast-loading responsive landing page featuring our menu, hours, and online reservation form.',
+    price: 350,
+    currency: 'USD',
+    category: 'Web Developer',
+    latitude: 40.7128,
+    longitude: -74.006,
+  },
+  {
+    title: 'Brand identity and logo design for startup',
+    description:
+      'Seeking a creative graphic designer to craft a distinctive logo, color palette, and typography set for an upcoming eco-lifestyle brand.',
+    price: 280,
+    currency: 'GBP',
+    category: 'Graphic Designer',
+    latitude: 51.5074,
+    longitude: -0.1278,
+  },
+  {
+    title: 'AC unit annual tune-up and filter cleaning',
+    description:
+      'Air conditioning technician needed to service two residential split AC units before summer season. Must inspect coolant levels and clean coils.',
+    price: 140,
+    currency: 'USD',
+    category: 'AC Technician',
+    latitude: 25.7617,
+    longitude: -80.1918,
+  },
+  {
+    title: 'Birthday event coordinator and setup helper',
+    description:
+      'Need an organized event planner to assist with vendor coordination, decoration setup, and guest reception for a 40-person outdoor celebration.',
+    price: 190,
+    currency: 'EUR',
+    category: 'Event Planner',
+    latitude: 41.3879,
+    longitude: 2.1699,
   },
 ];
+
+export const UNSPLASH_CATEGORY_IMAGES: Record<string, string[]> = {
+  Babysitting: [
+    'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1544717305-2782549b5136?w=800&auto=format&fit=crop&q=80',
+  ],
+  Plumber: [
+    'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800&auto=format&fit=crop&q=80',
+  ],
+  Electrician: [
+    'https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1558402529-d2638a7023e9?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1544717302-de2939b7ef71?w=800&auto=format&fit=crop&q=80',
+  ],
+  'House Cleaning': [
+    'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&auto=format&fit=crop&q=80',
+  ],
+  Gardening: [
+    'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1592417817098-8f3d691a4bf5?w=800&auto=format&fit=crop&q=80',
+  ],
+  'Pet Care': [
+    'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&auto=format&fit=crop&q=80',
+  ],
+  Carpenter: [
+    'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=800&auto=format&fit=crop&q=80',
+  ],
+  Painter: [
+    'https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=800&auto=format&fit=crop&q=80',
+  ],
+  Delivery: [
+    'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=800&auto=format&fit=crop&q=80',
+  ],
+  Tutor: [
+    'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&auto=format&fit=crop&q=80',
+  ],
+  Mechanic: [
+    'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800&auto=format&fit=crop&q=80',
+  ],
+  'Laundry Service': [
+    'https://images.unsplash.com/photo-1545173168-9f1947eebb7f?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=800&auto=format&fit=crop&q=80',
+  ],
+  Mover: [
+    'https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1558997519-83ea9252df8a?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1586528116493-a029325540fa?w=800&auto=format&fit=crop&q=80',
+  ],
+  'Cook / Chef': [
+    'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&auto=format&fit=crop&q=80',
+  ],
+  Driver: [
+    'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&auto=format&fit=crop&q=80',
+  ],
+  'IT Support': [
+    'https://images.unsplash.com/photo-1581092921461-eab62e97a780?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1563770660941-20978e870e26?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop&q=80',
+  ],
+  'Fitness Trainer': [
+    'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&auto=format&fit=crop&q=80',
+  ],
+  Photographer: [
+    'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=800&auto=format&fit=crop&q=80',
+  ],
+  'Web Developer': [
+    'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&auto=format&fit=crop&q=80',
+  ],
+  'Graphic Designer': [
+    'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=800&auto=format&fit=crop&q=80',
+  ],
+  'AC Technician': [
+    'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&auto=format&fit=crop&q=80',
+  ],
+  'Event Planner': [
+    'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=800&auto=format&fit=crop&q=80',
+  ],
+  default: [
+    'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop&q=80',
+  ],
+};
