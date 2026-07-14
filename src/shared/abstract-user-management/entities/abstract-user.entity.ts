@@ -13,6 +13,7 @@ import { LogEntity } from 'src/shared/logger/entities/log.entity';
 import { NotificationEntity } from 'src/shared/notifications/entities/notification.entity';
 import { SessionEntity } from 'src/shared/sessions/entities/session.entity';
 import { OAuthProvider } from '../../auth/enums/oauth.enum';
+import { TaskEntity } from 'src/shared/tasks/entities/task.entity';
 
 @Entity('users')
 @TableInheritance({ column: { type: 'varchar', name: 'type' } })
@@ -76,4 +77,7 @@ export class AbstractUserEntity extends EntityHelper {
 
   @OneToMany(() => SessionEntity, (session) => session.user)
   sessions?: SessionEntity[];
+
+  @OneToMany(() => TaskEntity, (task) => task.user)
+  tasks: TaskEntity[];
 }

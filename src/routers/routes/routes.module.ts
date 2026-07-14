@@ -30,6 +30,8 @@ import { CurrentJobController } from 'src/modules/job-management/controllers/cur
 import { ConfigurationController } from 'src/shared/configurations/controllers/configuration.controller';
 import { ConfigurationsModule } from 'src/shared/configurations/configurations.module';
 import { JobWorkflowController } from 'src/modules/job-management/controllers/job-workflow.controller';
+import { TaskController } from 'src/shared/tasks/controllers/task.controller';
+import { TasksModule } from 'src/shared/tasks/tasks.module';
 
 @Module({
   controllers: [
@@ -61,6 +63,7 @@ import { JobWorkflowController } from 'src/modules/job-management/controllers/jo
     RefTypeController,
     RefParamController,
     ConfigurationController,
+    TaskController,
   ],
   providers: [],
   exports: [],
@@ -75,6 +78,7 @@ import { JobWorkflowController } from 'src/modules/job-management/controllers/jo
     NotificationModule,
     ReferenceTypesModule,
     ConfigurationsModule,
+    TasksModule,
   ],
 })
 export class RoutesModule {}
