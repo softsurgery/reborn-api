@@ -98,10 +98,10 @@ export class JobEntity extends EntityHelper {
   })
   uploads: JobUploadEntity[];
 
-  @Column({ default: 0, nullable: true })
+  @Column({ type: 'float', default: 0, nullable: true })
   latitude: number;
 
-  @Column({ default: 0, nullable: true })
+  @Column({ type: 'float', default: 0, nullable: true })
   longitude: number;
 
   @OneToMany(() => JobRequestEntity, (request) => request.job)
