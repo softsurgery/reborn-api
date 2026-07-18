@@ -36,4 +36,8 @@ export class JobWorkflowService extends AbstractWorkflowService<
     await this.jobService.save({ id: job.id, status: newStatus });
     return this.findOneById(id);
   }
+
+  getMachine(): Record<string, unknown> {
+    return this.getMachineConfig();
+  }
 }

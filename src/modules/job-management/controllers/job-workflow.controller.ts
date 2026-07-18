@@ -26,6 +26,11 @@ import { UpdateJobStatusDto } from '../dtos/job/update-job-status.dto';
 export class JobWorkflowController {
   constructor(private readonly jobWorkflowService: JobWorkflowService) {}
 
+  @Get('machine')
+  getMachine(): Record<string, unknown> {
+    return this.jobWorkflowService.getMachine();
+  }
+
   @Get(':id')
   async findOneById(
     @Param('id') id: string,

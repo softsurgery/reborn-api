@@ -74,4 +74,10 @@ export class AbstractWorkflowService<
 
     return stateMeta?.isUpdatable ?? false;
   }
+
+  getMachineConfig(): Record<string, unknown> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+    const config = (this.machine as any).config as Record<string, unknown>;
+    return config || {};
+  }
 }
