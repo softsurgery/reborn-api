@@ -19,6 +19,7 @@ import { RefParamEntity } from 'src/shared/reference-types/entities/ref-param.en
 import { FollowService } from 'src/shared/abstract-user-management/services/follow.service';
 import { UserNotFoundException } from 'src/shared/abstract-user-management/errors/user/user.notfound.error';
 import { AbstractCrudService } from 'src/shared/database/services/abstract-crud.service';
+import { JobStorageFolderService } from './job-storage-folder.service';
 
 @Injectable()
 export class JobService extends AbstractCrudService<JobEntity> {
@@ -28,6 +29,7 @@ export class JobService extends AbstractCrudService<JobEntity> {
     private readonly refParamService: RefParamService,
     private readonly jobUploadService: JobUploadService,
     private readonly followService: FollowService,
+    private readonly jobStorageFolderService: JobStorageFolderService,
   ) {
     super(jobRepository);
   }
@@ -141,6 +143,16 @@ export class JobService extends AbstractCrudService<JobEntity> {
       })) || [],
     );
 
+    if (uploads?.length) {
+      await this.jobStorageFolderService.assignJobUploads(
+        uploads
+          .map((upload: DeepPartial<JobUploadEntity>) => upload.uploadId)
+          .filter((uploadId): uploadId is number => Boolean(uploadId)),
+        job.id,
+        job.title,
+      );
+    }
+
     return job;
   }
 
@@ -204,6 +216,16 @@ export class JobService extends AbstractCrudService<JobEntity> {
       onUpdate: async (id: number, item: UpdateJobUploadDto) =>
         this.jobUploadService.update(id, item),
     });
+
+    if (uploads?.length) {
+      await this.jobStorageFolderService.assignJobUploads(
+        uploads
+          .map((upload: DeepPartial<JobUploadEntity>) => upload.uploadId)
+          .filter((uploadId): uploadId is number => Boolean(uploadId)),
+        id,
+        updatedJob.title,
+      );
+    }
 
     return updatedJob;
   }

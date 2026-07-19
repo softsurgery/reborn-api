@@ -74,6 +74,7 @@ export class MinioStorageService extends StorageService {
     isTemporary = true,
     isPrivate = true,
     systematicName?: string,
+    folderId?: number,
   ): Promise<StorageEntity> {
     const slug = uuidv4();
     const filename = file.originalname;
@@ -91,6 +92,7 @@ export class MinioStorageService extends StorageService {
       isTemporary,
       isPrivate,
       systematicName,
+      folderId,
     });
 
     try {
@@ -131,9 +133,12 @@ export class MinioStorageService extends StorageService {
     files: Express.Multer.File[],
     isTemporary = true,
     isPrivate = true,
+    folderId?: number,
   ): Promise<StorageEntity[]> {
     return Promise.all(
-      files.map((file) => this.store(file, isTemporary, isPrivate)),
+      files.map((file) =>
+        this.store(file, isTemporary, isPrivate, undefined, folderId),
+      ),
     );
   }
 

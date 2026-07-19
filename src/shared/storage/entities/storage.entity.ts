@@ -1,5 +1,12 @@
 import { EntityHelper } from 'src/shared/database/interfaces/database.entity.interface';
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { StorageFolderEntity } from './storage-folder.entity';
 
 @Entity('storage')
 export class StorageEntity extends EntityHelper {
@@ -29,4 +36,14 @@ export class StorageEntity extends EntityHelper {
 
   @Column({ default: true })
   isPrivate: boolean;
+
+  @ManyToOne(() => StorageFolderEntity, (folder) => folder.files, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
+  @JoinColumn({ name: 'folderId' })
+  folder?: StorageFolderEntity;
+
+  @Column({ nullable: true })
+  folderId?: number;
 }

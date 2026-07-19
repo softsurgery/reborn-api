@@ -30,4 +30,8 @@ export class ResponseStorageDto extends ResponseDtoHelper {
   @ApiProperty({ type: Boolean })
   @Expose()
   isPrivate: boolean;
+
+  @ApiProperty({ type: Number, required: false })
+  @Expose()
+  folderId?: number;
 }

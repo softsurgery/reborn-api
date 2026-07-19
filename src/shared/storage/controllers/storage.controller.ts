@@ -89,8 +89,14 @@ export class StorageController {
   @UseInterceptors(FilesInterceptor('files'))
   async uploadMultipleFiles(
     @UploadedFiles() files: Express.Multer.File[],
+    @Query('folderId') folderId?: string,
   ): Promise<StorageEntity[]> {
-    return this.storageService.storeMultipleFiles(files);
+    return this.storageService.storeMultipleFiles(
+      files,
+      false,
+      true,
+      folderId ? Number(folderId) : undefined,
+    );
   }
 
   @ApiConsumes('multipart/form-data')
@@ -112,8 +118,14 @@ export class StorageController {
   @UseInterceptors(FilesInterceptor('files'))
   async uploadTemporaryMultipleFiles(
     @UploadedFiles() files: Express.Multer.File[],
+    @Query('folderId') folderId?: string,
   ): Promise<StorageEntity[]> {
-    return this.storageService.storeMultipleFiles(files, true);
+    return this.storageService.storeMultipleFiles(
+      files,
+      true,
+      true,
+      folderId ? Number(folderId) : undefined,
+    );
   }
 
   @ApiConsumes('multipart/form-data')
@@ -132,8 +144,15 @@ export class StorageController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
+    @Query('folderId') folderId?: string,
   ): Promise<StorageEntity> {
-    return this.storageService.store(file);
+    return this.storageService.store(
+      file,
+      false,
+      true,
+      undefined,
+      folderId ? Number(folderId) : undefined,
+    );
   }
 
   @ApiConsumes('multipart/form-data')
@@ -152,8 +171,15 @@ export class StorageController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadTemporaryFile(
     @UploadedFile() file: Express.Multer.File,
+    @Query('folderId') folderId?: string,
   ): Promise<StorageEntity> {
-    return this.storageService.store(file, true);
+    return this.storageService.store(
+      file,
+      true,
+      true,
+      undefined,
+      folderId ? Number(folderId) : undefined,
+    );
   }
 
   @Get('/download/slug/:slug')

@@ -20,6 +20,7 @@ import { RefTypeController } from 'src/shared/reference-types/controllers/ref-ty
 import { RefParamController } from 'src/shared/reference-types/controllers/ref-param.controller';
 import { ReferenceTypesModule } from 'src/shared/reference-types/reference-types.module';
 import { StorageController } from 'src/shared/storage/controllers/storage.controller';
+import { StorageFolderController } from 'src/shared/storage/controllers/storage-folder.controller';
 import { FollowController } from 'src/shared/abstract-user-management/controllers/follow.controller';
 import { UserManagementModule } from 'src/modules/users/user-management.module';
 import { StorageModule } from 'src/shared/storage/storage.module';
@@ -42,6 +43,7 @@ import { TasksModule } from 'src/shared/tasks/tasks.module';
     EducationController,
     //common
     StorageController,
+    StorageFolderController,
     //user
     FollowController,
     //system reports

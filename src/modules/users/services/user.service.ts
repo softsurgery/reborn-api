@@ -12,6 +12,7 @@ import { UpdateUserDto } from '../dtos/user/update-user.dto';
 import { CreateUserUploadDto } from '../dtos/user-upload/create-user-upload.dto';
 import { UpdateUserUploadDto } from '../dtos/user-upload/update-user-upload.dto';
 import { DeepPartial } from 'typeorm';
+import { UserStorageFolderService } from './user-storage-folder.service';
 
 @Injectable()
 export class UserService extends AbstractUserService {
@@ -19,6 +20,7 @@ export class UserService extends AbstractUserService {
     private readonly userRepository: UserRepository,
     private readonly userUploadService: UserUploadService,
     private readonly storageService: StorageService,
+    private readonly userStorageFolderService: UserStorageFolderService,
   ) {
     super(userRepository);
   }
@@ -37,6 +39,12 @@ export class UserService extends AbstractUserService {
       ...rest,
       password: rest.password ? await hashPassword(rest.password) : undefined,
     });
+
+    if (createUserDto.pictureId) {
+      await this.userStorageFolderService.assignProfilePicture(
+        createUserDto.pictureId,
+      );
+    }
 
     return user;
   }
@@ -59,6 +67,10 @@ export class UserService extends AbstractUserService {
       await this.storageService.confirm(updateUserDto.pictureId);
       if (existingUser.pictureId)
         await this.storageService.delete(existingUser.pictureId);
+
+      await this.userStorageFolderService.assignProfilePicture(
+        updateUserDto.pictureId,
+      );
     }
 
     const updatedUser = await this.userRepository.findOne({
@@ -112,6 +124,8 @@ export class UserService extends AbstractUserService {
     if (coverId && coverId != user.coverId) {
       await this.storageService.confirm(coverId);
       if (user.coverId) await this.storageService.delete(user.coverId);
+
+      await this.userStorageFolderService.assignCoverPicture(coverId);
     }
 
     return this.userRepository.update(id, { coverId });

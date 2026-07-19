@@ -26,6 +26,7 @@ import { ExperienceRepository } from './repositories/experience.repository';
 import { EducationRepository } from './repositories/education.repository';
 import { ExperienceEntity } from './entities/experience.entity';
 import { EducationEntity } from './entities/education.entity';
+import { UserStorageFolderService } from './services/user-storage-folder.service';
 import { ConfigurationsModule } from 'src/shared/configurations/configurations.module';
 
 @Module({
@@ -34,6 +35,7 @@ import { ConfigurationsModule } from 'src/shared/configurations/configurations.m
     //services
     UserService,
     UserUploadService,
+    UserStorageFolderService,
 
     RoleService,
     PermissionService,
@@ -59,6 +61,7 @@ import { ConfigurationsModule } from 'src/shared/configurations/configurations.m
     //services
     UserService,
     UserUploadService,
+    UserStorageFolderService,
 
     RoleService,
     PermissionService,

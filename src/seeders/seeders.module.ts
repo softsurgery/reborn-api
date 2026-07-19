@@ -18,7 +18,9 @@ import { UserManagementModule } from 'src/modules/users/user-management.module';
 import { DatabaseModule } from 'src/shared/database/database.module';
 import { ResetProjectSeedCommand } from './reset.seeder';
 import { PublicResourceSeedCommand } from './public-resource.seeder';
+import { StorageFolderSeedCommand } from './storage-folder.seeder';
 import { StorageModule } from 'src/shared/storage/storage.module';
+import { AppStorageFolderModule } from 'src/app/app-storage-folder.module';
 import { ConfigurationSeedCommand } from './configuration.seeder';
 import { ConfigurationsModule } from 'src/shared/configurations/configurations.module';
 
@@ -36,6 +38,7 @@ import { ConfigurationsModule } from 'src/shared/configurations/configurations.m
     SkillsSeedCommand,
     ResetProjectSeedCommand,
     PublicResourceSeedCommand,
+    StorageFolderSeedCommand,
     ConfigurationSeedCommand,
     //playground
     PlaygroundUsersSeedCommand,
@@ -49,6 +52,7 @@ import { ConfigurationsModule } from 'src/shared/configurations/configurations.m
     ReferenceTypesModule,
     DatabaseModule,
     StorageModule,
+    AppStorageFolderModule,
     ConfigurationsModule,
   ],
 })

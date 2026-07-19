@@ -1,13 +1,17 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
 import { StorageService } from 'src/shared/storage/services/storage.service';
+import { StorageFolderCatalogService } from 'src/app/services/storage-folder-catalog.service';
 import * as fs from 'fs';
 import * as path from 'path';
 import { STORAGE_SYSTEMATICS } from 'src/app/constants/storage-systematics.constants';
 
 @Injectable()
 export class PublicResourceSeedCommand {
-  constructor(private readonly storageService: StorageService) {}
+  constructor(
+    private readonly storageService: StorageService,
+    private readonly storageFolderCatalogService: StorageFolderCatalogService,
+  ) {}
 
   @Command({
     command: 'seed:public-resource',
@@ -33,6 +37,9 @@ export class PublicResourceSeedCommand {
         );
 
         if (!existing) {
+          const publicFolder =
+            await this.storageFolderCatalogService.ensurePublicResourcesFolder();
+
           const buffer = fs.readFileSync(resource.path);
           const file = {
             fieldname: 'file',
@@ -52,6 +59,7 @@ export class PublicResourceSeedCommand {
             false,
             false,
             STORAGE_SYSTEMATICS.APPLICATION_LOGO,
+            publicFolder.id,
           );
           console.log(
             `✅ Uploaded ${resource.filename} with slug: ${upload.slug}`,

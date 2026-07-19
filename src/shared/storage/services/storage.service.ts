@@ -82,11 +82,13 @@ export abstract class StorageService {
     isTemporary?: boolean,
     isPrivate?: boolean,
     systematicName?: string,
+    folderId?: number,
   ): Promise<StorageEntity>;
   abstract storeMultipleFiles(
     files: Express.Multer.File[],
     isTemporary?: boolean,
     isPrivate?: boolean,
+    folderId?: number,
   ): Promise<StorageEntity[]>;
 
   async expose(id: number): Promise<StorageEntity> {
