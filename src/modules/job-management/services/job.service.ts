@@ -149,7 +149,6 @@ export class JobService extends AbstractCrudService<JobEntity> {
           .map((upload: DeepPartial<JobUploadEntity>) => upload.uploadId)
           .filter((uploadId): uploadId is number => Boolean(uploadId)),
         job.id,
-        job.title,
       );
     }
 
@@ -223,7 +222,6 @@ export class JobService extends AbstractCrudService<JobEntity> {
           .map((upload: DeepPartial<JobUploadEntity>) => upload.uploadId)
           .filter((uploadId): uploadId is number => Boolean(uploadId)),
         id,
-        updatedJob.title,
       );
     }
 

@@ -46,7 +46,6 @@ export class StorageFolderSeedCommand {
         await this.jobStorageFolderService.assignJobUploads(
           uploadIds,
           job.id,
-          job.title,
         );
         console.log(
           `✅ Organized ${uploadIds.length} file(s) for job "${job.title}"`,
