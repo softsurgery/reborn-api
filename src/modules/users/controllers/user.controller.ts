@@ -46,7 +46,7 @@ export class UserController {
   ): Promise<ResponseUserDto | null> {
     return toDto(
       ResponseUserDto,
-      await this.userService.findOneByEmail(email, query),
+      await this.userService.findOneByEmail(email, false, query),
     );
   }
 
@@ -58,7 +58,7 @@ export class UserController {
   ): Promise<ResponseUserDto | null> {
     return toDto(
       ResponseUserDto,
-      await this.userService.findOneByUsername(username, query),
+      await this.userService.findOneByUsername(username, false, query),
     );
   }
 

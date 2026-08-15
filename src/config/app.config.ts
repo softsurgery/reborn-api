@@ -13,14 +13,6 @@ export default registerAs(
       secure: process.env.APP_SECURE === 'true',
     },
 
-    mobile: {
-      scheme: process.env.APP_MOBILE_SCHEME ?? 'exp',
-      host: process.env.APP_DEBUG_MOBILE_HOST ?? 'localhost',
-      port: process.env.APP_DEBUG_MOBILE_PORT
-        ? Number.parseInt(process.env.APP_DEBUG_MOBILE_PORT)
-        : 8081,
-    },
-
     jobEnable: process.env.JOB_ENABLE === 'true',
     uploadPath: process.env.UPLOAD_PATH ?? '/upload',
 
