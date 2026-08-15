@@ -133,6 +133,10 @@ export abstract class DatabaseAbstractRepository<T extends ObjectLiteral>
     await this.getRepository().clear();
   }
 
+  public async restore(id: string | number): Promise<void> {
+    await this.getRepository().restore(id);
+  }
+
   public async softDelete(id: string | number): Promise<T | null> {
     const deleted = await this.getRepository().softDelete(id);
     if (!deleted) {
