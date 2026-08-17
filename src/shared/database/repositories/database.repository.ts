@@ -12,6 +12,8 @@ import {
   SelectQueryBuilder,
 } from 'typeorm';
 import { DatabaseInterfaceRepository } from '../interfaces/database.repository.interface';
+import { IWhereClause } from '../interfaces/database-query-options.interface';
+import { normalizeWhereForTypeOrm } from '../utils/database-query-builder';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterTypeOrm } from '@nestjs-cls/transactional-adapter-typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
@@ -54,7 +56,14 @@ export abstract class DatabaseAbstractRepository<T extends ObjectLiteral>
   }
 
   public async getTotalCount(options: FindOneOptions<T> = {}): Promise<number> {
-    return this.getRepository().count(options);
+    const normalizedWhere = normalizeWhereForTypeOrm(
+      options.where as IWhereClause | undefined,
+    );
+
+    return this.getRepository().count({
+      ...options,
+      where: normalizedWhere,
+    } as FindOneOptions<T>);
   }
 
   public async findOne(options: FindOneOptions<T>): Promise<T | null> {
@@ -69,7 +78,14 @@ export abstract class DatabaseAbstractRepository<T extends ObjectLiteral>
   }
 
   public async findAll(options?: FindManyOptions<T>): Promise<T[]> {
-    return this.getRepository().find(options);
+    const normalizedWhere = normalizeWhereForTypeOrm(
+      options?.where as IWhereClause | undefined,
+    );
+
+    return this.getRepository().find({
+      ...options,
+      where: normalizedWhere,
+    } as FindManyOptions<T>);
   }
 
   public async findWithRelations(relations: FindManyOptions<T>): Promise<T[]> {

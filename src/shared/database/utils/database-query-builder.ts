@@ -16,15 +16,19 @@ import {
   IOptionsObject,
   IQueryObject,
   IQueryTypeOrm,
+  IWhereClause,
+  IWhereCondition,
 } from '../interfaces/database-query-options.interface';
 
 export class QueryBuilder {
   private options: IOptionsObject;
   private entityMetadata: EntityMetadata;
+  private searchFields?: string[];
 
   constructor(
     entityMetadata?: EntityMetadata,
     configuration: IOptionsObject = {},
+    searchFields?: string[],
   ) {
     this.options = {
       ...{
@@ -50,6 +54,7 @@ export class QueryBuilder {
       ...configuration,
     };
     if (entityMetadata) this.entityMetadata = entityMetadata;
+    if (searchFields?.length) this.searchFields = searchFields;
   }
 
   public getOptions() {
@@ -94,23 +99,16 @@ export class QueryBuilder {
       const searchValue = query.search as string;
       const searchableFields = this.getSearchableFields(this.entityMetadata);
 
-      const searchConditions = searchableFields.map((field: string) => {
-        if (isNaN(Number(searchValue))) {
-          if (/^\d{4}-\d{2}-\d{2}/.test(searchValue)) {
-            return { [field]: new Date(searchValue) };
-          }
-          return { [field]: ILike(`%${searchValue}%`) };
-        } else {
-          return { [field]: Number(searchValue) };
-        }
-      });
+      const searchConditions = searchableFields.map((field: string) =>
+        this.createSearchCondition(field, searchValue),
+      );
 
       if (output.where) {
         const filters = Array.isArray(output.where)
           ? output.where
           : [output.where];
 
-        const combined: object[] = [];
+        const combined: IWhereCondition[] = [];
 
         filters.forEach((filter) => {
           searchConditions.forEach((searchCond) => {
@@ -152,15 +150,15 @@ export class QueryBuilder {
     return order;
   }
 
-  private createWhere(filterString: string): object[] {
-    const queryToAdd: object[] = [];
+  private createWhere(filterString: string): IWhereCondition[] {
+    const queryToAdd: IWhereCondition[] = [];
     const orArray = filterString.split(
       (this.options.LOOKUP_DELIMITER as string) +
         this.options.OR +
         this.options.LOOKUP_DELIMITER,
     );
     orArray.forEach((item) => {
-      let obj = {};
+      let obj: IWhereCondition = {};
       const condition = item.split(this.options.CONDITION_DELIMITER as string);
       const parsedCondition = condition.map((q) =>
         q.split(this.options.LOOKUP_DELIMITER as string),
@@ -273,7 +271,108 @@ export class QueryBuilder {
     return parseInt(value, 10);
   }
 
+  private createSearchCondition(
+    field: string,
+    searchValue: string,
+  ): IWhereCondition {
+    const condition: IWhereCondition = {};
+
+    if (isNaN(Number(searchValue))) {
+      if (/^\d{4}-\d{2}-\d{2}/.test(searchValue)) {
+        this.assignObjectKey(condition, field, new Date(searchValue));
+      } else {
+        this.assignObjectKey(condition, field, ILike(`%${searchValue}%`));
+      }
+    } else {
+      this.assignObjectKey(condition, field, Number(searchValue));
+    }
+
+    return condition;
+  }
+
   private getSearchableFields(metadata: EntityMetadata): string[] {
+    if (this.searchFields?.length) {
+      return this.searchFields;
+    }
+
     return metadata.columns.map((col) => col.propertyName);
   }
+}
+
+function hasNumericKeys(where: IWhereCondition): boolean {
+  return Object.keys(where).some((key) => /^\d+$/.test(key));
+}
+
+export function extractWhereConditions(where: IWhereClause): IWhereCondition[] {
+  if (Array.isArray(where)) {
+    return where;
+  }
+
+  if (!hasNumericKeys(where)) {
+    return [where];
+  }
+
+  const keys = Object.keys(where);
+  const numericKeys = keys
+    .filter((key) => /^\d+$/.test(key))
+    .sort((a, b) => Number(a) - Number(b));
+
+  const sharedConditions = keys
+    .filter((key) => !/^\d+$/.test(key))
+    .reduce<IWhereCondition>((acc, key) => {
+      acc[key] = where[key];
+      return acc;
+    }, {});
+
+  return numericKeys.map((key) => ({
+    ...(where[key] as IWhereCondition),
+    ...sharedConditions,
+  }));
+}
+
+export function normalizeWhereForTypeOrm(
+  where: IWhereClause | undefined,
+): IWhereClause | undefined {
+  if (where === undefined || where === null) {
+    return undefined;
+  }
+
+  const conditions = extractWhereConditions(where);
+
+  if (conditions.length === 0) {
+    return undefined;
+  }
+
+  if (conditions.length === 1) {
+    return conditions[0];
+  }
+
+  return conditions;
+}
+
+export function mergeWhereConditions(
+  where: IWhereClause | undefined,
+  extra: IWhereCondition,
+): IWhereClause {
+  if (where === undefined || where === null) {
+    return extra;
+  }
+
+  const conditions = extractWhereConditions(where);
+
+  if (conditions.length === 0) {
+    return extra;
+  }
+
+  if (conditions.length === 1) {
+    return {
+      ...conditions[0],
+      ...extra,
+    };
+  }
+
+  return conditions.map((condition) => ({
+    ...condition,
+    ...extra,
+  }));
 }

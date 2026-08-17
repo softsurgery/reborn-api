@@ -1,3 +1,10 @@
+export interface ILooseObject {
+  [key: string]: unknown;
+}
+
+export type IWhereCondition = ILooseObject;
+export type IWhereClause = IWhereCondition | IWhereCondition[];
+
 export interface IOptionsObject {
   LOOKUP_DELIMITER?: string;
   RELATION_DELIMITER?: string;
@@ -21,7 +28,7 @@ export interface IOptionsObject {
 export interface IQueryTypeOrm {
   select?: string[];
   relations?: string[];
-  where?: object;
+  where?: IWhereClause;
   order?: object;
   skip?: number;
   take?: number;
@@ -37,7 +44,4 @@ export interface IQueryObject {
   join?: string;
   cache?: string;
   search?: string;
-}
-export interface ILooseObject {
-  [key: string]: unknown;
 }

@@ -55,7 +55,7 @@ export class AbstractCrudService<T extends ObjectLiteral> {
     const queryOptions = queryBuilder.build(query);
     const count = await this.repository.getTotalCount({
       where: queryOptions.where,
-    });
+    } as FindOneOptions<T>);
 
     const entities = await this.repository.findAll(
       queryOptions as FindManyOptions<T>,
