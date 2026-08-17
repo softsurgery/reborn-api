@@ -55,6 +55,30 @@ export abstract class DatabaseAbstractRepository<T extends ObjectLiteral>
       .map((relation) => relation.propertyName);
   }
 
+  public getRelationSearchFields(relationPath: string): string[] {
+    const relation =
+      this.getMetadata().findRelationWithPropertyPath(relationPath);
+
+    if (!relation) {
+      return [];
+    }
+
+    return relation.inverseEntityMetadata.columns
+      .filter((column) => this.isSearchableColumnType(column.type))
+      .map((column) => `${relationPath}.${column.propertyName}`);
+  }
+
+  private isSearchableColumnType(type: unknown): boolean {
+    return (
+      type === String ||
+      type === 'varchar' ||
+      type === 'text' ||
+      type === 'longtext' ||
+      type === 'mediumtext' ||
+      type === 'tinytext'
+    );
+  }
+
   public async getTotalCount(options: FindOneOptions<T> = {}): Promise<number> {
     const normalizedWhere = normalizeWhereForTypeOrm(
       options.where as IWhereClause | undefined,
