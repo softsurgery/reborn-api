@@ -15,4 +15,26 @@ export class JobSaveRepository extends DatabaseAbstractRepository<JobSaveEntity>
   ) {
     super(jobSaveRepository, txHost);
   }
+
+  getSearchFields(): string[] {
+    return this.getMetadata()
+      .relations.filter((relation) => relation.isManyToOne)
+      .filter((relation) =>
+        relation.inverseEntityMetadata.columns.some(
+          (column) => column.propertyName === 'title',
+        ),
+      )
+      .flatMap((relation) =>
+        this.getRelationSearchFields(relation.propertyName),
+      );
+  }
+
+  async findByUserAndJob(
+    userId: string,
+    jobId: string,
+  ): Promise<JobSaveEntity | null> {
+    return this.findOne({
+      where: { userId, jobId },
+    });
+  }
 }

@@ -2,7 +2,10 @@ import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 import { FindManyOptions } from 'typeorm';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
-import { QueryBuilder } from 'src/shared/database/utils/database-query-builder';
+import {
+  QueryBuilder,
+  mergeWhereConditions,
+} from 'src/shared/database/utils/database-query-builder';
 import { PageDto } from 'src/shared/database/dtos/database.page.dto';
 import { PageMetaDto } from 'src/shared/database/dtos/database.page-meta.dto';
 import { JobSaveEntity } from '../entities/job-save.entity';
@@ -25,17 +28,21 @@ export class JobSaveService extends AbstractCrudService<JobSaveEntity> {
     if (!userId) {
       throw new UserNotFoundException();
     }
-    const queryBuilder = new QueryBuilder(this.jobSaveRepository.getMetadata());
+
+    const searchFields = this.jobSaveRepository.getSearchFields();
+    const queryBuilder = new QueryBuilder(
+      this.jobSaveRepository.getMetadata(),
+      {},
+      searchFields.length ? searchFields : undefined,
+    );
 
     const queryOptions = queryBuilder.build(query);
 
-    queryOptions.where = {
-      ...queryOptions.where,
-      userId,
-    };
+    queryOptions.where = mergeWhereConditions(queryOptions.where, { userId });
 
     const count = await this.jobSaveRepository.getTotalCount({
       where: queryOptions.where,
+      relations: queryOptions.relations,
     });
 
     const entities = await this.jobSaveRepository.findAll(
@@ -60,10 +67,8 @@ export class JobSaveService extends AbstractCrudService<JobSaveEntity> {
     if (!userId) {
       throw new UserNotFoundException();
     }
-    const jobSave = await this.jobSaveRepository.findOne({
-      where: { userId, jobId },
-    });
-    return jobSave;
+
+    return this.jobSaveRepository.findByUserAndJob(userId, jobId);
   }
 
   @Transactional()
@@ -84,7 +89,7 @@ export class JobSaveService extends AbstractCrudService<JobSaveEntity> {
   ): Promise<JobSaveEntity | null> {
     const jobSave = await this.jobSaveRepository.findOne({
       where: {
-        jobId: jobId,
+        jobId,
         userId: unsavedBy,
       },
     });
