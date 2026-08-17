@@ -2,7 +2,10 @@ import { Transactional } from '@nestjs-cls/transactional';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DeepPartial, FindManyOptions } from 'typeorm';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
-import { QueryBuilder } from 'src/shared/database/utils/database-query-builder';
+import {
+  QueryBuilder,
+  mergeWhereConditions,
+} from 'src/shared/database/utils/database-query-builder';
 import { PageDto } from 'src/shared/database/dtos/database.page.dto';
 import { PageMetaDto } from 'src/shared/database/dtos/database.page-meta.dto';
 import { MessageRepository } from '../repositories/message.repository';
@@ -22,10 +25,9 @@ export class MessageService extends AbstractCrudService<MessageEntity> {
     const queryBuilder = new QueryBuilder(this.messageRepository.getMetadata());
     const queryOptions = queryBuilder.build(query);
 
-    queryOptions.where = {
-      ...(queryOptions.where || {}),
+    queryOptions.where = mergeWhereConditions(queryOptions.where, {
       conversationId,
-    };
+    });
 
     const count = await this.messageRepository.getTotalCount({
       where: queryOptions.where,

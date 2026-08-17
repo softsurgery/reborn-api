@@ -3,7 +3,10 @@ import { NotificationRepository } from '../repositories/notification.repository'
 import { NotificationEntity } from '../entities/notification.entity';
 import { NotificationNotFoundException } from '../errors/notification.notfound.error';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
-import { QueryBuilder } from 'src/shared/database/utils/database-query-builder';
+import {
+  QueryBuilder,
+  mergeWhereConditions,
+} from 'src/shared/database/utils/database-query-builder';
 import { FindManyOptions, FindOneOptions } from 'typeorm';
 import { PageDto } from 'src/shared/database/dtos/database.page.dto';
 import { PageMetaDto } from 'src/shared/database/dtos/database.page-meta.dto';
@@ -119,10 +122,7 @@ export class NotificationService {
 
     const queryOptions = queryBuilder.build(query);
 
-    queryOptions.where = {
-      ...(queryOptions.where || {}),
-      userId,
-    };
+    queryOptions.where = mergeWhereConditions(queryOptions.where, { userId });
 
     const count = await this.notificationRepository.getTotalCount({
       where: queryOptions.where,

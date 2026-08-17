@@ -4,7 +4,10 @@ import { Injectable } from '@nestjs/common';
 import { ConfigurationNamespaceRepository } from '../repositories/configuration-namespace.repository';
 import { ParamVariant } from '../enums/param-variant.enum';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
-import { QueryBuilder } from 'src/shared/database/utils/database-query-builder';
+import {
+  QueryBuilder,
+  mergeWhereConditions,
+} from 'src/shared/database/utils/database-query-builder';
 import { FindManyOptions, FindOneOptions, IsNull } from 'typeorm';
 
 @Injectable()
@@ -47,10 +50,9 @@ export class ConfigurationNamespaceService extends AbstractCrudService<Configura
   ): Promise<ConfigurationNamespaceEntity[]> {
     const queryBuilder = new QueryBuilder(this.repository.getMetadata());
     const queryOptions = queryBuilder.build(query);
-    queryOptions.where = {
-      ...queryOptions.where,
+    queryOptions.where = mergeWhereConditions(queryOptions.where, {
       userId: IsNull(),
-    };
+    });
     return await this.repository.findAll(
       queryOptions as FindManyOptions<ConfigurationNamespaceEntity>,
     );
@@ -62,11 +64,10 @@ export class ConfigurationNamespaceService extends AbstractCrudService<Configura
   ): Promise<ConfigurationNamespaceEntity | null> {
     const queryBuilder = new QueryBuilder(this.repository.getMetadata());
     const queryOptions = queryBuilder.build(query);
-    queryOptions.where = {
-      ...queryOptions.where,
+    queryOptions.where = mergeWhereConditions(queryOptions.where, {
       userId: IsNull(),
       name,
-    };
+    });
     return await this.repository.findOne(
       queryOptions as FindOneOptions<ConfigurationNamespaceEntity>,
     );

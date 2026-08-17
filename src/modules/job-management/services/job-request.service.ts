@@ -2,7 +2,10 @@ import { Transactional } from '@nestjs-cls/transactional';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { FindManyOptions, In } from 'typeorm';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
-import { QueryBuilder } from 'src/shared/database/utils/database-query-builder';
+import {
+  QueryBuilder,
+  mergeWhereConditions,
+} from 'src/shared/database/utils/database-query-builder';
 import { PageDto } from 'src/shared/database/dtos/database.page.dto';
 import { PageMetaDto } from 'src/shared/database/dtos/database.page-meta.dto';
 import { JobRequestRepository } from '../repositories/job-request.repository';
@@ -122,10 +125,7 @@ export class JobRequestService extends AbstractCrudService<JobRequestEntity> {
 
     const queryOptions = queryBuilder.build(query);
 
-    queryOptions.where = {
-      ...queryOptions.where,
-      userId,
-    };
+    queryOptions.where = mergeWhereConditions(queryOptions.where, { userId });
 
     const count = await this.jobRequestRepository.getTotalCount({
       where: queryOptions.where,
@@ -176,10 +176,9 @@ export class JobRequestService extends AbstractCrudService<JobRequestEntity> {
 
     const queryOptions = queryBuilder.build(query);
 
-    queryOptions.where = {
-      ...queryOptions.where,
+    queryOptions.where = mergeWhereConditions(queryOptions.where, {
       jobId: In(userPostedJobs.map((j) => j.id)),
-    };
+    });
 
     const count = await this.jobRequestRepository.getTotalCount({
       where: queryOptions.where,

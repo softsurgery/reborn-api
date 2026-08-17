@@ -2,7 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { SessionEntity } from '../entities/session.entity';
 import { AbstractCrudService } from 'src/shared/database/services/abstract-crud.service';
 import { SessionRepository } from '../repositories/session.repository';
-import { QueryBuilder } from 'src/shared/database/utils/database-query-builder';
+import {
+  QueryBuilder,
+  mergeWhereConditions,
+} from 'src/shared/database/utils/database-query-builder';
+import { IWhereClause } from 'src/shared/database/interfaces/database-query-options.interface';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
 import { PageDto } from 'src/shared/database/dtos/database.page.dto';
 import {
@@ -24,26 +28,27 @@ export class SessionService extends AbstractCrudService<SessionEntity> {
     super(sessionRepository);
   }
 
-  getActiveCondition(extraConditions = {}, userId?: string) {
+  getActiveCondition(extraConditions: IWhereClause = {}, userId?: string) {
     const now = new Date();
+    const conditions = Array.isArray(extraConditions)
+      ? extraConditions
+      : [extraConditions];
 
-    const query = [
+    return conditions.flatMap((extra) => [
       {
-        ...extraConditions,
+        ...extra,
         ended: IsNull(),
         started: LessThanOrEqual(now),
         ...(userId && { userId }),
       },
       {
-        ...extraConditions,
+        ...extra,
         ended: IsNull(),
         planned_start: LessThanOrEqual(now),
         planned_end: MoreThanOrEqual(now),
         ...(userId && { userId }),
       },
-    ];
-
-    return query;
+    ]);
   }
 
   async findAllPaginatedActiveUserSessions(
@@ -78,7 +83,7 @@ export class SessionService extends AbstractCrudService<SessionEntity> {
   ): Promise<PageDto<SessionEntity>> {
     const queryBuilder = new QueryBuilder(this.sessionRepository.getMetadata());
     const queryOptions = queryBuilder.build(query);
-    queryOptions.where = { ...queryOptions.where, userId };
+    queryOptions.where = mergeWhereConditions(queryOptions.where, { userId });
     const count = await this.sessionRepository.getTotalCount({
       where: queryOptions.where,
     });
@@ -105,7 +110,7 @@ export class SessionService extends AbstractCrudService<SessionEntity> {
     const queryBuilder = new QueryBuilder(this.sessionRepository.getMetadata());
     const queryOptions = queryBuilder.build(query);
     return this.sessionRepository.findAll({
-      where: this.getActiveCondition(queryOptions, userId),
+      where: this.getActiveCondition(queryOptions.where, userId),
     });
   }
 
@@ -115,7 +120,7 @@ export class SessionService extends AbstractCrudService<SessionEntity> {
   ): Promise<SessionEntity[]> {
     const queryBuilder = new QueryBuilder(this.sessionRepository.getMetadata());
     const queryOptions = queryBuilder.build(query);
-    queryOptions.where = { ...queryOptions.where, userId };
+    queryOptions.where = mergeWhereConditions(queryOptions.where, { userId });
     return this.sessionRepository.findAll(
       queryOptions as FindManyOptions<SessionEntity>,
     );

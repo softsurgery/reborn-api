@@ -2,7 +2,10 @@ import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 import { DeepPartial, FindManyOptions, In } from 'typeorm';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
-import { QueryBuilder } from 'src/shared/database/utils/database-query-builder';
+import {
+  QueryBuilder,
+  mergeWhereConditions,
+} from 'src/shared/database/utils/database-query-builder';
 import { PageDto } from 'src/shared/database/dtos/database.page.dto';
 import { PageMetaDto } from 'src/shared/database/dtos/database.page-meta.dto';
 import { JobRepository } from '../repositories/job.repository';
@@ -40,10 +43,9 @@ export class JobService extends AbstractCrudService<JobEntity> {
   ): Promise<PageDto<JobEntity>> {
     const queryBuilder = new QueryBuilder(this.jobRepository.getMetadata());
     const queryOptions = queryBuilder.build(query);
-    queryOptions.where = {
-      ...queryOptions.where,
+    queryOptions.where = mergeWhereConditions(queryOptions.where, {
       postedById: userId,
-    };
+    });
 
     const count = await this.jobRepository.getTotalCount({
       where: queryOptions.where,
@@ -78,10 +80,9 @@ export class JobService extends AbstractCrudService<JobEntity> {
 
     const queryBuilder = new QueryBuilder(this.jobRepository.getMetadata());
     const queryOptions = queryBuilder.build(query);
-    queryOptions.where = {
-      ...queryOptions.where,
+    queryOptions.where = mergeWhereConditions(queryOptions.where, {
       postedById: In(followingsIds),
-    };
+    });
 
     const count = await this.jobRepository.getTotalCount({
       where: queryOptions.where,
