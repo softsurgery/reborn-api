@@ -5,6 +5,7 @@ import { ExperienceRepository } from '../repositories/experience.repository';
 import { UserService } from './user.service';
 import { UserNotFoundException } from 'src/shared/abstract-user-management/errors/user/user.notfound.error';
 import { ExperienceNotFoundException } from '../errors/experiences/experience.notfound.error';
+import { LocationTypes } from '../enums/experience.location-type.enum';
 
 @Injectable()
 export class ExperienceService extends AbstractCrudService<ExperienceEntity> {
@@ -45,6 +46,8 @@ export class ExperienceService extends AbstractCrudService<ExperienceEntity> {
     if (!experience) {
       throw new ExperienceNotFoundException();
     }
+    if (updateExperienceDto.locationType === LocationTypes.REMOTE)
+      updateExperienceDto.location = '';
     return this.experienceRepository.save({
       ...updateExperienceDto,
       id: experience.id,

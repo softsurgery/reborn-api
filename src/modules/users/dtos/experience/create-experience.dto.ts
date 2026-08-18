@@ -12,7 +12,7 @@ import { LocationTypes } from '../../enums/experience.location-type.enum';
 export class CreateExperienceDto {
   @ApiProperty({ type: String })
   @IsString()
-  @Length(2, 50)
+  @Length(2, 255)
   title?: string;
 
   @ApiProperty({ type: Date })
@@ -27,7 +27,7 @@ export class CreateExperienceDto {
 
   @ApiProperty({ type: String })
   @IsString()
-  @Length(2, 50)
+  @Length(2, 255)
   company?: string;
 
   @ApiProperty({ type: String })
