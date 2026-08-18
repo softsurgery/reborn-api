@@ -46,6 +46,22 @@ export class JobViewController {
     };
   }
 
+  @Get('/user-list')
+  @ApiPaginatedResponse(ResponseJobViewDto)
+  async findAllUserPaginated(
+    @Query() query: IQueryObject,
+    @Request() req: AdvancedRequest,
+  ): Promise<PageDto<ResponseJobViewDto>> {
+    const paginated = await this.jobViewService.findAllUserPaginated(
+      query,
+      req.user?.sub,
+    );
+    return {
+      ...paginated,
+      data: toDtoArray(ResponseJobViewDto, paginated.data),
+    };
+  }
+
   @Get('/all')
   async findAll(@Query() options: IQueryObject): Promise<ResponseJobViewDto[]> {
     return toDtoArray(
@@ -59,6 +75,17 @@ export class JobViewController {
     @Param('id') id: number,
   ): Promise<ResponseJobViewDto | null> {
     return toDto(ResponseJobViewDto, await this.jobViewService.findOneById(id));
+  }
+
+  @Get(':id/exists')
+  async isJobViewAlreadyExists(
+    @Param('id') id: string,
+    @Request() req: AdvancedRequest,
+  ): Promise<ResponseJobViewDto | null> {
+    return toDto(
+      ResponseJobViewDto,
+      await this.jobViewService.isJobViewAlreadyExists(id, req.user?.sub),
+    );
   }
 
   @Post()

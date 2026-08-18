@@ -15,4 +15,17 @@ export class JobViewRepository extends DatabaseAbstractRepository<JobViewEntity>
   ) {
     super(jobViewRepository, txHost);
   }
+
+  getSearchFields(): string[] {
+    return this.getMetadata()
+      .relations.filter((relation) => relation.isManyToOne)
+      .filter((relation) =>
+        relation.inverseEntityMetadata.columns.some(
+          (column) => column.propertyName === 'title',
+        ),
+      )
+      .flatMap((relation) =>
+        this.getRelationSearchFields(relation.propertyName),
+      );
+  }
 }
