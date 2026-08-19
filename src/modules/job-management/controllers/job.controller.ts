@@ -111,4 +111,15 @@ export class JobController {
     req.logInfo = { id, title: job?.title };
     return toDto(ResponseJobDto, job);
   }
+
+  @Post(':id/duplicate')
+  @LogEvent(EventType.JOB_DUPLICATE)
+  async duplicate(
+    @Param('id') id: string,
+    @Request() req: AdvancedRequest,
+  ): Promise<ResponseJobDto> {
+    const job = await this.jobService.duplicate(id, req?.user?.sub);
+    req.logInfo = { id: job.id, title: job.title };
+    return toDto(ResponseJobDto, job);
+  }
 }

@@ -23,6 +23,7 @@ import { FollowService } from 'src/shared/abstract-user-management/services/foll
 import { UserNotFoundException } from 'src/shared/abstract-user-management/errors/user/user.notfound.error';
 import { AbstractCrudService } from 'src/shared/database/services/abstract-crud.service';
 import { JobStorageFolderService } from './job-storage-folder.service';
+import { JobStatus } from '../enums/workflow/job-status.enum';
 
 @Injectable()
 export class JobService extends AbstractCrudService<JobEntity> {
@@ -227,5 +228,46 @@ export class JobService extends AbstractCrudService<JobEntity> {
     }
 
     return updatedJob;
+  }
+
+  @Transactional()
+  async duplicate(id: string, postedBy?: string): Promise<JobEntity> {
+    const existingJob = await this.jobRepository.findOne({
+      where: { id },
+      relations: ['tags', 'uploads'],
+    });
+
+    if (!existingJob) {
+      throw new JobNotFoundException();
+    }
+
+    const {
+      id: _id,
+      createdAt: _createdAt,
+      updatedAt: _updatedAt,
+      deletedAt: _deletedAt,
+      status: _status,
+      requests: _requests,
+      views: _views,
+      saves: _saves,
+      ...rest
+    } = existingJob;
+
+    const duplicateDto: DeepPartial<JobEntity> = {
+      ...rest,
+      title: existingJob.title,
+      status: JobStatus.DRAFT,
+      uploads:
+        existingJob.uploads?.map((u) => ({
+          uploadId: u.uploadId,
+          order: u.order,
+        })) || [],
+    };
+
+    return this.extendedSave(
+      duplicateDto,
+      existingJob.tags?.map((t) => t.id) || [],
+      postedBy || existingJob.postedById,
+    );
   }
 }
