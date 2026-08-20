@@ -16,7 +16,8 @@ export const jobMachine = setup({
       | { type: 'Accept Candidate' }
       | { type: 'Choose Candidate' }
       | { type: 'Refuse Candidate' }
-      | { type: 'Unpublish' },
+      | { type: 'Unpublish' }
+      | { type: 'Archive' },
   },
 }).createMachine({
   context: {},
@@ -38,6 +39,10 @@ export const jobMachine = setup({
           target: 'Posted',
           description:
             'Client finalizes job requirements and publishes the listing.',
+        },
+        Archive: {
+          target: 'Archived',
+          description: 'Archive the job listing.',
         },
       },
     },
@@ -202,7 +207,6 @@ export const jobMachine = setup({
       },
     },
     Failed: {
-      type: 'final',
       meta: {
         isUpdatable: false,
         title: 'Failed / Cancelled',
@@ -211,9 +215,14 @@ export const jobMachine = setup({
         actor: 'Admin',
         iconName: 'XCircle',
       },
+      on: {
+        Archive: {
+          target: 'Archived',
+          description: 'Archive the job listing.',
+        },
+      },
     },
     Successfull: {
-      type: 'final',
       meta: {
         isUpdatable: false,
         title: 'Successful (Completed)',
@@ -222,6 +231,23 @@ export const jobMachine = setup({
           'Job workflow is successfully finalized. Payout has been released and contract archived.',
         actor: 'System',
         iconName: 'CheckCircle2',
+      },
+      on: {
+        Archive: {
+          target: 'Archived',
+          description: 'Archive the job listing.',
+        },
+      },
+    },
+    Archived: {
+      type: 'final',
+      meta: {
+        isUpdatable: false,
+        title: 'Archived',
+        category: 'Terminal',
+        description: 'Job is permanently archived.',
+        actor: 'System',
+        iconName: 'Archive',
       },
     },
   },

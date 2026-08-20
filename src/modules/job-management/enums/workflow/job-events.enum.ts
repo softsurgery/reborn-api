@@ -12,4 +12,5 @@ export enum JobEvents {
   HOLD = 'Hold',
   STOP_HOLD = 'Stop Hold',
   MARK_FAILED = 'Mark Failed',
+  ARCHIVE = 'Archive',
 }

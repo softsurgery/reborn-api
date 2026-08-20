@@ -10,4 +10,5 @@ export enum JobStatus {
   REVIEWED_BY_WORKER_AND_CLIENT = 'Reviewed By Worker & Client',
   FAILED = 'Failed',
   SUCCESSFUL = 'Successfull',
+  ARCHIVED = 'Archived',
 }
