@@ -108,10 +108,11 @@ export class JobRequestController {
   @Get(':id')
   async findOneById(
     @Param('id') id: number,
+    @Query('join') join?: string,
   ): Promise<ResponseJobRequestDto | null> {
     return toDto(
       ResponseJobRequestDto,
-      await this.jobRequestService.findOneById(id),
+      await this.jobRequestService.findOneById(id, join),
     );
   }
 

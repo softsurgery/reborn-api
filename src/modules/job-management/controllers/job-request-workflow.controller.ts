@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -35,10 +36,11 @@ export class JobRequestWorkflowController {
   @Get(':id')
   async findOneById(
     @Param('id') id: number,
+    @Query('join') join?: string,
   ): Promise<ResponseJobRequestWorkflowDto | null> {
     return toDto(
       ResponseJobRequestWorkflowDto,
-      await this.jobRequestWorkflowService.findOneById(id),
+      await this.jobRequestWorkflowService.findOneById(id, join),
     );
   }
 

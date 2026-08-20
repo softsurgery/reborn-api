@@ -14,8 +14,8 @@ export class JobRequestWorkflowService extends AbstractWorkflowService<
     super(jobRequestMachine, JobRequestEvents);
   }
 
-  async findOneById(id: number) {
-    const jobRequest = await this.jobRequestService.findOneById(id);
+  async findOneById(id: number, join?: string) {
+    const jobRequest = await this.jobRequestService.findOneById(id, join);
     if (!jobRequest) {
       throw new BadRequestException(`Job request with ID ${id} not found`);
     }
