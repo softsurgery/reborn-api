@@ -9,6 +9,7 @@ import { ClientAuthController } from 'src/shared/auth/controllers/client-auth.co
 import { JobController } from 'src/modules/job-management/controllers/job.controller';
 import { JobManagementModule } from 'src/modules/job-management/job-management.module';
 import { JobRequestController } from 'src/modules/job-management/controllers/job-request.controller';
+import { JobRequestWorkflowController } from 'src/modules/job-management/controllers/job-request-workflow.controller';
 import { ConversationController } from 'src/shared/chat/controllers/conversation.controller';
 import { ChatModule } from 'src/shared/chat/chat.module';
 import { MessageController } from 'src/shared/chat/controllers/message.controller';
@@ -53,6 +54,7 @@ import { TasksModule } from 'src/shared/tasks/tasks.module';
     CurrentJobController,
     JobController,
     JobWorkflowController,
+    JobRequestWorkflowController,
     JobRequestController,
     JobSaveController,
     JobViewController,

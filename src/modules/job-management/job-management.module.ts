@@ -21,6 +21,7 @@ import { UserManagementModule } from '../users/user-management.module';
 import { StorageModule } from 'src/shared/storage/storage.module';
 import { JobWorkflowService } from './services/job-workflow.service';
 import { JobStorageFolderService } from './services/job-storage-folder.service';
+import { JobRequestWorkflowService } from './services/job-request-workflow.service';
 
 @Module({
   controllers: [],
@@ -38,6 +39,7 @@ import { JobStorageFolderService } from './services/job-storage-folder.service';
     JobViewService,
     JobWorkflowService,
     JobStorageFolderService,
+    JobRequestWorkflowService,
   ],
   exports: [
     JobRepository,
@@ -53,6 +55,7 @@ import { JobStorageFolderService } from './services/job-storage-folder.service';
     JobViewService,
     JobWorkflowService,
     JobStorageFolderService,
+    JobRequestWorkflowService,
   ],
   imports: [
     TypeOrmModule.forFeature([

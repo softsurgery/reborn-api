@@ -30,6 +30,8 @@ import { NotificationType } from 'src/app/enums/notification-type.enum';
 import { JobService } from '../services/job.service';
 import { identifyUser } from 'src/shared/abstract-user-management/utils/identify-user';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
+import { JobRequestWorkflowService } from '../services/job-request-workflow.service';
+import { JobRequestEvents } from '../enums/workflow/job-request-events.enum';
 
 @ApiTags('job-request')
 @ApiBearerAuth('access_token')
@@ -44,6 +46,7 @@ export class JobRequestController {
   constructor(
     private readonly jobRequestService: JobRequestService,
     private readonly jobService: JobService,
+    private readonly jobRequestWorkflowService: JobRequestWorkflowService,
   ) {}
 
   @Get('/list')
@@ -168,7 +171,10 @@ export class JobRequestController {
     @Param('id') id: number,
     @Request() req: AdvancedRequest,
   ): Promise<ResponseJobRequestDto | null> {
-    const request = await this.jobRequestService.approveJobRequest(id);
+    const { jobRequest: request } = await this.jobRequestWorkflowService.next(
+      id,
+      JobRequestEvents.Approve,
+    );
     const job = request?.jobId
       ? await this.jobService.findOneById(request?.jobId)
       : null;
@@ -188,7 +194,10 @@ export class JobRequestController {
     @Param('id') id: number,
     @Request() req: AdvancedRequest,
   ): Promise<ResponseJobRequestDto | null> {
-    const request = await this.jobRequestService.rejectJobRequest(id);
+    const { jobRequest: request } = await this.jobRequestWorkflowService.next(
+      id,
+      JobRequestEvents.Reject,
+    );
     const job = request?.jobId
       ? await this.jobService.findOneById(request?.jobId)
       : null;
@@ -208,10 +217,11 @@ export class JobRequestController {
     @Request() req: AdvancedRequest,
   ): Promise<ResponseJobRequestDto | null> {
     req.logInfo = { id };
-    return toDto(
-      ResponseJobRequestDto,
-      await this.jobRequestService.cancelJobRequest(id),
+    const { jobRequest: request } = await this.jobRequestWorkflowService.next(
+      id,
+      JobRequestEvents.Cancel,
     );
+    return toDto(ResponseJobRequestDto, request);
   }
 
   @Delete(':id')
