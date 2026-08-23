@@ -23,7 +23,7 @@ export class FinanceService {
   async findUserBalance(userId: string) {
     return this.userRepository.findOne({
       where: { id: userId },
-      select: ['points', 'balance'],
+      select: ['id', 'points', 'balance'],
     });
   }
 
