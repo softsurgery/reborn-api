@@ -161,8 +161,12 @@ export abstract class DatabaseAbstractRepository<T extends ObjectLiteral>
     return this.getRepository().remove(data);
   }
 
-  public async delete(id: string | number): Promise<void> {
-    await this.getRepository().delete(id);
+  public async delete(id: string | number): Promise<T | null> {
+    const deleted = await this.getRepository().delete(id);
+    if (!deleted) {
+      throw new NotFoundException();
+    }
+    return this.findOneById(id);
   }
 
   public async deleteMany(ids: (string | number)[]): Promise<void> {

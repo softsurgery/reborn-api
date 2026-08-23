@@ -36,7 +36,7 @@ export interface DatabaseInterfaceRepository<T extends ObjectLiteral> {
   updateMany(data: DeepPartial<T>[]): Promise<T[]>;
 
   remove(data: T): Promise<T>;
-  delete(id: string | number): Promise<void>;
+  delete(id: string | number): Promise<T | null>;
   deleteMany(ids: (string | number)[]): Promise<void>;
   deleteAll(): Promise<void>;
   restore(id: string | number): Promise<void>;

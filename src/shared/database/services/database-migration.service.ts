@@ -215,7 +215,7 @@ export class MigrationService {
     return false;
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: number): Promise<MigrationEntity | null> {
     return this.migrationRepository.delete(id);
   }
 
