@@ -7,31 +7,29 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { MessageEntity } from './message.entity';
-import { StorageEntity } from 'src/shared/storage/entities/storage.entity';
 
-@Entity('message_uploads')
-export class MessageUploadEntity extends EntityHelper {
+@Entity('message_links')
+export class MessageLinkEntity extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   messageId: number;
 
-  @Column()
-  uploadId: number;
-
-  @ManyToOne(() => MessageEntity, (message) => message.uploads, {
+  @ManyToOne(() => MessageEntity, (message) => message.links, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'messageId' })
   message: MessageEntity;
 
-  @ManyToOne(() => StorageEntity, {
-    onDelete: 'CASCADE',
-    eager: true,
-  })
-  @JoinColumn({ name: 'uploadId' })
-  upload?: StorageEntity;
+  @Column({ type: 'text' })
+  url: string;
+
+  @Column()
+  startOffset: number;
+
+  @Column()
+  endOffset: number;
 
   @Column({ nullable: false })
   order: number;

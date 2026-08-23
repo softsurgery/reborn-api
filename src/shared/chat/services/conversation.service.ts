@@ -15,6 +15,10 @@ import { MessageService } from './message.service';
 import { ConversationNotFoundException } from '../errors/conversation/conversation.notfound.error';
 import { ConversationUserEntity } from '../entities/conversation-user.entity';
 import { ConversationUserService } from './conversation-user.service';
+import { MessageVariant } from '../enums/message-variant.enum';
+import { CreateConversationReportDto } from '../dtos/conversation/create-conversation-report.dto';
+import { ConversationReportService } from './conversation-report.service';
+import { StaticMessageEnum } from 'src/app/enums/static-message.enum';
 
 @Injectable()
 export class ConversationService extends AbstractCrudService<ConversationEntity> {
@@ -23,6 +27,7 @@ export class ConversationService extends AbstractCrudService<ConversationEntity>
     private readonly conversationUserService: ConversationUserService,
     private readonly messageService: MessageService,
     private readonly userService: UserService,
+    private readonly conversationReportService: ConversationReportService,
   ) {
     super(conversationRepository);
   }
@@ -48,6 +53,7 @@ export class ConversationService extends AbstractCrudService<ConversationEntity>
       await this.conversationUserService.findByUserId(userId);
 
     const conversationIds = userConversations.map((uc) => uc.conversationId);
+
     query.filter = query.filter
       ? `${query.filter},id||$in||${conversationIds.join(',')}`
       : `id||$in||${conversationIds.join(',')}`;
@@ -62,12 +68,21 @@ export class ConversationService extends AbstractCrudService<ConversationEntity>
       where: queryOptions.where,
     });
 
-    const entities = await this.conversationRepository.findAll(
-      queryOptions as FindManyOptions<ConversationEntity>,
-    );
+    const entities: ConversationEntity[] = (
+      await this.conversationRepository.findAll(
+        queryOptions as FindManyOptions<ConversationEntity>,
+      )
+    ).sort((a, b) => {
+      const aDate = a.lastMessage?.createdAt ?? a.createdAt;
+      const bDate = b.lastMessage?.createdAt ?? b.createdAt;
+
+      const aTime = aDate ? new Date(aDate).getTime() : 0;
+      const bTime = bDate ? new Date(bDate).getTime() : 0;
+
+      return bTime - aTime;
+    });
 
     // Fetch last message for each conversation
-    await this.populateLastMessages(entities);
 
     const pageMetaDto = new PageMetaDto({
       pageOptionsDto: {
@@ -78,26 +93,6 @@ export class ConversationService extends AbstractCrudService<ConversationEntity>
     });
 
     return new PageDto(entities, pageMetaDto);
-  }
-
-  private async populateLastMessages(
-    conversations: ConversationEntity[],
-  ): Promise<void> {
-    if (conversations.length === 0) return;
-
-    await Promise.all(
-      conversations.map(async (conversation) => {
-        const lastMessage =
-          await this.messageService.findConversationLastMessage(
-            conversation.id,
-          );
-        if (lastMessage) {
-          conversation.messages = [lastMessage];
-        } else {
-          conversation.messages = [];
-        }
-      }),
-    );
   }
 
   @Transactional()
@@ -133,6 +128,13 @@ export class ConversationService extends AbstractCrudService<ConversationEntity>
     });
     conversation.participants =
       await this.conversationUserService.saveMany(participantEntries);
+
+    await this.messageService.save({
+      conversationId: conversation.id,
+      userId,
+      variant: MessageVariant.STATIC,
+      static: StaticMessageEnum.FIRST_MESSAGE,
+    });
 
     return conversation;
   }
@@ -203,5 +205,83 @@ export class ConversationService extends AbstractCrudService<ConversationEntity>
     });
 
     return this.findOneById(conversationId, join);
+  }
+
+  async leaveConversation(
+    conversationId: number,
+    userId?: string,
+  ): Promise<void> {
+    if (!userId) {
+      throw new BadRequestException('User id is required');
+    }
+
+    const isParticipant = await this.isUserInConversation(
+      conversationId,
+      userId,
+    );
+    if (!isParticipant) {
+      throw new BadRequestException(
+        'User is not a participant of the conversation',
+      );
+    }
+
+    await this.conversationUserService.removeByConversationAndUser(
+      conversationId,
+      userId,
+    );
+  }
+
+  async reportConversation(
+    conversationId: number,
+    userId: string | undefined,
+    createConversationReportDto: CreateConversationReportDto,
+  ) {
+    if (!userId) {
+      throw new BadRequestException('User id is required');
+    }
+
+    const join = ['participants'].join(',');
+    const conversation = await this.findOneById(conversationId, join);
+    if (!conversation) {
+      throw new ConversationNotFoundException();
+    }
+
+    const isParticipant = conversation.participants.some(
+      (participant) => participant.userId === userId,
+    );
+    if (!isParticipant) {
+      throw new BadRequestException(
+        'User is not a participant of the conversation',
+      );
+    }
+
+    const reportedUserId = conversation.participants.find(
+      (participant) => participant.userId !== userId,
+    )?.userId;
+
+    return this.conversationReportService.reportConversation(
+      conversationId,
+      userId,
+      reportedUserId,
+      createConversationReportDto,
+    );
+  }
+
+  async removeSharedConversations(
+    userId: string,
+    otherUserId: string,
+  ): Promise<void> {
+    await this.conversationUserService.removeSharedConversations(
+      userId,
+      otherUserId,
+    );
+  }
+
+  async getUnreadConversationCount(userId?: string): Promise<number> {
+    if (!userId) {
+      return 0;
+    }
+
+    return this.conversationUserService.countUnreadConversations(userId);
   }
 }

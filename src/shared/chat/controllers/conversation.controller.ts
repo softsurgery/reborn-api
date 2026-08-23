@@ -1,4 +1,4 @@
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
 import { PageDto } from 'src/shared/database/dtos/database.page.dto';
 import { ApiPaginatedResponse } from 'src/shared/database/decorators/api-paginated-resposne.decorator';
@@ -9,6 +9,7 @@ import {
   Controller,
   Get,
   Param,
+  ParseIntPipe,
   Query,
   UseInterceptors,
 } from '@nestjs/common';
@@ -26,6 +27,10 @@ import { ResponseConversationDto } from '../dtos/conversation/response-conversat
 export class ConversationController {
   constructor(private readonly conversationService: ConversationService) {}
 
+  @ApiOperation({
+    description: 'Find all paginated user conversations',
+    summary: 'Find all paginated user conversations',
+  })
   @Get('/list')
   @ApiPaginatedResponse(ResponseConversationDto)
   async findAllPaginated(
@@ -39,6 +44,10 @@ export class ConversationController {
     };
   }
 
+  @ApiOperation({
+    description: 'Find all paginated conversations of a specific user',
+    summary: 'Find all paginated conversations of a specific user',
+  })
   @Get('/list/:id')
   @ApiPaginatedResponse(ResponseConversationDto)
   async findAllUserPaginated(
@@ -53,9 +62,13 @@ export class ConversationController {
     };
   }
 
+  @ApiOperation({
+    description: 'Find a conversation by its id',
+    summary: 'Find a conversation by its id',
+  })
   @Get(':id')
   async findOneById(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
   ): Promise<ResponseConversationDto | null> {
     return toDto(
       ResponseConversationDto,

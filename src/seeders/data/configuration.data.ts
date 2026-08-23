@@ -20,3 +20,24 @@ export const coreConfiguration = [
     value: '123 Main Street, Anytown',
   },
 ];
+
+export const financialConfiguration = [
+  {
+    name: 'points.maxFree',
+    description: 'Max points a person can get in free mode',
+    variant: ParamVariant.NUMBER,
+    value: '100',
+  },
+  {
+    name: 'points.maxPaid',
+    description: 'Max points a person can get in paid mode',
+    variant: ParamVariant.NUMBER,
+    value: '1000',
+  },
+  {
+    name: 'balance.max',
+    description: 'Maximum allowed balance',
+    variant: ParamVariant.NUMBER,
+    value: '10000',
+  },
+];

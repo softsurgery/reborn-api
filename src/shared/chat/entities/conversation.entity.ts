@@ -43,6 +43,9 @@ export class ConversationEntity extends EntityHelper {
   })
   participantsIdentifiers: string;
 
+  @Column({ default: false })
+  locked: boolean;
+
   @BeforeInsert()
   @BeforeUpdate()
   syncParticipantsIdentifiers() {

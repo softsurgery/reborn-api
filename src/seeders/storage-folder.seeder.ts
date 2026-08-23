@@ -43,10 +43,7 @@ export class StorageFolderSeedCommand {
         job.uploads?.map((upload) => upload.uploadId).filter(Boolean) || [];
 
       if (uploadIds.length) {
-        await this.jobStorageFolderService.assignJobUploads(
-          uploadIds,
-          job.id,
-        );
+        await this.jobStorageFolderService.assignJobUploads(uploadIds, job.id);
         console.log(
           `✅ Organized ${uploadIds.length} file(s) for job "${job.title}"`,
         );

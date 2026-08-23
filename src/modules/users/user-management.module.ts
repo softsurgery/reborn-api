@@ -28,6 +28,9 @@ import { ExperienceEntity } from './entities/experience.entity';
 import { EducationEntity } from './entities/education.entity';
 import { UserStorageFolderService } from './services/user-storage-folder.service';
 import { ConfigurationsModule } from 'src/shared/configurations/configurations.module';
+import { UserBlockService } from './services/user-block.service';
+import { UserBlockRepository } from './repositories/user-block.repository';
+import { UserBlockEntity } from './entities/user-block.entity';
 
 @Module({
   controllers: [],
@@ -36,6 +39,7 @@ import { ConfigurationsModule } from 'src/shared/configurations/configurations.m
     UserService,
     UserUploadService,
     UserStorageFolderService,
+    UserBlockService,
 
     RoleService,
     PermissionService,
@@ -48,6 +52,7 @@ import { ConfigurationsModule } from 'src/shared/configurations/configurations.m
     //repositories
     UserRepository,
     UserUploadRepository,
+    UserBlockRepository,
 
     RoleRepository,
     PermissionRepository,
@@ -62,6 +67,7 @@ import { ConfigurationsModule } from 'src/shared/configurations/configurations.m
     UserService,
     UserUploadService,
     UserStorageFolderService,
+    UserBlockService,
 
     RoleService,
     PermissionService,
@@ -74,6 +80,7 @@ import { ConfigurationsModule } from 'src/shared/configurations/configurations.m
     //repositories
     UserRepository,
     UserUploadRepository,
+    UserBlockRepository,
 
     RoleRepository,
     PermissionRepository,
@@ -87,6 +94,7 @@ import { ConfigurationsModule } from 'src/shared/configurations/configurations.m
     TypeOrmModule.forFeature([
       UserEntity,
       UserUploadEntity,
+      UserBlockEntity,
       RoleEntity,
       PermissionEntity,
       RolePermissionEntity,

@@ -10,15 +10,17 @@ import {
 import { ConversationEntity } from './conversation.entity';
 import { MessageVariant } from '../enums/message-variant.enum';
 import { MessageUploadEntity } from './message-upload.entity';
+import { MessageLinkEntity } from './message-link.entity';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
+import { StaticMessageEnum } from 'src/app/enums/static-message.enum';
 
 @Entity('messages')
 export class MessageEntity extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'text', nullable: false })
-  content: string;
+  @Column({ type: 'text', nullable: true })
+  content?: string;
 
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'userId' })
@@ -37,12 +39,20 @@ export class MessageEntity extends EntityHelper {
   @Column({ type: 'enum', enum: MessageVariant, default: MessageVariant.TEXT })
   variant: MessageVariant;
 
-  @OneToMany(
-    () => MessageUploadEntity,
-    (messageUpload) => messageUpload.message,
-    {
-      nullable: true,
-    },
-  )
+  @Column({
+    type: 'enum',
+    enum: StaticMessageEnum,
+    default: null,
+  })
+  static?: StaticMessageEnum;
+
+  @OneToMany(() => MessageUploadEntity, (upload) => upload.message, {
+    nullable: true,
+  })
   uploads: MessageUploadEntity[];
+
+  @OneToMany(() => MessageLinkEntity, (link) => link.message, {
+    nullable: true,
+  })
+  links: MessageLinkEntity[];
 }

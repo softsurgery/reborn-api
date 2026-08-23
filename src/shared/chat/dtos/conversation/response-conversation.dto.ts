@@ -26,4 +26,8 @@ export class ResponseConversationDto extends ResponseDtoHelper {
 
   @Exclude()
   participantsIdentifiers: string;
+
+  @ApiProperty({ type: Boolean })
+  @Expose()
+  locked: boolean;
 }

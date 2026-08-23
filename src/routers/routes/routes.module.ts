@@ -36,6 +36,7 @@ import { TaskController } from 'src/shared/tasks/controllers/task.controller';
 import { TasksModule } from 'src/shared/tasks/tasks.module';
 import { FinanceController } from './controllers/finance.controller';
 import { FinanceModule } from 'src/modules/finance/finance.module';
+import { UserBlockController } from 'src/modules/users/controllers/user-block.controller';
 
 @Module({
   controllers: [
@@ -49,6 +50,7 @@ import { FinanceModule } from 'src/modules/finance/finance.module';
     StorageFolderController,
     //user
     FollowController,
+    UserBlockController,
     //system reports
     FeedbackController,
     BugController,

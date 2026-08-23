@@ -4,4 +4,5 @@ export enum MessageVariant {
   EMOJI = 'emoji',
   IMAGE = 'image',
   VIDEO = 'video',
+  FILE = 'file',
 }

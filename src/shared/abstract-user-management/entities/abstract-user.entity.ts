@@ -80,4 +80,7 @@ export class AbstractUserEntity extends EntityHelper {
 
   @OneToMany(() => TaskEntity, (task) => task.user)
   tasks: TaskEntity[];
+
+  @Column({ type: 'timestamp', nullable: true })
+  lastSeen?: Date;
 }

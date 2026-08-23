@@ -1,4 +1,4 @@
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
 import { PageDto } from 'src/shared/database/dtos/database.page.dto';
 import { ApiPaginatedResponse } from 'src/shared/database/decorators/api-paginated-resposne.decorator';
@@ -9,6 +9,7 @@ import {
   Controller,
   Get,
   Param,
+  ParseIntPipe,
   Query,
   UseInterceptors,
 } from '@nestjs/common';
@@ -26,10 +27,14 @@ import { ResponseMessageDto } from '../dtos/message/response-message.dto';
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
+  @ApiOperation({
+    description: 'Find all paginated messages of a specific conversation',
+    summary: 'Find all paginated messages of a specific conversation',
+  })
   @Get(':id/list')
   @ApiPaginatedResponse(ResponseMessageDto)
   async findPaginatedConversationMessages(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Query() query: IQueryObject,
   ): Promise<PageDto<ResponseMessageDto>> {
     const paginated =

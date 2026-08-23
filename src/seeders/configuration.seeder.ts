@@ -3,7 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { ConfigurationParamRepository } from 'src/shared/configurations/repositories/configuration-param.repository';
 import { ConfigurationNamespaceRepository } from 'src/shared/configurations/repositories/configuration-namespace.repository';
 import { ConfigurationNamespaces } from 'src/app/enums/configuration-namespaces.enum';
-import { coreConfiguration } from './data/configuration.data';
+import {
+  coreConfiguration,
+  financialConfiguration,
+} from './data/configuration.data';
 
 @Injectable()
 export class ConfigurationSeedCommand {
@@ -23,6 +26,7 @@ export class ConfigurationSeedCommand {
 
     const configurationByNamespace = {
       [ConfigurationNamespaces.CORE]: coreConfiguration,
+      [ConfigurationNamespaces.FINANCIAL]: financialConfiguration,
     } as const;
 
     for (const namespace of Object.keys(
