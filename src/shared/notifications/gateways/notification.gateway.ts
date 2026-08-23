@@ -13,8 +13,8 @@ import { NotificationEntity } from '../entities/notification.entity';
 import { NotificationType } from '../../../app/enums/notification-type.enum';
 
 @WebSocketGateway({
-  cors: { origin: '*' },
   namespace: '/notifications',
+  cors: { origin: '*' },
 })
 @Injectable()
 export class NotificationGateway

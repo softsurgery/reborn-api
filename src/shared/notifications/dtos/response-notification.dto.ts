@@ -29,4 +29,8 @@ export class ResponseNotificationDto extends ResponseDtoHelper {
   @ApiProperty({ type: Object })
   @Expose()
   payload?: unknown;
+
+  @ApiProperty({ type: Date, nullable: true })
+  @Expose()
+  readAt?: Date;
 }

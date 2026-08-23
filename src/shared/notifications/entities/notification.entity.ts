@@ -19,6 +19,7 @@ export class NotificationEntity extends EntityHelper {
 
   @ManyToOne(() => AbstractUserEntity, (user) => user.notifications, {
     nullable: true,
+    eager: true,
   })
   @JoinColumn({ name: 'userId' })
   user: AbstractUserEntity;
@@ -28,4 +29,11 @@ export class NotificationEntity extends EntityHelper {
 
   @Column({ type: 'json', nullable: true })
   payload?: object;
+
+  @Column({
+    type: 'datetime',
+    precision: 3,
+    nullable: true,
+  })
+  readAt?: Date;
 }

@@ -1,5 +1,6 @@
 import { Request as ExpressRequest } from 'express';
 import { Socket } from 'socket.io';
+import { BatchNotificationInfo } from './shared/notifications/decorators/notify.decorator';
 
 export interface AdvancedRequest extends ExpressRequest {
   user?: {
@@ -8,6 +9,7 @@ export interface AdvancedRequest extends ExpressRequest {
   };
   logInfo?: Record<string, unknown>;
   notificationInfo?: Record<string, unknown>;
+  batchNotificationInfo?: BatchNotificationInfo[];
 }
 
 export interface AdvancedSocket extends Socket {

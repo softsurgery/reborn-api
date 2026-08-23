@@ -17,7 +17,7 @@ import {
 import { AdvancedRequest } from 'src/types';
 import { NotificationService } from '../services/notification.service';
 import { ResponseNotificationDto } from '../dtos/response-notification.dto';
-import { NotificationGateway } from './notification.gateway';
+import { NotificationGateway } from '../gateways/notification.gateway';
 import { NotificationType } from '../../../app/enums/notification-type.enum';
 
 @ApiTags('notification')
@@ -33,6 +33,14 @@ export class NotificationController {
     private readonly notificationService: NotificationService,
     private readonly notificationGateway: NotificationGateway,
   ) {}
+
+  @Get('/unread-count')
+  async getUnreadCount(
+    @Request() req: AdvancedRequest,
+  ): Promise<{ count: number }> {
+    const count = await this.notificationService.getUnreadCount(req?.user?.sub);
+    return { count };
+  }
 
   @Get('/list')
   @ApiPaginatedResponse(ResponseNotificationDto)
@@ -74,6 +82,11 @@ export class NotificationController {
       ResponseNotificationDto,
       await this.notificationService.findOneById(id),
     );
+  }
+
+  @Post('/mark-read')
+  async markAllAsRead(@Request() req: AdvancedRequest): Promise<void> {
+    await this.notificationService.markAllAsRead(req?.user?.sub);
   }
 
   @Post('test/:id')

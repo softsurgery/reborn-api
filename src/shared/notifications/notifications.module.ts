@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotificationEntity } from './entities/notification.entity';
 import { NotificationService } from './services/notification.service';
 import { NotificationInterceptor } from './decorators/notification.interceptor';
-import { NotificationGateway } from './controllers/notification.gateway';
+import { NotificationGateway } from './gateways/notification.gateway';
 
 @Module({
   controllers: [],

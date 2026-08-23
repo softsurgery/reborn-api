@@ -1,14 +1,17 @@
-import {
-  Injectable,
-  NestInterceptor,
-  ExecutionContext,
-  CallHandler,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
 import { tap } from 'rxjs';
 import { AdvancedRequest } from 'src/types';
+import { AccessTokenPayload } from 'src/shared/auth/interfaces/access-token-payload.interface';
+import { getTokenPayload } from 'src/shared/auth/utils/token-payload';
+import { NotificationGateway } from '../gateways/notification.gateway';
 import { NotificationType } from '../../../app/enums/notification-type.enum';
-import { NotificationGateway } from '../controllers/notification.gateway';
+import {
+  NOTIFY_METADATA_KEY,
+  BATCH_NOTIFY_METADATA_KEY,
+} from './notify.decorator';
+import type { BatchNotificationInfo } from './notify.decorator';
 
 @Injectable()
 export class NotificationInterceptor implements NestInterceptor {
@@ -20,24 +23,74 @@ export class NotificationInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler) {
     return next.handle().pipe(
       tap(() => {
-        const type = this.reflector.get<NotificationType>(
-          'type',
-          context.getHandler(),
-        );
-        if (!type) return;
-
         const request: AdvancedRequest = context.switchToHttp().getRequest();
-        const { notificationInfo } = request;
+        const payload: AccessTokenPayload = getTokenPayload(request);
 
-        const userId = notificationInfo?.userId as string;
-        if (!userId) return;
+        // Handle stacked @Notify decorators
+        this.handleNotifyDecorators(context, request, payload);
 
-        void this.notificationGateway.notifyUser(
-          userId,
-          type,
-          notificationInfo || {},
-        );
+        // Handle @BatchNotify decorators
+        this.handleBatchNotifyDecorators(context, request);
       }),
     );
+  }
+
+  private handleNotifyDecorators(
+    context: ExecutionContext,
+    request: AdvancedRequest,
+    payload: AccessTokenPayload,
+  ): void {
+    const types = Reflect.getMetadata(
+      NOTIFY_METADATA_KEY,
+      context.getHandler(),
+    ) as NotificationType[] | undefined;
+
+    if (!types || types.length === 0) return;
+
+    const { notificationInfo } = request;
+
+    for (const type of types) {
+      if (type === NotificationType.NEW_SIGNIN) {
+        void this.notificationGateway.notifyUser(
+          notificationInfo?.userId as string,
+          type,
+          notificationInfo ?? {},
+        );
+        continue;
+      }
+
+      void this.notificationGateway.notifyUser(
+        payload?.sub,
+        type,
+        notificationInfo ?? {},
+      );
+    }
+  }
+
+  private handleBatchNotifyDecorators(
+    context: ExecutionContext,
+    request: AdvancedRequest,
+  ): void {
+    const batchTypes = Reflect.getMetadata(
+      BATCH_NOTIFY_METADATA_KEY,
+      context.getHandler(),
+    ) as NotificationType[] | undefined;
+
+    if (!batchTypes || batchTypes.length === 0) return;
+
+    const batchNotificationInfo =
+      request.batchNotificationInfo as BatchNotificationInfo[];
+    if (!batchNotificationInfo) return;
+
+    for (const batchInfo of batchNotificationInfo) {
+      if (!batchTypes.includes(batchInfo.type)) continue;
+      for (const entry of batchInfo.entries) {
+        void this.notificationGateway.notifyUser(
+          entry.userId,
+          batchInfo.type,
+          entry.payload,
+        );
+      }
+    }
   }
 }
