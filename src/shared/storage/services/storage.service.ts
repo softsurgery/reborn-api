@@ -123,7 +123,11 @@ export abstract class StorageService {
   }
 
   // Load file from storage
-  abstract loadResource(slug: string): Promise<ReadStream>;
+  abstract loadResource(
+    slug: string,
+    start?: number,
+    end?: number,
+  ): Promise<ReadStream>;
 
   // Duplicate
   abstract duplicate(id: number): Promise<StorageEntity>;
@@ -138,7 +142,7 @@ export abstract class StorageService {
     return this.storageRepository.getTotalCount();
   }
 
-  @Cron(CronExpression.EVERY_QUARTER)
+  @Cron(CronExpression.EVERY_2_HOURS)
   async cleanTemporary(): Promise<void> {
     this.logger.log('Cleaning temporary uploads');
     const uploads = await this.findTemporary();

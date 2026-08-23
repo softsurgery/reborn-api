@@ -88,13 +88,20 @@ export class LocalStorageService extends StorageService {
     return uploads;
   }
 
-  async loadResource(slug: string): Promise<ReadStream> {
+  async loadResource(
+    slug: string,
+    start?: number,
+    end?: number,
+  ): Promise<ReadStream> {
     const upload = await this.findBySlug(slug);
     const filePath = join(this.rootLocation, upload.relativePath);
 
     try {
       await fs.access(filePath, constants.F_OK);
-      return createReadStream(filePath);
+      const options: { start?: number; end?: number } = {};
+      if (start !== undefined) options.start = start;
+      if (end !== undefined) options.end = end;
+      return createReadStream(filePath, options);
     } catch (error) {
       throw new FileNotFoundException(error);
     }

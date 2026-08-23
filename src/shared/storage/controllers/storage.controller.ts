@@ -1,17 +1,19 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   Param,
   Post,
   Query,
+  Req,
   Res,
   UnauthorizedException,
   UploadedFile,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
@@ -34,6 +36,7 @@ export class StorageController {
   @Get('/resource/:slug')
   async viewResourceBySlug(
     @Param('slug') slug: string,
+    @Req() req: Request,
     @Res() res: Response,
   ): Promise<void> {
     const upload = await this.storageService.findBySlug(slug);
@@ -42,14 +45,8 @@ export class StorageController {
         'You do not have permission to access this file',
       );
     }
-    const fileStream = await this.storageService.loadResource(slug);
-    res.setHeader('Content-Type', upload.mimetype);
-    res.setHeader('Content-Length', upload.size);
-    res.setHeader(
-      'Content-Disposition',
-      `inline; filename="${upload.filename}"`,
-    );
-    fileStream.pipe(res);
+
+    await this.streamResource(req, res, upload, false);
   }
 
   @Get('/list')
@@ -144,8 +141,12 @@ export class StorageController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
+    @Body('filename') filename?: string,
     @Query('folderId') folderId?: string,
   ): Promise<StorageEntity> {
+    if (filename?.trim()) {
+      file.originalname = filename.trim();
+    }
     return this.storageService.store(
       file,
       false,
@@ -171,8 +172,12 @@ export class StorageController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadTemporaryFile(
     @UploadedFile() file: Express.Multer.File,
+    @Body('filename') filename?: string,
     @Query('folderId') folderId?: string,
   ): Promise<StorageEntity> {
+    if (filename?.trim()) {
+      file.originalname = filename.trim();
+    }
     return this.storageService.store(
       file,
       true,
@@ -217,37 +222,23 @@ export class StorageController {
   @Get('/view/slug/:slug')
   async viewFileBySlug(
     @Param('slug') slug: string,
+    @Req() req: Request,
     @Res() res: Response,
   ): Promise<void> {
     const upload = await this.storageService.findBySlug(slug);
-    const fileStream = await this.storageService.loadResource(slug);
 
-    res.setHeader('Content-Type', upload.mimetype);
-    res.setHeader('Content-Length', upload.size);
-    res.setHeader(
-      'Content-Disposition',
-      `inline; filename="${upload.filename}"`,
-    );
-
-    fileStream.pipe(res);
+    await this.streamResource(req, res, upload, true);
   }
 
   @Get('/view/id/:id')
   async viewFileById(
     @Param('id') id: number,
+    @Req() req: Request,
     @Res() res: Response,
   ): Promise<void> {
     const upload = await this.storageService.findOneById(id);
-    const fileStream = await this.storageService.loadResource(upload.slug);
 
-    res.setHeader('Content-Type', upload.mimetype);
-    res.setHeader('Content-Length', upload.size);
-    res.setHeader(
-      'Content-Disposition',
-      `inline; filename="${upload.filename}"`,
-    );
-
-    fileStream.pipe(res);
+    await this.streamResource(req, res, upload, true);
   }
 
   @Delete(':id')
@@ -258,5 +249,62 @@ export class StorageController {
   @Delete('slug/:slug')
   async deleteBySlug(@Param('slug') slug: string): Promise<StorageEntity> {
     return this.storageService.deleteBySlug(slug);
+  }
+
+  private async streamResource(
+    req: Request,
+    res: Response,
+    upload: StorageEntity,
+    useCache: boolean = false,
+  ) {
+    const range = req.headers.range;
+    if (range) {
+      const parts = range.replace(/bytes=/, '').split('-');
+      const start = parseInt(parts[0], 10);
+      const end = parts[1] ? parseInt(parts[1], 10) : upload.size - 1;
+
+      if (start >= upload.size) {
+        res
+          .status(416)
+          .send(
+            'Requested range not satisfiable\n' + start + ' >= ' + upload.size,
+          );
+        return;
+      }
+
+      const chunksize = end - start + 1;
+      const fileStream = await this.storageService.loadResource(
+        upload.slug,
+        start,
+        end,
+      );
+
+      res.status(206);
+      res.setHeader('Content-Range', `bytes ${start}-${end}/${upload.size}`);
+      res.setHeader('Accept-Ranges', 'bytes');
+      res.setHeader('Content-Length', chunksize);
+      res.setHeader('Content-Type', upload.mimetype);
+      if (useCache) {
+        res.setHeader('Cache-Control', 'public, max-age=3600, immutable');
+      }
+      res.setHeader(
+        'Content-Disposition',
+        `inline; filename="${upload.filename}"`,
+      );
+      fileStream.pipe(res);
+    } else {
+      const fileStream = await this.storageService.loadResource(upload.slug);
+      res.setHeader('Content-Type', upload.mimetype);
+      res.setHeader('Content-Length', upload.size);
+      res.setHeader('Accept-Ranges', 'bytes');
+      if (useCache) {
+        res.setHeader('Cache-Control', 'public, max-age=3600, immutable');
+      }
+      res.setHeader(
+        'Content-Disposition',
+        `inline; filename="${upload.filename}"`,
+      );
+      fileStream.pipe(res);
+    }
   }
 }

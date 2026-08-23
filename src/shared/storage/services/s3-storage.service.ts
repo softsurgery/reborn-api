@@ -55,10 +55,36 @@ export class MinioStorageService extends StorageService {
     return Readable.from(buffer);
   }
 
-  async loadResource(slug: string): Promise<ReadStream> {
+  async loadResource(
+    slug: string,
+    start?: number,
+    end?: number,
+  ): Promise<ReadStream> {
     const upload = await this.findBySlug(slug);
 
     try {
+      if (start !== undefined || end !== undefined) {
+        const offset = start || 0;
+        let length = 0;
+        if (start !== undefined && end !== undefined) {
+          length = end - start + 1;
+        } else if (start !== undefined) {
+          length = upload.size - start;
+        } else if (end !== undefined) {
+          length = end + 1;
+        }
+
+        if (length > 0) {
+          const stream = await this.minio.getPartialObject(
+            this.bucket,
+            upload.relativePath,
+            offset,
+            length,
+          );
+          return stream as unknown as ReadStream;
+        }
+      }
+
       const stream = await this.minio.getObject(
         this.bucket,
         upload.relativePath,
