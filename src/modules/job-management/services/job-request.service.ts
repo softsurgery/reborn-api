@@ -42,10 +42,13 @@ export class JobRequestService extends AbstractCrudService<JobRequestEntity> {
     if (job?.postedById == userId) {
       throw new JobRequestCannotRequestOwnJobException();
     }
-    return await this.jobRequestRepository.save({
+    const saved = await this.jobRequestRepository.save({
       ...createJobRequestDto,
       userId,
     });
+    return (await this.jobRequestRepository.findOne({
+      where: { id: saved.id },
+    })) as JobRequestEntity;
   }
 
   @Transactional()

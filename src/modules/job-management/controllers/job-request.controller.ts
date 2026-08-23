@@ -29,7 +29,6 @@ import { Notify } from 'src/shared/notifications/decorators/notify.decorator';
 import { NotificationType } from 'src/app/enums/notification-type.enum';
 import { JobService } from '../services/job.service';
 import { identifyUser } from 'src/shared/abstract-user-management/utils/identify-user';
-import { UserEntity } from 'src/modules/users/entities/user.entity';
 import { JobRequestWorkflowService } from '../services/job-request-workflow.service';
 import { JobRequestEvents } from '../enums/workflow/job-request-events.enum';
 
@@ -145,8 +144,10 @@ export class JobRequestController {
     req.notificationInfo = {
       id: request?.jobId,
       title: job?.title,
-      fullname: identifyUser(job?.postedBy as UserEntity),
+      fullname: identifyUser(request?.user),
       userId: job?.postedById,
+      targetUserId: job?.postedById,
+      requesterId: request?.userId,
     };
     return toDto(ResponseJobRequestDto, request);
   }
@@ -184,6 +185,8 @@ export class JobRequestController {
       id: request?.jobId,
       title: job?.title,
       userId: request?.userId,
+      targetUserId: request?.userId,
+      requesterId: request?.userId,
     };
     return toDto(ResponseJobRequestDto, request);
   }
@@ -207,6 +210,8 @@ export class JobRequestController {
       id: request?.jobId,
       title: job?.title,
       userId: request?.userId,
+      targetUserId: request?.userId,
+      requesterId: request?.userId,
     };
     return toDto(ResponseJobRequestDto, request);
   }
