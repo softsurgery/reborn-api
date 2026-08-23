@@ -13,10 +13,13 @@ import { FollowService } from '../services/follow.service';
 import { AdvancedRequest } from 'src/types';
 import { EventType } from 'src/app/enums/event-type.enum';
 import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
+import { Notify } from 'src/shared/notifications/decorators/notify.decorator';
+import { NotificationType } from 'src/app/enums/notification-type.enum';
+import { NotificationInterceptor } from 'src/shared/notifications/decorators/notification.interceptor';
 
 @ApiTags('follow')
 @ApiBearerAuth('access_token')
-@UseInterceptors(ClassSerializerInterceptor)
+@UseInterceptors(ClassSerializerInterceptor, NotificationInterceptor)
 @Controller({
   version: '1',
   path: '/follow',
@@ -26,9 +29,19 @@ export class FollowController {
 
   @Post(':id/follow')
   @LogEvent(EventType.USER_FOLLOW)
-  follow(@Param('id') targetId: string, @Request() req: AdvancedRequest) {
+  @Notify(NotificationType.NEW_FOLLOWER)
+  async follow(@Param('id') targetId: string, @Request() req: AdvancedRequest) {
     req.logInfo = { id: req.user?.sub, targetId };
-    return this.followService.follow(targetId, req.user?.sub);
+
+    const result = await this.followService.follow(targetId, req.user?.sub);
+
+    req.notificationInfo = {
+      targetUserId: targetId,
+      userId: req.user?.sub,
+      pictureId: result.follower?.pictureId,
+    };
+
+    return result;
   }
 
   @Delete(':id/unfollow')
