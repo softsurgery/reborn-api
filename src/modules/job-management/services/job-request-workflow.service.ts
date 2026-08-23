@@ -41,6 +41,12 @@ export class JobRequestWorkflowService extends AbstractWorkflowService<
       await this.jobRequestService.rejectJobRequest(id);
     } else if (event === JobRequestEvents.Cancel) {
       await this.jobRequestService.cancelJobRequest(id);
+      return {
+        status: JobRequestStatus.Rejected,
+        isUpdatable: this.isUpdatable(JobRequestStatus.Rejected),
+        nextSteps: this.getNextSteps(JobRequestStatus.Rejected),
+        jobRequest: { ...jobRequest, status: JobRequestStatus.Rejected },
+      };
     }
 
     return this.findOneById(id);
