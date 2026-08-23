@@ -22,6 +22,7 @@ import { StorageModule } from 'src/shared/storage/storage.module';
 import { JobWorkflowService } from './services/job-workflow.service';
 import { JobStorageFolderService } from './services/job-storage-folder.service';
 import { JobRequestWorkflowService } from './services/job-request-workflow.service';
+import { FinanceModule } from '../finance/finance.module';
 
 @Module({
   controllers: [],
@@ -69,6 +70,7 @@ import { JobRequestWorkflowService } from './services/job-request-workflow.servi
     StorageModule,
     ChatModule,
     ReferenceTypesModule,
+    FinanceModule,
   ],
 })
 export class JobManagementModule {}

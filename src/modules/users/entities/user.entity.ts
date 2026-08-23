@@ -28,6 +28,12 @@ export class UserEntity extends AbstractUserEntity {
   @Column({ default: false })
   isPrivate: boolean;
 
+  @Column({ default: 50 })
+  points: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  balance: number;
+
   @ManyToOne(() => RefParamEntity, {
     onDelete: 'CASCADE',
     eager: true,

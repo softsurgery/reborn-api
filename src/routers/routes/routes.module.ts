@@ -34,6 +34,8 @@ import { ConfigurationsModule } from 'src/shared/configurations/configurations.m
 import { JobWorkflowController } from 'src/modules/job-management/controllers/job-workflow.controller';
 import { TaskController } from 'src/shared/tasks/controllers/task.controller';
 import { TasksModule } from 'src/shared/tasks/tasks.module';
+import { FinanceController } from './controllers/finance.controller';
+import { FinanceModule } from 'src/modules/finance/finance.module';
 
 @Module({
   controllers: [
@@ -68,6 +70,8 @@ import { TasksModule } from 'src/shared/tasks/tasks.module';
     RefParamController,
     ConfigurationController,
     TaskController,
+    //finance
+    FinanceController,
   ],
   providers: [],
   exports: [],
@@ -83,6 +87,7 @@ import { TasksModule } from 'src/shared/tasks/tasks.module';
     ReferenceTypesModule,
     ConfigurationsModule,
     TasksModule,
+    FinanceModule,
   ],
 })
 export class RoutesModule {}

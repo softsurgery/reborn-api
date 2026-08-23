@@ -19,6 +19,7 @@ import { JobRequestCannotRequestOwnJobException } from '../errors/job-request/jo
 import { ConversationService } from 'src/shared/chat/services/conversation.service';
 import { UserNotFoundException } from 'src/shared/abstract-user-management/errors/user/user.notfound.error';
 import { AbstractCrudService } from 'src/shared/database/services/abstract-crud.service';
+import { FinanceService } from 'src/modules/finance/services/finance.service';
 
 @Injectable()
 export class JobRequestService extends AbstractCrudService<JobRequestEntity> {
@@ -26,6 +27,7 @@ export class JobRequestService extends AbstractCrudService<JobRequestEntity> {
     private readonly jobRequestRepository: JobRequestRepository,
     private readonly jobRepository: JobRepository,
     private readonly conversationService: ConversationService,
+    private readonly financeService: FinanceService,
   ) {
     super(jobRequestRepository);
   }
@@ -42,6 +44,9 @@ export class JobRequestService extends AbstractCrudService<JobRequestEntity> {
     if (job?.postedById == userId) {
       throw new JobRequestCannotRequestOwnJobException();
     }
+
+    await this.financeService.deductPoints(userId, 10, 'Applied for Job');
+
     const saved = await this.jobRequestRepository.save({
       ...createJobRequestDto,
       userId,
