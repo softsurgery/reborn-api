@@ -89,6 +89,11 @@ export class UserController {
     return toDto(ResponseUserDto, user);
   }
 
+  @Get('/skills/:id')
+  async findUserSkills(@Param('id') id: string): Promise<number[] | null> {
+    return this.userService.getSkills(id);
+  }
+
   @Get(':id')
   async findOneById(
     @Param('id') id: string,

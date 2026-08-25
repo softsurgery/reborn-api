@@ -4,7 +4,15 @@ import { JobEntity } from 'src/modules/job-management/entities/job.entity';
 import { AbstractUserEntity } from 'src/shared/abstract-user-management/entities/abstract-user.entity';
 import { FollowEntity } from 'src/modules/users/entities/follow.entity';
 import { Gender } from 'src/shared/abstract-user-management/enums/gender.enum';
-import { ChildEntity, Column, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import {
+  ChildEntity,
+  Column,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { UserUploadEntity } from './user-upload.entity';
 import { RefParamEntity } from 'src/shared/reference-types/entities/ref-param.entity';
 import { ExperienceEntity } from './experience.entity';
@@ -90,4 +98,14 @@ export class UserEntity extends AbstractUserEntity {
 
   @OneToMany(() => JobViewEntity, (view) => view.user)
   views: JobViewEntity[];
+
+  @ManyToMany(() => RefParamEntity, {
+    cascade: false,
+  })
+  @JoinTable({
+    name: 'user-skills',
+    joinColumn: { name: 'userId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'skillId', referencedColumnName: 'id' },
+  })
+  skills: RefParamEntity[];
 }

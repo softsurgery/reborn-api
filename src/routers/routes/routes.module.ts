@@ -37,12 +37,14 @@ import { TasksModule } from 'src/shared/tasks/tasks.module';
 import { FinanceController } from './controllers/finance.controller';
 import { FinanceModule } from 'src/modules/finance/finance.module';
 import { UserBlockController } from 'src/modules/users/controllers/user-block.controller';
+import { CurrentUserController } from 'src/modules/users/controllers/current-user.controller';
 
 @Module({
   controllers: [
     //auth
     AuthController,
     ClientAuthController,
+    CurrentUserController,
     ExperienceController,
     EducationController,
     //common

@@ -11,8 +11,10 @@ import { UserRepository } from '../repositories/user.repository';
 import { UpdateUserDto } from '../dtos/user/update-user.dto';
 import { CreateUserUploadDto } from '../dtos/user-upload/create-user-upload.dto';
 import { UpdateUserUploadDto } from '../dtos/user-upload/update-user-upload.dto';
-import { DeepPartial } from 'typeorm';
+import { DeepPartial, In } from 'typeorm';
 import { UserStorageFolderService } from './user-storage-folder.service';
+import { RefParamEntity } from 'src/shared/reference-types/entities/ref-param.entity';
+import { RefParamRepository } from 'src/shared/reference-types/repositories/ref-param.repository';
 
 @Injectable()
 export class UserService extends AbstractUserService {
@@ -21,6 +23,7 @@ export class UserService extends AbstractUserService {
     private readonly userUploadService: UserUploadService,
     private readonly storageService: StorageService,
     private readonly userStorageFolderService: UserStorageFolderService,
+    private readonly refParamRepository: RefParamRepository,
   ) {
     super(userRepository);
   }
@@ -115,6 +118,45 @@ export class UserService extends AbstractUserService {
     }
 
     return updatedUser;
+  }
+
+  async getSkills(id: string): Promise<number[]> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['skills'],
+    });
+
+    if (!user) throw new UserNotFoundException();
+    console.log(user.skills.map((a) => a.id));
+    return user.skills.map((skill) => skill.id);
+  }
+
+  async updateSkills(id: string, skillIds: number[]): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['skills'],
+    });
+
+    if (!user) throw new UserNotFoundException();
+
+    let skills: RefParamEntity[] = [];
+
+    if (skillIds && skillIds.length > 0) {
+      const result = await this.refParamRepository.findAll({
+        where: { id: In(skillIds) },
+      });
+
+      if (result) {
+        if (Array.isArray(result)) {
+          skills = result;
+        } else {
+          skills = [result];
+        }
+      }
+    }
+
+    user.skills = skills;
+    return this.userRepository.save(user);
   }
 
   async updateCover(id: string, coverId: number): Promise<UserEntity | null> {
