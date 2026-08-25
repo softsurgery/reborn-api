@@ -31,4 +31,12 @@ export class ResponseJobRequestDto extends ResponseDtoHelper {
   @ApiProperty({ type: String, enum: JobRequestStatus })
   @Expose()
   status: JobRequestStatus;
+
+  @ApiProperty({ type: String, required: false })
+  @Expose()
+  message?: string;
+
+  @ApiProperty({ type: Number, required: false })
+  @Expose()
+  proposedPrice?: number;
 }

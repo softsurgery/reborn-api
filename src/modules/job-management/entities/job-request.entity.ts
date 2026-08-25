@@ -40,4 +40,10 @@ export class JobRequestEntity extends EntityHelper {
     default: JobRequestStatus.Pending,
   })
   status: JobRequestStatus;
+
+  @Column({ type: 'text', nullable: true })
+  message?: string;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  proposedPrice?: number;
 }
