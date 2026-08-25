@@ -4,9 +4,9 @@ import { ResponseDtoHelper } from 'src/shared/database/dtos/database.response.dt
 import { ResponseRefParamDto } from '../ref-param/response-ref-param.dto';
 
 export class ResponseRefTypeDto extends ResponseDtoHelper {
-  @ApiProperty({ type: Number, example: 1 })
+  @ApiProperty({ type: String, example: 'skill' })
   @Expose()
-  id: number;
+  id: string;
 
   @ApiProperty({ type: String, example: 'label' })
   @Expose()
@@ -23,7 +23,7 @@ export class ResponseRefTypeDto extends ResponseDtoHelper {
 
   @ApiProperty({ type: ResponseRefTypeDto })
   @Expose()
-  @Type(() => ResponseRefParamDto)
+  @Type(() => ResponseRefTypeDto)
   parent?: ResponseRefTypeDto;
 
   @ApiProperty({ type: String })
@@ -32,6 +32,6 @@ export class ResponseRefTypeDto extends ResponseDtoHelper {
 
   @ApiProperty({ type: [ResponseRefTypeDto] })
   @Expose()
-  @Type(() => ResponseRefParamDto)
+  @Type(() => ResponseRefTypeDto)
   children: ResponseRefTypeDto[];
 }
