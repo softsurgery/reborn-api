@@ -45,7 +45,18 @@ export class StorageFolderService extends AbstractCrudService<StorageFolderEntit
     if (!uploadIds.length) return;
 
     await Promise.all(
-      uploadIds.map((uploadId) => this.assignFileToFolder(uploadId, folderId)),
+      uploadIds.map(async (uploadId) => {
+        try {
+          await this.assignFileToFolder(uploadId, folderId);
+        } catch (error) {
+          if (error instanceof StorageNotFoundException) {
+            // Gracefully ignore missing uploads to prevent the entire transaction from failing
+            // e.g. when updating a entity with previously deleted storage records
+            return;
+          }
+          throw error;
+        }
+      }),
     );
   }
 

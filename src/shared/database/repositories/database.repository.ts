@@ -298,7 +298,12 @@ export abstract class DatabaseAbstractRepository<T extends ObjectLiteral>
 
         const changedFields: Partial<U> = {};
         for (const key of Object.keys(updated) as (keyof U)[]) {
-          if (updated[key] !== existing[key]) {
+          if (
+            key !== 'id' &&
+            key !== key1 &&
+            key !== key2 &&
+            updated[key] !== existing[key]
+          ) {
             changedFields[key] = updated[key];
           }
         }
