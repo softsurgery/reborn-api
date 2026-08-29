@@ -57,6 +57,7 @@ export class StorageFolderService extends AbstractCrudService<StorageFolderEntit
     if (!upload) throw new StorageNotFoundException();
 
     upload.folderId = folderId;
+    upload.isTemporary = false;
     return this.storageRepository.save(upload);
   }
 
