@@ -126,9 +126,9 @@ export class JobService extends AbstractCrudService<JobEntity> {
     let tags: RefParamEntity[] = [];
 
     if (tagIds && Array.isArray(tagIds)) {
-      tags = await Promise.all(
+      tags = (await Promise.all(
         tagIds.map((tagId) => this.refParamService.findOneById(tagId)),
-      );
+      )) as RefParamEntity[];
     }
 
     const job = await this.jobRepository.save({
@@ -167,9 +167,9 @@ export class JobService extends AbstractCrudService<JobEntity> {
     let tags: RefParamEntity[] = [];
 
     if (tagIds && Array.isArray(tagIds)) {
-      tags = await Promise.all(
+      tags = (await Promise.all(
         tagIds.map((tagId) => this.refParamService.findOneById(tagId)),
-      );
+      )) as RefParamEntity[];
     }
     const existingJob = await this.jobRepository.findOneById(id);
     if (!existingJob) throw new JobNotFoundException();

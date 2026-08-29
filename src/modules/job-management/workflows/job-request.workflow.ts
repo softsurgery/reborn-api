@@ -3,7 +3,11 @@ import { setup } from 'xstate';
 export const jobRequestMachine = setup({
   types: {
     context: {} as object,
-    events: {} as { type: 'Approve' } | { type: 'Reject' } | { type: 'Cancel' },
+    events: {} as
+      | { type: 'Approve' }
+      | { type: 'Reject' }
+      | { type: 'Cancel' }
+      | { type: 'Waitlist' },
   },
 }).createMachine({
   context: {},
@@ -28,9 +32,37 @@ export const jobRequestMachine = setup({
           target: 'rejected',
           description: 'Client rejects the job request.',
         },
+        Waitlist: {
+          target: 'waitlist',
+          description: 'Client waitlists the job request.',
+        },
         Cancel: {
           target: 'rejected',
           description: 'Worker cancels their job request.',
+        },
+      },
+    },
+    waitlist: {
+      meta: {
+        isUpdatable: true,
+        title: 'Waitlisted',
+        category: 'Request',
+        description: 'Job request is waitlisted by the client.',
+        actor: 'Client',
+        iconName: 'Clock',
+      },
+      on: {
+        Approve: {
+          target: 'approved',
+          description: 'Client approves the waitlisted job request.',
+        },
+        Reject: {
+          target: 'rejected',
+          description: 'Client rejects the waitlisted job request.',
+        },
+        Cancel: {
+          target: 'rejected',
+          description: 'Worker cancels their waitlisted job request.',
         },
       },
     },

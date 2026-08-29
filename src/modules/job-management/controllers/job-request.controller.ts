@@ -216,6 +216,31 @@ export class JobRequestController {
     return toDto(ResponseJobRequestDto, request);
   }
 
+  @Put(':id/waitlist')
+  @LogEvent(EventType.JOB_REQUEST_WAITLIST)
+  @Notify(NotificationType.JOB_REQUEST_WAITLISTED)
+  async waitlist(
+    @Param('id') id: number,
+    @Request() req: AdvancedRequest,
+  ): Promise<ResponseJobRequestDto | null> {
+    const { jobRequest: request } = await this.jobRequestWorkflowService.next(
+      id,
+      JobRequestEvents.Waitlist,
+    );
+    const job = request?.jobId
+      ? await this.jobService.findOneById(request?.jobId)
+      : null;
+    req.logInfo = { id };
+    req.notificationInfo = {
+      id: request?.jobId,
+      title: job?.title,
+      userId: request?.userId,
+      targetUserId: request?.userId,
+      requesterId: request?.userId,
+    };
+    return toDto(ResponseJobRequestDto, request);
+  }
+
   @Put(':id/cancel')
   @LogEvent(EventType.JOB_REQUEST_CANCEL)
   async cancel(

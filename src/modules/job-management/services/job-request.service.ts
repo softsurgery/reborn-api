@@ -112,6 +112,16 @@ export class JobRequestService extends AbstractCrudService<JobRequestEntity> {
     });
   }
 
+  async waitlistJobRequest(id: number): Promise<JobRequestEntity | null> {
+    const jobRequest = await this.jobRequestRepository.findOneById(id);
+    if (!jobRequest) {
+      throw new JobRequestNotFoundException();
+    }
+    return this.jobRequestRepository.update(jobRequest.id, {
+      status: JobRequestStatus.Waitlist,
+    });
+  }
+
   async cancelJobRequest(id: number): Promise<JobRequestEntity | null> {
     const jobRequest = await this.jobRequestRepository.findOneById(id);
     if (!jobRequest) {
