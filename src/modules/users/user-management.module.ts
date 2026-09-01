@@ -31,6 +31,7 @@ import { ConfigurationsModule } from 'src/shared/configurations/configurations.m
 import { UserBlockService } from './services/user-block.service';
 import { UserBlockRepository } from './repositories/user-block.repository';
 import { UserBlockEntity } from './entities/user-block.entity';
+import { UserConfigurationService } from './services/user-configuration.service';
 
 @Module({
   controllers: [],
@@ -40,6 +41,7 @@ import { UserBlockEntity } from './entities/user-block.entity';
     UserUploadService,
     UserStorageFolderService,
     UserBlockService,
+    UserConfigurationService,
 
     RoleService,
     PermissionService,
@@ -68,6 +70,7 @@ import { UserBlockEntity } from './entities/user-block.entity';
     UserUploadService,
     UserStorageFolderService,
     UserBlockService,
+    UserConfigurationService,
 
     RoleService,
     PermissionService,

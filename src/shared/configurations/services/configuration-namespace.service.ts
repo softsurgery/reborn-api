@@ -72,4 +72,27 @@ export class ConfigurationNamespaceService extends AbstractCrudService<Configura
       queryOptions as FindOneOptions<ConfigurationNamespaceEntity>,
     );
   }
+
+  async deleteByUserId(userId: string): Promise<void> {
+    const namespaces = await this.repository.findWithRelations({
+      where: { userId },
+      select: ['id'],
+    });
+    if (namespaces.length > 0) {
+      const namespaceIds = namespaces.map((n) => n.id);
+      await this.repository
+        .createQueryBuilder()
+        .delete()
+        .from('configuration-param')
+        .where('namespaceId IN (:...namespaceIds)', { namespaceIds })
+        .execute();
+
+      await this.repository
+        .createQueryBuilder()
+        .delete()
+        .from('configuration-namespace')
+        .where('userId = :userId', { userId })
+        .execute();
+    }
+  }
 }

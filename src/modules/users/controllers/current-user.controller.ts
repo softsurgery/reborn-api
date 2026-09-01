@@ -15,6 +15,7 @@ import { LogEvent } from 'src/shared/logger/decorators/log-event.decorator';
 import { EventType } from 'src/app/enums/event-type.enum';
 import { AdvancedRequest } from 'src/types';
 import { UserService } from '../services/user.service';
+import { UserConfigurationService } from '../services/user-configuration.service';
 import { ResponseUserDto } from '../dtos/user/response-user.dto';
 import { UpdateUserDto } from '../dtos/user/update-user.dto';
 import { UpdateUserCoverDto } from '../dtos/user/update-user-cover.dto';
@@ -29,7 +30,10 @@ import { UpdateUserSkillsDto } from '../dtos/user/update-user-skills.dto';
   path: '/current-user',
 })
 export class CurrentUserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly userConfigurationService: UserConfigurationService,
+  ) {}
 
   @Get('')
   async findCurrentUser(
@@ -102,5 +106,25 @@ export class CurrentUserController {
     const user = await this.userService.softDelete(req.user.sub);
     req.logInfo = { id: user?.id, firstName: user?.firstName };
     return toDto(ResponseUserDto, user);
+  }
+
+  @Get('/mobile-app-settings')
+  async getMobileAppSettings(@Request() req: AdvancedRequest) {
+    if (!req?.user?.sub) return null;
+    return this.userConfigurationService.getMobileAppSettingsConfiguration(
+      req.user.sub,
+    );
+  }
+
+  @Put('/mobile-app-settings/quick-actions')
+  async updateQuickActions(
+    @Request() req: AdvancedRequest,
+    @Body() body: { activeIds: string[] },
+  ) {
+    if (!req?.user?.sub) return null;
+    return this.userConfigurationService.updateMobileAppSettingsConfiguration(
+      req.user.sub,
+      body.activeIds,
+    );
   }
 }
