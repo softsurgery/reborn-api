@@ -93,6 +93,9 @@ export class UserEntity extends AbstractUserEntity {
   @OneToMany(() => JobEntity, (job) => job.postedBy)
   postedJobs: JobEntity[];
 
+  @OneToMany(() => JobEntity, (job) => job.worker)
+  workedJobs: JobEntity[];
+
   @OneToMany(() => JobRequestEntity, (request) => request.job)
   requests: JobRequestEntity[];
 

@@ -97,6 +97,12 @@ export class JobRequestService extends AbstractCrudService<JobRequestEntity> {
         jobRequest?.job?.postedById,
       );
     }
+
+    await this.jobRepository.update(jobRequest.jobId, {
+      workerId: jobRequest.userId,
+      assignmentDate: new Date(),
+    });
+
     return this.jobRequestRepository.update(jobRequest.id, {
       status: JobRequestStatus.Approved,
     });

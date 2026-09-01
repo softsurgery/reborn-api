@@ -60,6 +60,20 @@ export class JobEntity extends EntityHelper {
   @Column({})
   postedById: string;
 
+  @ManyToOne(() => UserEntity, (user) => user.workedJobs, {
+    onDelete: 'SET NULL',
+    eager: true,
+    nullable: true,
+  })
+  @JoinColumn({ name: 'workerId' })
+  worker: UserEntity;
+
+  @Column({ nullable: true })
+  workerId: string;
+
+  @Column({ type: 'timestamp', nullable: true })
+  assignmentDate: Date;
+
   @ManyToMany(() => RefParamEntity, {
     cascade: true,
     eager: true,

@@ -40,6 +40,19 @@ export class CurrentJobController {
     return { ...paginated, data: toDtoArray(ResponseJobDto, paginated.data) };
   }
 
+  @Get('/list-work')
+  @ApiPaginatedResponse(ResponseJobDto)
+  async findWorkPaginated(
+    @Query() query: IQueryObject,
+    @Request() req: AdvancedRequest,
+  ): Promise<PageDto<ResponseJobDto>> {
+    const paginated = await this.jobService.findJobsByWorkerId(
+      query,
+      req.user?.sub,
+    );
+    return { ...paginated, data: toDtoArray(ResponseJobDto, paginated.data) };
+  }
+
   @Get('/list-followed')
   @ApiPaginatedResponse(ResponseJobDto)
   async findAllFollowedPaginated(

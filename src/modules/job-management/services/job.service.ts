@@ -67,6 +67,35 @@ export class JobService extends AbstractCrudService<JobEntity> {
     return new PageDto(entities, pageMetaDto);
   }
 
+  async findJobsByWorkerId(
+    query: IQueryObject,
+    workerId?: string,
+  ): Promise<PageDto<JobEntity>> {
+    const queryBuilder = new QueryBuilder(this.jobRepository.getMetadata());
+    const queryOptions = queryBuilder.build(query);
+    queryOptions.where = mergeWhereConditions(queryOptions.where, {
+      workerId: workerId,
+    });
+
+    const count = await this.jobRepository.getTotalCount({
+      where: queryOptions.where,
+    });
+
+    const entities = await this.jobRepository.findAll(
+      queryOptions as FindManyOptions<JobEntity>,
+    );
+
+    const pageMetaDto = new PageMetaDto({
+      pageOptionsDto: {
+        page: Number(query.page),
+        take: Number(query.limit),
+      },
+      itemCount: count,
+    });
+
+    return new PageDto(entities, pageMetaDto);
+  }
+
   async findAllFollowedPaginated(
     query: IQueryObject,
     userId?: string,

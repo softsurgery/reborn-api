@@ -50,6 +50,20 @@ export class ResponseJobDto extends ResponseDtoHelper {
   @Type(() => ResponseUserDto)
   postedBy: ResponseUserDto;
 
+  @ApiProperty({ type: ResponseUserDto })
+  @Expose()
+  @Type(() => ResponseUserDto)
+  worker: ResponseUserDto;
+
+  @ApiProperty({ type: String })
+  @Expose()
+  workerId: string;
+
+  @ApiProperty({ type: Date })
+  @Expose()
+  @Type(() => Date)
+  assignmentDate: Date;
+
   @ApiProperty({ type: String })
   @Expose()
   currencyId: string;
