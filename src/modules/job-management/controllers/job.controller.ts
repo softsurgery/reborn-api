@@ -122,4 +122,26 @@ export class JobController {
     req.logInfo = { id: job.id, title: job.title };
     return toDto(ResponseJobDto, job);
   }
+
+  @Post(':id/pause')
+  @LogEvent(EventType.JOB_UPDATE)
+  async pause(
+    @Param('id') id: string,
+    @Request() req: AdvancedRequest,
+  ): Promise<ResponseJobDto> {
+    const job = await this.jobService.pause(id);
+    req.logInfo = { id, title: job?.title };
+    return toDto(ResponseJobDto, job);
+  }
+
+  @Post(':id/unpause')
+  @LogEvent(EventType.JOB_UPDATE)
+  async unpause(
+    @Param('id') id: string,
+    @Request() req: AdvancedRequest,
+  ): Promise<ResponseJobDto> {
+    const job = await this.jobService.unpause(id);
+    req.logInfo = { id, title: job?.title };
+    return toDto(ResponseJobDto, job);
+  }
 }

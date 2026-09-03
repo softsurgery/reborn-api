@@ -37,6 +37,14 @@ export class ResponseJobDto extends ResponseDtoHelper {
   @Expose()
   pricingType: JobPricingType;
 
+  @ApiProperty({ type: Boolean })
+  @Expose()
+  negotiablePrice: boolean;
+
+  @ApiProperty({ type: Boolean })
+  @Expose()
+  pausedApplication: boolean;
+
   @ApiProperty({ type: Number })
   @Expose()
   latitude: number;

@@ -40,6 +40,12 @@ export class JobEntity extends EntityHelper {
   @Column({ type: 'enum', enum: JobPricingType, default: JobPricingType.FIXED })
   pricingType: JobPricingType;
 
+  @Column({ type: 'boolean', default: false })
+  negotiablePrice: boolean;
+
+  @Column({ type: 'boolean', default: false })
+  pausedApplication: boolean;
+
   @ManyToOne(() => RefParamEntity, {
     onDelete: 'CASCADE',
     nullable: true,

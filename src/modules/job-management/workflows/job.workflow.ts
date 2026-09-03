@@ -26,6 +26,7 @@ export const jobMachine = setup({
   states: {
     Draft: {
       meta: {
+        isCandidateSelectionPaused: false,
         isUpdatable: true,
         title: 'Draft',
         category: 'Drafting',
@@ -48,6 +49,7 @@ export const jobMachine = setup({
     },
     Posted: {
       meta: {
+        isCandidateSelectionPaused: false,
         isUpdatable: true,
         title: 'Posted',
         category: 'Recruitment',
@@ -70,6 +72,7 @@ export const jobMachine = setup({
     },
     'Candidate Pending': {
       meta: {
+        isCandidateSelectionPaused: false,
         isUpdatable: true,
         title: 'Candidate Pending',
         category: 'Recruitment',
@@ -92,6 +95,7 @@ export const jobMachine = setup({
     },
     'Not Started': {
       meta: {
+        isCandidateSelectionPaused: false,
         isUpdatable: true,
         title: 'Not Started',
         category: 'Execution',
@@ -110,6 +114,7 @@ export const jobMachine = setup({
     },
     Pending: {
       meta: {
+        isCandidateSelectionPaused: false,
         isUpdatable: true,
         title: 'In Progress (Pending)',
         category: 'Execution',
@@ -133,6 +138,7 @@ export const jobMachine = setup({
     },
     Finished: {
       meta: {
+        isCandidateSelectionPaused: false,
         isUpdatable: true,
         title: 'Finished (Awaiting Review)',
         category: 'Review & Payout',
@@ -151,6 +157,7 @@ export const jobMachine = setup({
     },
     'On Hold': {
       meta: {
+        isCandidateSelectionPaused: false,
         isUpdatable: true,
         title: 'On Hold',
         category: 'Execution',
@@ -172,6 +179,7 @@ export const jobMachine = setup({
     },
     'Reviewed By Worker': {
       meta: {
+        isCandidateSelectionPaused: false,
         isUpdatable: true,
         title: 'Reviewed By Worker',
         category: 'Review & Payout',
@@ -190,6 +198,7 @@ export const jobMachine = setup({
     },
     'Reviewed By Worker & Client': {
       meta: {
+        isCandidateSelectionPaused: false,
         isUpdatable: true,
         title: 'Reviewed By Both',
         category: 'Review & Payout',
@@ -208,6 +217,7 @@ export const jobMachine = setup({
     },
     Failed: {
       meta: {
+        isCandidateSelectionPaused: false,
         isUpdatable: false,
         title: 'Failed / Cancelled',
         category: 'Terminal',
@@ -224,6 +234,7 @@ export const jobMachine = setup({
     },
     Successfull: {
       meta: {
+        isCandidateSelectionPaused: false,
         isUpdatable: false,
         title: 'Successful (Completed)',
         category: 'Terminal',
@@ -242,6 +253,7 @@ export const jobMachine = setup({
     Archived: {
       type: 'final',
       meta: {
+        isCandidateSelectionPaused: false,
         isUpdatable: false,
         title: 'Archived',
         category: 'Terminal',

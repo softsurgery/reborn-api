@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
+  IsBoolean,
   IsEnum,
   IsNumber,
   IsOptional,
@@ -38,6 +39,11 @@ export class CreateJobDto {
   @IsEnum(JobPricingType)
   @IsOptional()
   pricingType?: JobPricingType;
+
+  @ApiProperty({ type: Boolean, required: false })
+  @IsBoolean()
+  @IsOptional()
+  negotiablePrice?: boolean;
 
   @ApiProperty({ type: Number })
   @IsNumber()

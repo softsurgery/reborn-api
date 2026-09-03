@@ -299,4 +299,22 @@ export class JobService extends AbstractCrudService<JobEntity> {
       postedBy || existingJob.postedById,
     );
   }
+
+  @Transactional()
+  async pause(id: string): Promise<JobEntity> {
+    const job = await this.jobRepository.findOneById(id);
+    if (!job) throw new JobNotFoundException();
+    
+    job.pausedApplication = true;
+    return this.jobRepository.save(job);
+  }
+
+  @Transactional()
+  async unpause(id: string): Promise<JobEntity> {
+    const job = await this.jobRepository.findOneById(id);
+    if (!job) throw new JobNotFoundException();
+    
+    job.pausedApplication = false;
+    return this.jobRepository.save(job);
+  }
 }
