@@ -34,7 +34,7 @@ import { ConfigurationsModule } from 'src/shared/configurations/configurations.m
 import { JobWorkflowController } from 'src/modules/job-management/controllers/job-workflow.controller';
 import { TaskController } from 'src/shared/tasks/controllers/task.controller';
 import { TasksModule } from 'src/shared/tasks/tasks.module';
-import { FinanceController } from './controllers/finance.controller';
+import { FinanceController } from '../../modules/finance/controllers/finance.controller';
 import { FinanceModule } from 'src/modules/finance/finance.module';
 import { UserBlockController } from 'src/modules/users/controllers/user-block.controller';
 import { CurrentUserController } from 'src/modules/users/controllers/current-user.controller';

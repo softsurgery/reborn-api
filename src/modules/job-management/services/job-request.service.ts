@@ -1,5 +1,9 @@
 import { Transactional } from '@nestjs-cls/transactional';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { FindManyOptions, In } from 'typeorm';
 import { IQueryObject } from 'src/shared/database/interfaces/database-query-options.interface';
 import {
@@ -19,7 +23,9 @@ import { JobRequestCannotRequestOwnJobException } from '../errors/job-request/jo
 import { ConversationService } from 'src/shared/chat/services/conversation.service';
 import { UserNotFoundException } from 'src/shared/abstract-user-management/errors/user/user.notfound.error';
 import { AbstractCrudService } from 'src/shared/database/services/abstract-crud.service';
-import { FinanceService } from 'src/modules/finance/services/finance.service';
+import { PointsService } from 'src/modules/finance/services/points.service';
+import { TransactionType } from 'src/modules/finance/enums/transaction-type.enum';
+import { JobNotFoundException } from '../errors/job/job.notfound.error';
 
 @Injectable()
 export class JobRequestService extends AbstractCrudService<JobRequestEntity> {
@@ -27,7 +33,7 @@ export class JobRequestService extends AbstractCrudService<JobRequestEntity> {
     private readonly jobRequestRepository: JobRequestRepository,
     private readonly jobRepository: JobRepository,
     private readonly conversationService: ConversationService,
-    private readonly financeService: FinanceService,
+    private readonly pointsService: PointsService,
   ) {
     super(jobRequestRepository);
   }
@@ -45,12 +51,21 @@ export class JobRequestService extends AbstractCrudService<JobRequestEntity> {
       throw new JobRequestCannotRequestOwnJobException();
     }
 
-    await this.financeService.deductPoints(userId, 10, 'Applied for Job');
-
     const saved = await this.jobRequestRepository.save({
       ...createJobRequestDto,
       userId,
     });
+
+    await this.pointsService.deductPoints(
+      userId,
+      10,
+      TransactionType.APPLYING_FOR_JOB,
+      {
+        jobId: job?.id,
+        title: job?.title,
+        jobRequestId: saved.id,
+      },
+    );
     return (await this.jobRequestRepository.findOne({
       where: { id: saved.id },
     })) as JobRequestEntity;
@@ -62,6 +77,42 @@ export class JobRequestService extends AbstractCrudService<JobRequestEntity> {
     updateJobRequestDto: UpdateJobRequestDto,
   ): Promise<JobRequestEntity | null> {
     return this.jobRequestRepository.update(id, updateJobRequestDto);
+  }
+
+  @Transactional()
+  async softDelete(id: number): Promise<JobRequestEntity | null> {
+    const jobRequest = await this.jobRequestRepository.findOne({
+      where: { id },
+    });
+
+    if (!jobRequest) {
+      throw new JobRequestNotFoundException();
+    }
+
+    const job = await this.jobRepository.findOne({
+      where: { id: jobRequest.jobId },
+    });
+
+    if (!job) {
+      throw new JobNotFoundException();
+    }
+
+    if (job.postedById !== jobRequest.userId) {
+      throw new UnauthorizedException();
+    }
+
+    await this.pointsService.addPoints(
+      jobRequest.userId,
+      10,
+      TransactionType.APPLICATION_FEE_REFUNDED,
+      {
+        jobId: job.id,
+        title: job.title,
+        jobRequestId: jobRequest.id,
+      },
+    );
+
+    return this.jobRequestRepository.softDelete(jobRequest.id);
   }
 
   //Extended Methods ===========================================================================
@@ -128,11 +179,23 @@ export class JobRequestService extends AbstractCrudService<JobRequestEntity> {
     });
   }
 
+  @Transactional()
   async cancelJobRequest(id: number): Promise<JobRequestEntity | null> {
     const jobRequest = await this.jobRequestRepository.findOneById(id);
     if (!jobRequest) {
       throw new JobRequestNotFoundException();
     }
+    const job = await this.jobRepository.findOneById(jobRequest.jobId);
+    await this.pointsService.addPoints(
+      jobRequest.userId,
+      10,
+      TransactionType.APPLICATION_FEE_REFUNDED,
+      {
+        jobRequestId: id,
+        jobId: job?.id,
+        title: job?.title,
+      },
+    );
     return this.jobRequestRepository.softDelete(jobRequest.id);
   }
 

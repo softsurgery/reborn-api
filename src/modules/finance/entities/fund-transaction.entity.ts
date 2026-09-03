@@ -9,8 +9,8 @@ import {
 import { UserEntity } from 'src/modules/users/entities/user.entity';
 import { TransactionType } from '../enums/transaction-type.enum';
 
-@Entity('point_transactions')
-export class PointTransactionEntity extends EntityHelper {
+@Entity('fund_transactions')
+export class FundTransactionEntity extends EntityHelper {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
