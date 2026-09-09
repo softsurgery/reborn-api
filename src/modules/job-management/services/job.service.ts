@@ -304,7 +304,7 @@ export class JobService extends AbstractCrudService<JobEntity> {
   async pause(id: string): Promise<JobEntity> {
     const job = await this.jobRepository.findOneById(id);
     if (!job) throw new JobNotFoundException();
-    
+
     job.pausedApplication = true;
     return this.jobRepository.save(job);
   }
@@ -313,7 +313,7 @@ export class JobService extends AbstractCrudService<JobEntity> {
   async unpause(id: string): Promise<JobEntity> {
     const job = await this.jobRepository.findOneById(id);
     if (!job) throw new JobNotFoundException();
-    
+
     job.pausedApplication = false;
     return this.jobRepository.save(job);
   }

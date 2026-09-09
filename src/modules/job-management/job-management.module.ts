@@ -22,6 +22,7 @@ import { StorageModule } from 'src/shared/storage/storage.module';
 import { JobWorkflowService } from './services/job-workflow.service';
 import { JobStorageFolderService } from './services/job-storage-folder.service';
 import { JobRequestWorkflowService } from './services/job-request-workflow.service';
+import { JobStatisticsService } from './services/job-statistics.service';
 import { FinanceModule } from '../finance/finance.module';
 
 @Module({
@@ -41,6 +42,7 @@ import { FinanceModule } from '../finance/finance.module';
     JobWorkflowService,
     JobStorageFolderService,
     JobRequestWorkflowService,
+    JobStatisticsService,
   ],
   exports: [
     JobRepository,
@@ -57,6 +59,7 @@ import { FinanceModule } from '../finance/finance.module';
     JobWorkflowService,
     JobStorageFolderService,
     JobRequestWorkflowService,
+    JobStatisticsService,
   ],
   imports: [
     TypeOrmModule.forFeature([

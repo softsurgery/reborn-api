@@ -22,6 +22,7 @@ export interface AdvancedSocket extends Socket {
     userId?: string;
   };
 }
+
 export interface SocketPayload {
   sub: string;
   email: string;

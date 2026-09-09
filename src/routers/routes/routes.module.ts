@@ -15,6 +15,7 @@ import { ChatModule } from 'src/shared/chat/chat.module';
 import { MessageController } from 'src/shared/chat/controllers/message.controller';
 import { JobSaveController } from 'src/modules/job-management/controllers/job-save.controller';
 import { JobViewController } from 'src/modules/job-management/controllers/job-view.controller';
+import { JobStatisticsController } from 'src/modules/job-management/controllers/job-statistics.controller';
 import { NotificationController } from 'src/shared/notifications/controllers/notification.controller';
 import { NotificationModule } from 'src/shared/notifications/notifications.module';
 import { RefTypeController } from 'src/shared/reference-types/controllers/ref-type.controller';
@@ -64,6 +65,7 @@ import { CurrentUserController } from 'src/modules/users/controllers/current-use
     JobRequestController,
     JobSaveController,
     JobViewController,
+    JobStatisticsController,
     //chat
     ConversationController,
     MessageController,
