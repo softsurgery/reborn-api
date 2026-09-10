@@ -127,7 +127,6 @@ export class UserService extends AbstractUserService {
     });
 
     if (!user) throw new UserNotFoundException();
-    console.log(user.skills.map((a) => a.id));
     return user.skills.map((skill) => skill.id);
   }
 

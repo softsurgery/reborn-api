@@ -77,8 +77,6 @@ export class EducationController {
       createEducationDto,
     );
 
-    console.log('education', education);
-
     req.logInfo = {
       userId: req.user.sub,
       educationId: education.id,
